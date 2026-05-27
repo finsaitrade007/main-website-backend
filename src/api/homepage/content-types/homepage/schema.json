@@ -1,0 +1,74 @@
+{
+  "kind": "singleType",
+  "collectionName": "homepages",
+  "info": {
+    "singularName": "homepage",
+    "pluralName": "homepages",
+    "displayName": "Homepage",
+    "description": "All editorial text shown on the homepage. Lists with their own images (markets, platforms, steps, awards, testimonials, journey cards) live in separate collection types."
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "heroTitle": { "type": "string", "required": true },
+    "heroSubtitle": { "type": "text" },
+    "heroTaglines": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.tagline"
+    },
+    "heroCtaPrimaryLabel": { "type": "string" },
+    "heroCtaPrimaryHref": { "type": "string" },
+    "heroCtaSecondaryLabel": { "type": "string" },
+    "heroCtaSecondaryHref": { "type": "string" },
+
+    "featuresBadge": { "type": "string" },
+    "featuresTitle": { "type": "string" },
+    "featuresDescription": { "type": "text" },
+    "featureItems": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.feature-item"
+    },
+
+    "marketsBadge": { "type": "string" },
+    "marketsTitlePrefix": { "type": "string" },
+    "marketsTitleAccent": { "type": "string" },
+    "marketsDescription": { "type": "text" },
+
+    "platformsBadge": { "type": "string" },
+    "platformsTitle": { "type": "string" },
+    "platformsDescription": { "type": "text" },
+
+    "accountsBadge": { "type": "string" },
+    "accountsTitle": { "type": "string" },
+    "accountsDescription": { "type": "text" },
+
+    "stepsBadge": { "type": "string" },
+    "stepsTitle": { "type": "string" },
+
+    "awardsBadge": { "type": "string" },
+    "awardsTitle": { "type": "string" },
+    "awardsDescription": { "type": "text" },
+
+    "journeyBadge": { "type": "string" },
+    "journeyTitle": { "type": "string" },
+    "journeyDescription": { "type": "text" },
+
+    "testimonialsBadge": { "type": "string" },
+    "testimonialsTitle": { "type": "string" },
+
+    "ctaBadge": { "type": "string" },
+    "ctaTitle": { "type": "string" },
+    "ctaDescription": { "type": "text" },
+    "ctaFooterText": { "type": "text" },
+    "ctaButton1Label": { "type": "string" },
+    "ctaButton1Href": { "type": "string" },
+    "ctaButton2Label": { "type": "string" },
+    "ctaButton2Href": { "type": "string" },
+    "ctaButton3Label": { "type": "string" },
+    "ctaButton3Href": { "type": "string" }
+  }
+}

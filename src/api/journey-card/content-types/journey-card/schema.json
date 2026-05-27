@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "journey_cards",
+  "info": {
+    "singularName": "journey-card",
+    "pluralName": "journey-cards",
+    "displayName": "Journey Card",
+    "description": "Card in the 'Your Trading Journey Starts Here' section"
+  },
+  "options": { "draftAndPublish": true },
+  "pluginOptions": {},
+  "attributes": {
+    "label": { "type": "string", "required": true },
+    "description": { "type": "text", "required": true },
+    "linkLabel": { "type": "string", "required": true },
+    "linkHref": { "type": "string", "required": true },
+    "row": {
+      "type": "enumeration",
+      "enum": ["row1", "row2"],
+      "default": "row1",
+      "required": true
+    },
+    "size": {
+      "type": "enumeration",
+      "enum": ["small", "large", "equal"],
+      "default": "equal"
+    },
+    "order": { "type": "integer", "default": 0 }
+  }
+}

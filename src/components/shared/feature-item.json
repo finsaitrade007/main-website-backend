@@ -1,0 +1,24 @@
+{
+  "collectionName": "components_shared_feature_items",
+  "info": {
+    "displayName": "Feature item",
+    "description": "Single feature row in the Features section (icon picked in code, title set here). Use \\n for line break.",
+    "icon": "star"
+  },
+  "options": {},
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "iconKey": {
+      "type": "enumeration",
+      "enum": [
+        "transparency",
+        "assets",
+        "leverage",
+        "deposits",
+        "learning",
+        "social"
+      ],
+      "default": "transparency"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "collectionName": "components_shared_taglines",
+  "info": {
+    "displayName": "Tagline",
+    "description": "Short text shown in hero subtitle line (e.g. 'Regulated Broker')",
+    "icon": "tag"
+  },
+  "options": {},
+  "attributes": {
+    "label": { "type": "string", "required": true }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "kind": "collectionType",
+  "collectionName": "platforms",
+  "info": {
+    "singularName": "platform",
+    "pluralName": "platforms",
+    "displayName": "Platform",
+    "description": "A trading platform card on the homepage (MT5, Web Terminal, Social Trading, App)"
+  },
+  "options": { "draftAndPublish": true },
+  "pluginOptions": {},
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "description": { "type": "text", "required": true },
+    "size": {
+      "type": "enumeration",
+      "enum": ["small", "large"],
+      "default": "small",
+      "required": true
+    },
+    "row": { "type": "integer", "default": 1 },
+    "mockupImage": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
+    "iconImage": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
+    "order": { "type": "integer", "default": 0 }
+  }
+}

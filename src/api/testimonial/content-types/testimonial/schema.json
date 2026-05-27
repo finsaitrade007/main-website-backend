@@ -1,0 +1,20 @@
+{
+  "kind": "collectionType",
+  "collectionName": "testimonials",
+  "info": {
+    "singularName": "testimonial",
+    "pluralName": "testimonials",
+    "displayName": "Testimonial",
+    "description": "Client quote shown in the Testimonials carousel"
+  },
+  "options": { "draftAndPublish": true },
+  "pluginOptions": {},
+  "attributes": {
+    "name": { "type": "string", "required": true },
+    "role": { "type": "string", "default": "Client" },
+    "initials": { "type": "string", "required": true, "maxLength": 4 },
+    "quote": { "type": "text", "required": true },
+    "avatar": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
+    "order": { "type": "integer", "default": 0 }
+  }
+}

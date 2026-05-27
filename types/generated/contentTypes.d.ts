@@ -478,6 +478,34 @@ export interface ApiAccountTierAccountTier extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiAwardAward extends Struct.CollectionTypeSchema {
+  collectionName: 'awards';
+  info: {
+    description: 'Award shown in the Awards section. Use \\n in title for line break.';
+    displayName: 'Award';
+    pluralName: 'awards';
+    singularName: 'award';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    image: Schema.Attribute.Media<'images'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::award.award'> &
+      Schema.Attribute.Private;
+    order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    publishedAt: Schema.Attribute.DateTime;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiFaqFaq extends Struct.CollectionTypeSchema {
   collectionName: 'faqs';
   info: {
@@ -501,6 +529,251 @@ export interface ApiFaqFaq extends Struct.CollectionTypeSchema {
     order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     publishedAt: Schema.Attribute.DateTime;
     question: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiHomepageHomepage extends Struct.SingleTypeSchema {
+  collectionName: 'homepages';
+  info: {
+    description: 'All editorial text shown on the homepage. Lists with their own images (markets, platforms, steps, awards, testimonials, journey cards) live in separate collection types.';
+    displayName: 'Homepage';
+    pluralName: 'homepages';
+    singularName: 'homepage';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    accountsBadge: Schema.Attribute.String;
+    accountsDescription: Schema.Attribute.Text;
+    accountsTitle: Schema.Attribute.String;
+    awardsBadge: Schema.Attribute.String;
+    awardsDescription: Schema.Attribute.Text;
+    awardsTitle: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    ctaBadge: Schema.Attribute.String;
+    ctaButton1Href: Schema.Attribute.String;
+    ctaButton1Label: Schema.Attribute.String;
+    ctaButton2Href: Schema.Attribute.String;
+    ctaButton2Label: Schema.Attribute.String;
+    ctaButton3Href: Schema.Attribute.String;
+    ctaButton3Label: Schema.Attribute.String;
+    ctaDescription: Schema.Attribute.Text;
+    ctaFooterText: Schema.Attribute.Text;
+    ctaTitle: Schema.Attribute.String;
+    featureItems: Schema.Attribute.Component<'shared.feature-item', true>;
+    featuresBadge: Schema.Attribute.String;
+    featuresDescription: Schema.Attribute.Text;
+    featuresTitle: Schema.Attribute.String;
+    heroCtaPrimaryHref: Schema.Attribute.String;
+    heroCtaPrimaryLabel: Schema.Attribute.String;
+    heroCtaSecondaryHref: Schema.Attribute.String;
+    heroCtaSecondaryLabel: Schema.Attribute.String;
+    heroSubtitle: Schema.Attribute.Text;
+    heroTaglines: Schema.Attribute.Component<'shared.tagline', true>;
+    heroTitle: Schema.Attribute.String & Schema.Attribute.Required;
+    journeyBadge: Schema.Attribute.String;
+    journeyDescription: Schema.Attribute.Text;
+    journeyTitle: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::homepage.homepage'
+    > &
+      Schema.Attribute.Private;
+    marketsBadge: Schema.Attribute.String;
+    marketsDescription: Schema.Attribute.Text;
+    marketsTitleAccent: Schema.Attribute.String;
+    marketsTitlePrefix: Schema.Attribute.String;
+    platformsBadge: Schema.Attribute.String;
+    platformsDescription: Schema.Attribute.Text;
+    platformsTitle: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    stepsBadge: Schema.Attribute.String;
+    stepsTitle: Schema.Attribute.String;
+    testimonialsBadge: Schema.Attribute.String;
+    testimonialsTitle: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiJourneyCardJourneyCard extends Struct.CollectionTypeSchema {
+  collectionName: 'journey_cards';
+  info: {
+    description: "Card in the 'Your Trading Journey Starts Here' section";
+    displayName: 'Journey Card';
+    pluralName: 'journey-cards';
+    singularName: 'journey-card';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.Text & Schema.Attribute.Required;
+    label: Schema.Attribute.String & Schema.Attribute.Required;
+    linkHref: Schema.Attribute.String & Schema.Attribute.Required;
+    linkLabel: Schema.Attribute.String & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::journey-card.journey-card'
+    > &
+      Schema.Attribute.Private;
+    order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    publishedAt: Schema.Attribute.DateTime;
+    row: Schema.Attribute.Enumeration<['row1', 'row2']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'row1'>;
+    size: Schema.Attribute.Enumeration<['small', 'large', 'equal']> &
+      Schema.Attribute.DefaultTo<'equal'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiMarketMarket extends Struct.CollectionTypeSchema {
+  collectionName: 'markets';
+  info: {
+    description: 'An asset class shown in the Markets accordion';
+    displayName: 'Market';
+    pluralName: 'markets';
+    singularName: 'market';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.Text & Schema.Attribute.Required;
+    image: Schema.Attribute.Media<'images'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::market.market'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'name'> & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiPlatformPlatform extends Struct.CollectionTypeSchema {
+  collectionName: 'platforms';
+  info: {
+    description: 'A trading platform card on the homepage (MT5, Web Terminal, Social Trading, App)';
+    displayName: 'Platform';
+    pluralName: 'platforms';
+    singularName: 'platform';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.Text & Schema.Attribute.Required;
+    iconImage: Schema.Attribute.Media<'images'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::platform.platform'
+    > &
+      Schema.Attribute.Private;
+    mockupImage: Schema.Attribute.Media<'images'>;
+    order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    publishedAt: Schema.Attribute.DateTime;
+    row: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<1>;
+    size: Schema.Attribute.Enumeration<['small', 'large']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'small'>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiStepStep extends Struct.CollectionTypeSchema {
+  collectionName: 'steps';
+  info: {
+    description: "A step in the 'How to get started' section";
+    displayName: 'Step';
+    pluralName: 'steps';
+    singularName: 'step';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.Text & Schema.Attribute.Required;
+    image: Schema.Attribute.Media<'images'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::step.step'> &
+      Schema.Attribute.Private;
+    number: Schema.Attribute.Integer & Schema.Attribute.Required;
+    order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    publishedAt: Schema.Attribute.DateTime;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiTestimonialTestimonial extends Struct.CollectionTypeSchema {
+  collectionName: 'testimonials';
+  info: {
+    description: 'Client quote shown in the Testimonials carousel';
+    displayName: 'Testimonial';
+    pluralName: 'testimonials';
+    singularName: 'testimonial';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    avatar: Schema.Attribute.Media<'images'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    initials: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 4;
+      }>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::testimonial.testimonial'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    publishedAt: Schema.Attribute.DateTime;
+    quote: Schema.Attribute.Text & Schema.Attribute.Required;
+    role: Schema.Attribute.String & Schema.Attribute.DefaultTo<'Client'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1019,7 +1292,14 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::account-tier.account-tier': ApiAccountTierAccountTier;
+      'api::award.award': ApiAwardAward;
       'api::faq.faq': ApiFaqFaq;
+      'api::homepage.homepage': ApiHomepageHomepage;
+      'api::journey-card.journey-card': ApiJourneyCardJourneyCard;
+      'api::market.market': ApiMarketMarket;
+      'api::platform.platform': ApiPlatformPlatform;
+      'api::step.step': ApiStepStep;
+      'api::testimonial.testimonial': ApiTestimonialTestimonial;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

@@ -85,66 +85,75 @@ async function uploadFileFromSeed(
 // ─── Existing seeds (tiers, faqs) ────────────────────────────────────
 
 async function seedAccountTiers(strapi: Core.Strapi) {
-  const count = await strapi.documents('api::account-tier.account-tier').count({});
-  if (count > 0) return;
-
-  const tiers = [
-    {
-      name: 'Finsai Smart Choice',
-      price: '$0',
-      unit: 'Commission / $100k',
-      featured: false,
-      order: 1,
-      ctaLabel: 'Open Account',
-      ctaHref: '/register',
-      features: [
-        { label: 'Maximum Leverage', value: '1:400' },
-        { label: 'Trading Instruments', value: '5000+' },
-        { label: 'Spreads', value: 'competitive' },
-        { label: 'Min. Deposit', value: '$100' },
-      ],
-    },
-    {
-      name: 'Finsai Smart Pro',
-      price: '$0',
-      unit: 'Commission / $100k',
-      featured: true,
-      order: 2,
-      ctaLabel: 'Open Account',
-      ctaHref: '/register',
-      features: [
-        { label: 'Maximum Leverage', value: '1:400' },
-        { label: 'Trading Instruments', value: '5000+' },
-        { label: 'Spreads', value: 'competitive' },
-        { label: 'Minimum order size', value: '0.01' },
-        { label: 'Min. Deposit', value: '$1000' },
-        { label: 'Maximum Open', value: 'Unlimited' },
-      ],
-    },
-    {
-      name: 'Finsai Smart ECN',
-      price: '$1.5',
-      unit: 'Commission / $100k',
-      featured: false,
-      order: 3,
-      ctaLabel: 'Open Account',
-      ctaHref: '/register',
-      features: [
-        { label: 'Maximum Leverage', value: '1:400' },
-        { label: 'Trading Instruments', value: '5000+' },
-        { label: 'Spreads', value: 'competitive' },
-        { label: 'Min. Deposit', value: '$5000' },
-      ],
-    },
+  // Build the 5-tier compare-table dataset.
+  // Feature order is fixed across all tiers so the FE table aligns rows cleanly.
+  const FEATURES: { label: string; values: [string, string, string, string, string] }[] = [
+    { label: 'Target Clients',                       values: ['Beginners (first Trader)', 'New Retail Clients', 'Mid-Tier Traders', 'Advanced Traders', 'Passive Investors'] },
+    { label: 'Min. Deposit',                         values: ['$10', '$100', '$1,000', '$5,000', '$10,000'] },
+    { label: 'Fixed Tradeable Welcome Bonus',        values: ['100%', '80%', '40%', '20%', '5%'] },
+    { label: 'Account Type',                         values: ['Client Account', 'Hedging Accounts', 'Hedging Accounts', 'Hedging/Netting Accounts', 'Hedging/Netting Accounts'] },
+    { label: 'Spread Type',                          values: ['1.8 pips', '1.4 pips', '0.6 pips', '0.0 to 0.1 pips', '0.0 pips'] },
+    { label: 'Markup Streams',                       values: ['Large', 'medium', 'Small', '0 & $10 Fixed Spread on gold', 'Zero'] },
+    { label: 'Commissions',                          values: ['No commission', 'No commission', 'No commission', 'No commission', '$8 per million'] },
+    { label: 'Swap Charges',                         values: ['Swap Free', 'SWAP Free', 'SWAP Free', 'SWAP Free', 'SWAP Free'] },
+    { label: 'Deposit Fees',                         values: ['No Fees charged', 'NO Fees charged', 'NO Fees charged', 'NO Fees charged', 'NO Fees charged'] },
+    { label: 'Withdrawal Fees',                      values: ['No Fees charged', 'No Fees charged', 'No Fees charged', 'No Fees charged', 'No Fees charged'] },
+    { label: 'Leverage',                             values: ['1:1000', '1:1000', '1:1000', '1:500', '1:500'] },
+    { label: 'Max. Lots',                            values: ['no restriction', 'no restriction', 'no restriction', 'Partial restriction', 'restriction'] },
+    { label: 'News, Calendar & Technical Analysis',  values: ['Yes', 'Yes', 'Yes', 'Yes', 'Yes'] },
+    { label: 'Social Trading',                       values: ['NO', 'NO', 'NO', 'Yes', 'Yes'] },
+    { label: 'PAMM/MAM',                             values: ['NO', 'NO', 'NO', 'NO', 'Yes'] },
+    { label: 'Algo/bot Trading Enable',              values: ['NO', 'NO', 'NO', 'Yes', 'NO'] },
+    { label: 'Copy Trading',                         values: ['NO', 'NO', 'NO', 'Yes', 'Yes'] },
+    { label: 'VPS Access',                           values: ['NO', 'NO', 'NO', 'Yes', 'Yes'] },
+    { label: 'Verify Trader Access',                 values: ['NO', 'NO', 'NO', 'NO', 'Yes'] },
+    { label: 'Dedicated Account Manager',            values: ['NO', 'NO', 'NO', 'NO', 'Yes'] },
   ];
 
-  for (const tier of tiers) {
+  const TIER_META = [
+    { name: 'Smart Start',  price: '$10',     unit: 'Min. Deposit', featured: false, order: 1, col: 0 },
+    { name: 'Smart Choice', price: '$100',    unit: 'Min. Deposit', featured: false, order: 2, col: 1 },
+    { name: 'Smart Pro',    price: '$1,000',  unit: 'Min. Deposit', featured: true,  order: 3, col: 2 },
+    { name: 'Smart Elite',  price: '$5,000',  unit: 'Min. Deposit', featured: false, order: 4, col: 3 },
+    { name: 'Smart Vip',    price: '$10,000', unit: 'Min. Deposit', featured: false, order: 5, col: 4 },
+  ];
+
+  const desired = TIER_META.map((t) => ({
+    name: t.name,
+    price: t.price,
+    unit: t.unit,
+    featured: t.featured,
+    order: t.order,
+    ctaLabel: 'Open Account',
+    ctaHref: '/register',
+    features: FEATURES.map((f) => ({ label: f.label, value: f.values[t.col] })),
+  }));
+
+  // One-shot migration: if the new tiers aren't present yet, wipe legacy
+  // entries and seed the full 5-tier dataset. Idempotent: re-runs are
+  // safe (early-exit once "Smart Start" exists).
+  const existing = await strapi
+    .documents('api::account-tier.account-tier')
+    .findMany({ status: 'draft' });
+  const alreadyMigrated = existing.some((t) => t.name === 'Smart Start');
+  if (alreadyMigrated) return;
+
+  if (existing.length > 0) {
+    for (const t of existing) {
+      await strapi
+        .documents('api::account-tier.account-tier')
+        .delete({ documentId: t.documentId });
+    }
+    strapi.log.info(`[bootstrap] Cleared ${existing.length} legacy account tiers`);
+  }
+
+  for (const tier of desired) {
     await strapi.documents('api::account-tier.account-tier').create({
       data: tier,
       status: 'published',
     });
   }
-  strapi.log.info(`[bootstrap] Seeded ${tiers.length} account tiers`);
+  strapi.log.info(`[bootstrap] Seeded ${desired.length} account tiers (compare-table dataset)`);
 }
 
 async function seedFaqs(strapi: Core.Strapi) {

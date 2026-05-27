@@ -41,7 +41,11 @@
 
 [build]
 builder = "NIXPACKS"
-buildCommand = "npm ci && npm run build"
+# `npm install` (not `npm ci`) avoids Nixpacks' EBUSY conflict with the
+# auto-mounted node_modules/.cache. `--include=dev` is required because
+# Railway sets NODE_ENV=production, but Strapi needs `typescript` and other
+# devDependencies to run `strapi build`.
+buildCommand = "npm install --include=dev && npm run build"
 
 [deploy]
 startCommand = "npm run start"

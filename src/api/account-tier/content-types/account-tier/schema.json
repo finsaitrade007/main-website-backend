@@ -1,0 +1,49 @@
+{
+  "kind": "collectionType",
+  "collectionName": "account_tiers",
+  "info": {
+    "singularName": "account-tier",
+    "pluralName": "account-tiers",
+    "displayName": "Account Tier",
+    "description": "Pricing tier shown on /account-pricing"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "price": {
+      "type": "string",
+      "required": true
+    },
+    "unit": {
+      "type": "string",
+      "default": "Commission / $100k"
+    },
+    "featured": {
+      "type": "boolean",
+      "default": false
+    },
+    "order": {
+      "type": "integer",
+      "default": 0
+    },
+    "ctaLabel": {
+      "type": "string",
+      "default": "Open Account"
+    },
+    "ctaHref": {
+      "type": "string",
+      "default": "/register"
+    },
+    "features": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.feature"
+    }
+  }
+}

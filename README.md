@@ -1,61 +1,99 @@
-# 🚀 Getting started with Strapi
+# finsai-cms
 
-Strapi comes with a full featured [Command Line Interface](https://docs.strapi.io/dev-docs/cli) (CLI) which lets you scaffold and manage your project in seconds.
+Headless CMS for the Finsai marketing site, built on **Strapi v5** (TypeScript + SQLite for dev).
 
-### `develop`
-
-Start your Strapi application with autoReload enabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-develop)
-
-```
-npm run develop
-# or
-yarn develop
-```
-
-### `start`
-
-Start your Strapi application with autoReload disabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-start)
-
-```
-npm run start
-# or
-yarn start
-```
-
-### `build`
-
-Build your admin panel. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-build)
-
-```
-npm run build
-# or
-yarn build
-```
-
-## ⚙️ Deployment
-
-Strapi gives you many possible deployment options for your project including [Strapi Cloud](https://cloud.strapi.io). Browse the [deployment section of the documentation](https://docs.strapi.io/dev-docs/deployment) to find the best solution for your use case.
-
-```
-yarn strapi deploy
-```
-
-## 📚 Learn more
-
-- [Resource center](https://strapi.io/resource-center) - Strapi resource center.
-- [Strapi documentation](https://docs.strapi.io) - Official Strapi documentation.
-- [Strapi tutorials](https://strapi.io/tutorials) - List of tutorials made by the core team and the community.
-- [Strapi blog](https://strapi.io/blog) - Official Strapi blog containing articles made by the Strapi team and the community.
-- [Changelog](https://strapi.io/changelog) - Find out about the Strapi product updates, new features and general improvements.
-
-Feel free to check out the [Strapi GitHub repository](https://github.com/strapi/strapi). Your feedback and contributions are welcome!
-
-## ✨ Community
-
-- [Discord](https://discord.strapi.io) - Come chat with the Strapi community including the core team.
-- [Forum](https://forum.strapi.io/) - Place to discuss, ask questions and find answers, show your Strapi project and get feedback or just talk with other Community members.
-- [Awesome Strapi](https://github.com/strapi/awesome-strapi) - A curated list of awesome things related to Strapi.
+It exposes a REST API consumed by [`finserv-fe`](../finserv-fe) and an admin panel at `/admin` for editors.
 
 ---
 
-<sub>🤫 Psst! [Strapi is hiring](https://strapi.io/careers).</sub>
+## Quick start (local)
+
+```bash
+cd /Users/akagami/finsai-cms
+npm run develop
+```
+
+This will:
+
+1. Start the server at `http://localhost:1337`
+2. Open the admin panel at `http://localhost:1337/admin`
+3. On the very first run, prompt you to create an admin user (email + password)
+4. Auto-grant public **read** permissions on `account-tier` and `faq` endpoints (see `src/index.ts`)
+5. Seed initial data (3 account tiers, 5 FAQs) if the tables are empty
+
+Once running, sanity-check the API:
+
+```bash
+curl 'http://localhost:1337/api/account-tiers?populate=features&sort=order:asc'
+curl 'http://localhost:1337/api/faqs?sort=order:asc'
+```
+
+---
+
+## Content model
+
+| Type          | Kind             | Fields                                                                                                  |
+| ------------- | ---------------- | ------------------------------------------------------------------------------------------------------- |
+| Account Tier  | Collection       | `name`, `price`, `unit`, `featured`, `order`, `ctaLabel`, `ctaHref`, `features` (repeatable component)  |
+| Feature       | Component        | `label`, `value`                                                                                        |
+| FAQ           | Collection       | `question`, `answer`, `category`, `order`                                                               |
+
+Schemas live in `src/api/<name>/content-types/<name>/schema.json` and `src/components/shared/feature.json`. Editing them via the admin Content-Type Builder will write back to these same files.
+
+---
+
+## Frontend wiring
+
+In `finserv-fe/.env.local`:
+
+```
+NEXT_PUBLIC_STRAPI_URL=http://localhost:1337
+```
+
+The FE uses a small helper at `src/lib/strapi.ts` and consumes the API in:
+
+- `src/components/AccountPricing.tsx` → `GET /api/account-tiers?populate=features&sort=order:asc`
+- `src/components/FAQSection.tsx`     → `GET /api/faqs?sort=order:asc`
+
+---
+
+## CORS
+
+Allowed origins are read from `CORS_ORIGINS` (comma-separated) in `.env`. Defaults to `http://localhost:3000`. For production set e.g.:
+
+```
+CORS_ORIGINS=https://finsai.com,https://www.finsai.com
+```
+
+---
+
+## Useful commands
+
+```bash
+npm run develop   # dev with hot reload
+npm run start     # prod server (no reload)
+npm run build     # build admin panel
+npm run strapi    # CLI: generate, content-types, etc.
+```
+
+---
+
+## Deployment notes
+
+- **DB**: swap SQLite for **Postgres** in `.env` (`DATABASE_CLIENT=postgres`) before deploying. SQLite is fine for local only.
+- **Media uploads**: install a provider (`@strapi/provider-upload-aws-s3` or `cloudinary`) and configure in `config/plugins.ts`.
+- **Recommended hosts**: Railway, Render, DigitalOcean App Platform, or Strapi Cloud.
+- **Frontend revalidation**: add a Strapi webhook (Settings → Webhooks) pointing to your Next.js revalidate endpoint, fired on `entry.publish` / `entry.update` / `entry.delete`.
+
+---
+
+## Extending
+
+To add another collection (e.g. `Testimonial`):
+
+```bash
+npm run strapi -- generate
+# pick: api → name "testimonial" → no API kind → no plugin
+```
+
+…or add `src/api/testimonial/{content-types,controllers,routes,services}` by hand following the existing pattern, then grant public permissions by editing `PUBLIC_READ` in `src/index.ts`.

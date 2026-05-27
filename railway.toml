@@ -1,0 +1,53 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Railway deployment config for finsai-cms (Strapi v5)
+#
+# Setup in the Railway dashboard:
+#   1.  New Project → Deploy from GitHub repo (this repo).
+#   2.  Add a Postgres database to the project ("+ New" → "Database" → "Postgres").
+#   3.  In this service → Variables, add the env vars listed below.
+#       Use Railway "reference variables" for anything from the Postgres plugin.
+#   4.  Deploy. First boot will run migrations and seed via src/index.ts.
+#
+# Required env vars (Variables tab):
+#
+#   # ── App / auth secrets ──
+#   APP_KEYS                  = <generate: openssl rand -base64 16,16,16,16 — comma-joined>
+#   API_TOKEN_SALT            = <openssl rand -base64 16>
+#   ADMIN_JWT_SECRET          = <openssl rand -base64 16>
+#   TRANSFER_TOKEN_SALT       = <openssl rand -base64 16>
+#   ENCRYPTION_KEY            = <openssl rand -base64 16>
+#   JWT_SECRET                = <openssl rand -base64 16>   # users-permissions
+#
+#   # ── Database (Postgres plugin) ──
+#   DATABASE_CLIENT           = postgres
+#   DATABASE_URL              = ${{Postgres.DATABASE_URL}}
+#   DATABASE_SSL              = true
+#   DATABASE_SSL_REJECT_UNAUTHORIZED = false
+#
+#   # ── Networking / CORS ──
+#   HOST                      = 0.0.0.0
+#   NODE_ENV                  = production
+#   CORS_ORIGINS              = https://finsai.com,https://www.finsai.com
+#                               (comma-separated; matches config/middlewares.ts)
+#
+#   # ── Optional: media uploads (S3 or Cloudinary) ──
+#   # Configure via @strapi/provider-upload-aws-s3 in config/plugins.ts
+#
+# Notes:
+#   * Do NOT set PORT manually — Railway injects it and Strapi reads it via
+#     env.int('PORT') in config/server.ts.
+#   * SQLite will not survive container restarts on Railway. Postgres is required.
+# ─────────────────────────────────────────────────────────────────────────────
+
+[build]
+builder = "NIXPACKS"
+buildCommand = "npm ci && npm run build"
+
+[deploy]
+startCommand = "npm run start"
+healthcheckPath = "/_health"
+healthcheckTimeout = 300
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+numReplicas = 1
+sleepApplication = false

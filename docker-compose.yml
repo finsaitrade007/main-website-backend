@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: finsai-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: finsai
+      POSTGRES_PASSWORD: finsai
+      POSTGRES_DB: finsai_cms
+    ports:
+      - "5433:5432"
+    volumes:
+      - finsai_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U finsai -d finsai_cms"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  finsai_pg_data:

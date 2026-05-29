@@ -1,0 +1,46 @@
+{
+  "kind": "singleType",
+  "collectionName": "accounts_pages",
+  "info": {
+    "singularName": "accounts-page",
+    "pluralName": "accounts-pages",
+    "displayName": "Accounts Page",
+    "description": "Editorial text for the /accounts page."
+  },
+  "options": { "draftAndPublish": true },
+  "pluginOptions": {},
+  "attributes": {
+    "heroBadge": { "type": "string" },
+    "heroTitle": { "type": "string" },
+    "heroDescription": { "type": "text" },
+    "heroPrimaryCtaLabel": { "type": "string" },
+    "heroPrimaryCtaHref": { "type": "string" },
+    "heroSecondaryCtaLabel": { "type": "string" },
+    "heroSecondaryCtaHref": { "type": "string" },
+
+    "compareTitle": { "type": "string" },
+    "compareDescription": { "type": "text" },
+
+    "whyBadge": { "type": "string" },
+    "whyTitle": { "type": "string" },
+    "whyDescription": { "type": "text" },
+    "whyFeatures": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.icon-feature"
+    },
+
+    "onboardingBadge": { "type": "string" },
+    "onboardingTitle": { "type": "string" },
+    "onboardingDescription": { "type": "text" },
+
+    "benefitsBadge": { "type": "string" },
+    "benefitsTitle": { "type": "string" },
+    "benefitsDescription": { "type": "text" },
+    "benefitsCards": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.benefit-card"
+    }
+  }
+}

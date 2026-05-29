@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_shared_points",
+  "info": {
+    "displayName": "Point",
+    "description": "Accordion / feature point with title + description.",
+    "icon": "bullhorn"
+  },
+  "options": {},
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "description": { "type": "text", "required": true }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_shared_stats",
+  "info": {
+    "displayName": "Stat",
+    "description": "Headline statistic (value + descriptive label) used in stat strips.",
+    "icon": "chart-line"
+  },
+  "options": {},
+  "attributes": {
+    "value": { "type": "string", "required": true },
+    "label": { "type": "string", "required": true }
+  }
+}

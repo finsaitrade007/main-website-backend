@@ -1,0 +1,30 @@
+{
+  "kind": "singleType",
+  "collectionName": "blogs_pages",
+  "info": {
+    "singularName": "blogs-page",
+    "pluralName": "blogs-pages",
+    "displayName": "Blogs Page",
+    "description": "Editorial text for the /blogs page."
+  },
+  "options": { "draftAndPublish": true },
+  "pluginOptions": {},
+  "attributes": {
+    "heroBadge": { "type": "string" },
+    "heroTitle": { "type": "string" },
+    "heroDescription": { "type": "text" },
+    "heroPrimaryCtaLabel": { "type": "string" },
+    "heroPrimaryCtaHref": { "type": "string" },
+    "heroSecondaryCtaLabel": { "type": "string" },
+    "heroSecondaryCtaHref": { "type": "string" },
+
+    "newsBadge": { "type": "string" },
+    "newsTitle": { "type": "string" },
+    "newsDescription": { "type": "text" },
+    "newsArticles": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.image-card"
+    }
+  }
+}

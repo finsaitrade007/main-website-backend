@@ -1,0 +1,43 @@
+{
+  "kind": "singleType",
+  "collectionName": "services_pages",
+  "info": {
+    "singularName": "services-page",
+    "pluralName": "services-pages",
+    "displayName": "Services Page",
+    "description": "Editorial text for the /services page."
+  },
+  "options": { "draftAndPublish": true },
+  "pluginOptions": {},
+  "attributes": {
+    "heroBadge": { "type": "string" },
+    "heroTitle": { "type": "string" },
+    "heroDescription": { "type": "text" },
+    "heroPrimaryCtaLabel": { "type": "string" },
+    "heroPrimaryCtaHref": { "type": "string" },
+    "heroSecondaryCtaLabel": { "type": "string" },
+    "heroSecondaryCtaHref": { "type": "string" },
+
+    "featuresBadge": { "type": "string" },
+    "featuresTitle": { "type": "string" },
+    "featuresDescription": { "type": "text" },
+    "features": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.icon-feature"
+    },
+
+    "platformsBadge": { "type": "string" },
+    "platformsTitle": { "type": "string" },
+    "platformsDescription": { "type": "text" },
+
+    "suiteBadge": { "type": "string" },
+    "suiteTitle": { "type": "string" },
+    "suiteDescription": { "type": "text" },
+    "suiteItems": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.icon-feature"
+    }
+  }
+}

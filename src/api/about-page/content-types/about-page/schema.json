@@ -1,0 +1,58 @@
+{
+  "kind": "singleType",
+  "collectionName": "about_pages",
+  "info": {
+    "singularName": "about-page",
+    "pluralName": "about-pages",
+    "displayName": "About Page",
+    "description": "Editorial text for the /about page."
+  },
+  "options": { "draftAndPublish": true },
+  "pluginOptions": {},
+  "attributes": {
+    "heroBadge": { "type": "string" },
+    "heroTitle": { "type": "string" },
+    "heroDescription": { "type": "text" },
+    "heroPrimaryCtaLabel": { "type": "string" },
+    "heroPrimaryCtaHref": { "type": "string" },
+    "heroSecondaryCtaLabel": { "type": "string" },
+    "heroSecondaryCtaHref": { "type": "string" },
+
+    "recognitionTitlePrefix": { "type": "string" },
+    "recognitionTitleAccent": { "type": "string" },
+    "recognitionDescription": { "type": "text" },
+    "recognitionStatPrimaryValue": { "type": "string" },
+    "recognitionStatPrimaryLabel": { "type": "string" },
+    "recognitionStatSecondaryValue": { "type": "string" },
+    "recognitionStatSecondaryLabel": { "type": "string" },
+
+    "builtBadge": { "type": "string" },
+    "builtTitle": { "type": "string" },
+    "builtDescription": { "type": "text" },
+    "builtPoints": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.point"
+    },
+
+    "growthBadge": { "type": "string" },
+    "growthTitle": { "type": "string" },
+    "growthDescription1": { "type": "text" },
+    "growthDescription2": { "type": "text" },
+    "growthCtaLabel": { "type": "string" },
+    "growthCtaHref": { "type": "string" },
+    "growthStats": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.stat"
+    },
+
+    "ctaBadge": { "type": "string" },
+    "ctaTitle": { "type": "string" },
+    "ctaDescription": { "type": "text" },
+    "ctaPrimaryLabel": { "type": "string" },
+    "ctaPrimaryHref": { "type": "string" },
+    "ctaSecondaryLabel": { "type": "string" },
+    "ctaSecondaryHref": { "type": "string" }
+  }
+}

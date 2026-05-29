@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_shared_bullet_points",
+  "info": {
+    "displayName": "Bullet Point",
+    "description": "Key-value bullet (e.g. 'Account: Smart Pro'). Used in benefits cards.",
+    "icon": "check"
+  },
+  "options": {},
+  "attributes": {
+    "key": { "type": "string", "required": true },
+    "value": { "type": "string", "required": true }
+  }
+}

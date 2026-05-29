@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_shared_payment_methods",
+  "info": {
+    "displayName": "Payment Method",
+    "description": "Single payment method shown on the Payments page.",
+    "icon": "credit-card"
+  },
+  "options": {},
+  "attributes": {
+    "name": { "type": "string", "required": true },
+    "description": { "type": "text" },
+    "fee": { "type": "string" },
+    "processingTime": { "type": "string" },
+    "icon": { "type": "media", "multiple": false, "allowedTypes": ["images"] }
+  }
+}

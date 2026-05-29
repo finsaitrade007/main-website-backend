@@ -1,0 +1,14 @@
+{
+  "collectionName": "components_shared_icon_features",
+  "info": {
+    "displayName": "Icon Feature",
+    "description": "Card-like feature with title, description, and icon key (icon resolved in frontend).",
+    "icon": "star"
+  },
+  "options": {},
+  "attributes": {
+    "title": { "type": "string", "required": true },
+    "description": { "type": "text" },
+    "iconKey": { "type": "string" }
+  }
+}

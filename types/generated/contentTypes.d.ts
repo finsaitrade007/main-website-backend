@@ -440,6 +440,66 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiAboutPageAboutPage extends Struct.SingleTypeSchema {
+  collectionName: 'about_pages';
+  info: {
+    description: 'Editorial text for the /about page.';
+    displayName: 'About Page';
+    pluralName: 'about-pages';
+    singularName: 'about-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    builtBadge: Schema.Attribute.String;
+    builtDescription: Schema.Attribute.Text;
+    builtPoints: Schema.Attribute.Component<'shared.point', true>;
+    builtTitle: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    ctaBadge: Schema.Attribute.String;
+    ctaDescription: Schema.Attribute.Text;
+    ctaPrimaryHref: Schema.Attribute.String;
+    ctaPrimaryLabel: Schema.Attribute.String;
+    ctaSecondaryHref: Schema.Attribute.String;
+    ctaSecondaryLabel: Schema.Attribute.String;
+    ctaTitle: Schema.Attribute.String;
+    growthBadge: Schema.Attribute.String;
+    growthCtaHref: Schema.Attribute.String;
+    growthCtaLabel: Schema.Attribute.String;
+    growthDescription1: Schema.Attribute.Text;
+    growthDescription2: Schema.Attribute.Text;
+    growthStats: Schema.Attribute.Component<'shared.stat', true>;
+    growthTitle: Schema.Attribute.String;
+    heroBadge: Schema.Attribute.String;
+    heroDescription: Schema.Attribute.Text;
+    heroPrimaryCtaHref: Schema.Attribute.String;
+    heroPrimaryCtaLabel: Schema.Attribute.String;
+    heroSecondaryCtaHref: Schema.Attribute.String;
+    heroSecondaryCtaLabel: Schema.Attribute.String;
+    heroTitle: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::about-page.about-page'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    recognitionDescription: Schema.Attribute.Text;
+    recognitionStatPrimaryLabel: Schema.Attribute.String;
+    recognitionStatPrimaryValue: Schema.Attribute.String;
+    recognitionStatSecondaryLabel: Schema.Attribute.String;
+    recognitionStatSecondaryValue: Schema.Attribute.String;
+    recognitionTitleAccent: Schema.Attribute.String;
+    recognitionTitlePrefix: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiAccountTierAccountTier extends Struct.CollectionTypeSchema {
   collectionName: 'account_tiers';
   info: {
@@ -1291,6 +1351,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::about-page.about-page': ApiAboutPageAboutPage;
       'api::account-tier.account-tier': ApiAccountTierAccountTier;
       'api::award.award': ApiAwardAward;
       'api::faq.faq': ApiFaqFaq;

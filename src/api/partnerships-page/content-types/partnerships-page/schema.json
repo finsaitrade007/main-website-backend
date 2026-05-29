@@ -1,0 +1,61 @@
+{
+  "kind": "singleType",
+  "collectionName": "partnerships_pages",
+  "info": {
+    "singularName": "partnerships-page",
+    "pluralName": "partnerships-pages",
+    "displayName": "Partnerships Page",
+    "description": "Editorial text for the /partnerships (IB) page."
+  },
+  "options": { "draftAndPublish": true },
+  "pluginOptions": {},
+  "attributes": {
+    "heroBadge": { "type": "string" },
+    "heroTitle": { "type": "string" },
+    "heroDescription": { "type": "text" },
+    "heroPrimaryCtaLabel": { "type": "string" },
+    "heroPrimaryCtaHref": { "type": "string" },
+    "heroSecondaryCtaLabel": { "type": "string" },
+    "heroSecondaryCtaHref": { "type": "string" },
+
+    "whyBadge": { "type": "string" },
+    "whyTitle": { "type": "string" },
+    "whyDescription": { "type": "text" },
+    "whyFeatures": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.icon-feature"
+    },
+
+    "calculatorBadge": { "type": "string" },
+    "calculatorTitle": { "type": "string" },
+    "calculatorDescription": { "type": "text" },
+
+    "statsBadge": { "type": "string" },
+    "statsTitle": { "type": "string" },
+    "statsDescription": { "type": "text" },
+    "stats": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.stat"
+    },
+
+    "howToBadge": { "type": "string" },
+    "howToTitle": { "type": "string" },
+    "howToDescription": { "type": "text" },
+    "howToSteps": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.icon-feature"
+    },
+
+    "marketingBadge": { "type": "string" },
+    "marketingTitle": { "type": "string" },
+    "marketingDescription": { "type": "text" },
+    "marketingItems": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.icon-feature"
+    }
+  }
+}

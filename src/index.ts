@@ -329,8 +329,7 @@ async function seedPlatforms(strapi: Core.Strapi) {
   if (count > 0) return;
 
   const items = [
-    { title: 'MT5', size: 'small', row: 1, order: 1, mockup: 'platforms/mt-mockup.png', icon: null, description: "The industry's gold standard for multi-asset trading. Advanced charting, automated trading, real-time analysis, and multi-asset access." },
-    { title: 'Finsai Web Terminal', size: 'large', row: 1, order: 2, mockup: 'platforms/web-terminal-mockup.png', icon: null, description: 'Designed for ease and speed, a browser-based solution that requires no downloads or installation. Perfect for traders who prefer accessibility and simplicity.' },
+    { title: 'MT5', size: 'large', row: 1, order: 1, mockup: 'platforms/mt-mockup.png', icon: null, description: "The industry's gold standard for multi-asset trading. Advanced charting, automated trading, real-time analysis, and multi-asset access." },
     { title: 'Social Trading', size: 'large', row: 2, order: 3, mockup: null, icon: 'platforms/social-icon.png', description: 'Follow top-performing traders, mirror proven strategies in real time, and grow your portfolio with confidence — all from within the Finsai Trade platform.' },
     { title: 'App & More — Coming soon', size: 'small', row: 2, order: 4, mockup: null, icon: 'platforms/app-icon.png', description: 'Stay connected to the markets on the go with a fast, secure, and intuitive mobile trading experience.' },
   ];

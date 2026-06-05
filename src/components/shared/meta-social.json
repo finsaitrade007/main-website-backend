@@ -1,0 +1,32 @@
+{
+  "collectionName": "components_shared_meta_socials",
+  "info": {
+    "displayName": "Meta Social",
+    "description": "Social-network specific metadata override (Facebook / Twitter / LinkedIn).",
+    "icon": "share-alt"
+  },
+  "options": {},
+  "attributes": {
+    "socialNetwork": {
+      "type": "enumeration",
+      "enum": ["Facebook", "Twitter", "LinkedIn"],
+      "required": true
+    },
+    "title": {
+      "type": "string",
+      "required": true,
+      "maxLength": 60
+    },
+    "description": {
+      "type": "text",
+      "required": true,
+      "maxLength": 200
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    }
+  }
+}

@@ -69,6 +69,12 @@
     "ctaButton2Label": { "type": "string" },
     "ctaButton2Href": { "type": "string" },
     "ctaButton3Label": { "type": "string" },
-    "ctaButton3Href": { "type": "string" }
+    "ctaButton3Href": { "type": "string" },
+
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo"
+    }
   }
 }

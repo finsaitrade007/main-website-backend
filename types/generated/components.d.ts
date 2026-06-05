@@ -129,6 +129,42 @@ export interface SharedPoint extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedMetaSocial extends Struct.ComponentSchema {
+  collectionName: 'components_shared_meta_socials';
+  info: {
+    description: 'Social-network specific metadata override (Facebook / Twitter / LinkedIn).';
+    displayName: 'Meta Social';
+    icon: 'share-alt';
+  };
+  attributes: {
+    description: Schema.Attribute.Text & Schema.Attribute.Required;
+    image: Schema.Attribute.Media<'images'>;
+    socialNetwork: Schema.Attribute.Enumeration<['Facebook', 'Twitter', 'LinkedIn']> &
+      Schema.Attribute.Required;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedSeo extends Struct.ComponentSchema {
+  collectionName: 'components_shared_seos';
+  info: {
+    description: 'Per-page SEO metadata (title, description, keywords, social, structured data).';
+    displayName: 'Seo';
+    icon: 'search';
+  };
+  attributes: {
+    canonicalURL: Schema.Attribute.String;
+    keywords: Schema.Attribute.Text;
+    metaDescription: Schema.Attribute.Text & Schema.Attribute.Required;
+    metaImage: Schema.Attribute.Media<'images'>;
+    metaRobots: Schema.Attribute.String;
+    metaSocial: Schema.Attribute.Component<'shared.meta-social', true>;
+    metaTitle: Schema.Attribute.String & Schema.Attribute.Required;
+    metaViewport: Schema.Attribute.String;
+    structuredData: Schema.Attribute.JSON;
+  };
+}
+
 export interface SharedStat extends Struct.ComponentSchema {
   collectionName: 'components_shared_stats';
   info: {
@@ -164,8 +200,10 @@ declare module '@strapi/strapi' {
       'shared.feature-item': SharedFeatureItem;
       'shared.icon-feature': SharedIconFeature;
       'shared.image-card': SharedImageCard;
+      'shared.meta-social': SharedMetaSocial;
       'shared.payment-method': SharedPaymentMethod;
       'shared.point': SharedPoint;
+      'shared.seo': SharedSeo;
       'shared.stat': SharedStat;
       'shared.tagline': SharedTagline;
     }

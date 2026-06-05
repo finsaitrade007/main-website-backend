@@ -22,7 +22,80 @@ const PUBLIC_READ: Record<string, ('find' | 'findOne')[]> = {
   'services-page': ['find', 'findOne'],
   'partnerships-page': ['find', 'findOne'],
   'blogs-page': ['find', 'findOne'],
+  'contactus-page': ['find', 'findOne'],
 };
+
+// ─── SEO seed helper ─────────────────────────────────────────────────
+//
+// Standard, Strapi-SEO-plugin compatible shape so editors can manage every
+// piece of per-page metadata (title, description, keywords, canonical,
+// robots, structured data, social cards) from the admin UI.
+
+type SeoSeed = {
+  metaTitle: string;
+  metaDescription: string;
+  keywords?: string;
+  metaRobots?: string;
+  canonicalURL?: string;
+  metaViewport?: string;
+  // Strapi types `JSON` columns as a recursive `JSONValue` union — using
+  // `any` here keeps the seed inputs ergonomic without forcing every
+  // structuredData payload to satisfy that recursive type.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  structuredData?: any;
+  metaSocial?: {
+    socialNetwork: 'Facebook' | 'Twitter' | 'LinkedIn';
+    title: string;
+    description: string;
+  }[];
+};
+
+const SITE_BASE = 'https://www.finsaitrade.com';
+
+function buildSeo(args: {
+  title: string;
+  description: string;
+  path: string;
+  keywords?: string;
+  type?: 'website' | 'article';
+}): SeoSeed {
+  const canonicalURL = `${SITE_BASE}${args.path === '/' ? '' : args.path}`;
+  return {
+    metaTitle: args.title.length > 60 ? args.title.slice(0, 60) : args.title,
+    metaDescription:
+      args.description.length > 160
+        ? args.description.slice(0, 160)
+        : args.description,
+    keywords: args.keywords,
+    metaRobots: 'index, follow',
+    canonicalURL,
+    metaViewport: 'width=device-width, initial-scale=1',
+    structuredData: {
+      '@context': 'https://schema.org',
+      '@type': args.type === 'article' ? 'Article' : 'WebPage',
+      name: args.title,
+      description: args.description,
+      url: canonicalURL,
+      publisher: {
+        '@type': 'Organization',
+        name: 'Finsai Trade',
+        url: SITE_BASE,
+      },
+    },
+    metaSocial: [
+      {
+        socialNetwork: 'Facebook',
+        title: args.title,
+        description: args.description,
+      },
+      {
+        socialNetwork: 'Twitter',
+        title: args.title,
+        description: args.description,
+      },
+    ],
+  };
+}
 
 async function setPublicReadPermissions(strapi: Core.Strapi) {
   const publicRole = await strapi
@@ -282,6 +355,15 @@ async function seedHomepage(strapi: Core.Strapi) {
       ctaButton2Href: '/demo',
       ctaButton3Label: 'Contact Us',
       ctaButton3Href: '/contactus',
+
+      seo: buildSeo({
+        title: 'Finsai Trade — Trade Global Markets Without Limits',
+        description:
+          'The powerful multi-asset trading platform for modern traders. Trade Forex, Crypto, Stocks, Indices, and Metals with tight spreads, up to 500x leverage, and 24/7 support.',
+        path: '/',
+        keywords:
+          'finsai, finsai trade, online trading, forex, CFD, crypto trading, stocks, indices, MT5, multi-asset broker',
+      }),
     },
     status: 'published',
   });
@@ -550,6 +632,15 @@ async function seedAboutPage(strapi: Core.Strapi) {
       ctaPrimaryHref: 'https://fx.finsaitrade.com/auth/register',
       ctaSecondaryLabel: 'Try Demo',
       ctaSecondaryHref: '/demo',
+
+      seo: buildSeo({
+        title: 'About Finsai Trade — Multi-Asset Broker & Trading Ecosystem',
+        description:
+          'Finsai Trade is a regulated multi-asset broker built by traders. Learn about our mission, recognition, and the integrated platform powering modern markets.',
+        path: '/about',
+        keywords:
+          'about finsai trade, multi-asset broker, regulated broker, trading platform, online broker, finsai company',
+      }),
     },
     status: 'published',
   });
@@ -586,6 +677,15 @@ async function seedCareersPage(strapi: Core.Strapi) {
       formSubmitLabel: 'MESSAGE US',
       formTermsText:
         'I have read and accepted the terms and conditions specified in the Privacy Policy and currently consent to the collecting, processing and disclosing of the personal data provided by me to fulfil the above-said purposes.',
+
+      seo: buildSeo({
+        title: 'Careers at Finsai Trade — Build the Future of Trading',
+        description:
+          'Join a global fintech team building the next generation of multi-asset trading. Open roles in engineering, trading, partnerships, and customer growth.',
+        path: '/careers',
+        keywords:
+          'finsai careers, fintech jobs, trading platform jobs, work at finsai, open positions, careers',
+      }),
     },
     status: 'published',
   });
@@ -664,6 +764,15 @@ async function seedAccountsPage(strapi: Core.Strapi) {
           ],
         },
       ],
+
+      seo: buildSeo({
+        title: 'Trading Accounts | Finsai Trade — Smart Choice, Pro & ECN',
+        description:
+          'Compare Finsai Trade account types — Smart Choice, Smart Pro, and Smart ECN. Tight spreads, up to 1:500 leverage, MT5 across all devices, swap-free.',
+        path: '/accounts',
+        keywords:
+          'trading account, smart choice, smart pro, smart ECN, MT5 account, low spread, high leverage, swap free',
+      }),
     },
     status: 'published',
   });
@@ -708,6 +817,15 @@ async function seedPaymentsPage(strapi: Core.Strapi) {
         'Deposit instantly with the method you prefer — your funds are protected end-to-end and available the moment they arrive.',
       ctaPrimaryLabel: 'Deposit Funds',
       ctaPrimaryHref: 'https://fx.finsaitrade.com/auth/register',
+
+      seo: buildSeo({
+        title: 'Payments — Secure Deposits & Withdrawals | Finsai Trade',
+        description:
+          'Fund your Finsai Trade account with cards, UPI, e-wallets, crypto, or bank transfer. Instant deposits, fast withdrawals, and PCI DSS-grade security.',
+        path: '/payments',
+        keywords:
+          'finsai payments, deposit, withdrawal, crypto deposit, UPI deposit, secure payments, trading deposit',
+      }),
     },
     status: 'published',
   });
@@ -761,6 +879,15 @@ async function seedServicesPage(strapi: Core.Strapi) {
         { title: 'Seamless Switching',    description: 'Guided trades, tutorials & Simplified Workflows', iconKey: 'switch' },
         { title: 'Multi Lingual Support', description: 'Guided trades, tutorials & Simplified Workflows', iconKey: 'language' },
       ],
+
+      seo: buildSeo({
+        title: 'Trading Services | Finsai Trade — MT5, Social & Mobile',
+        description:
+          'Three trading environments built for every level. Trade with MT5, copy top performers via social trading, or stay connected with our upcoming mobile app.',
+        path: '/services',
+        keywords:
+          'finsai services, MT5 platform, social trading, copy trading, trading app, multi-asset broker',
+      }),
     },
     status: 'published',
   });
@@ -836,6 +963,15 @@ async function seedPartnershipsPage(strapi: Core.Strapi) {
         { title: 'Landing Pages',  description: 'High-converting localized landers.',            iconKey: 'chart' },
         { title: 'Video Assets',   description: 'Short-form explainers and tutorials.',          iconKey: 'bot' },
       ],
+
+      seo: buildSeo({
+        title: 'IB & Affiliate Partnerships | Finsai Trade',
+        description:
+          'Earn industry-leading commissions with the Finsai Trade IB program. Multi-tier rebates, real-time reports, and fast payouts for partners worldwide.',
+        path: '/partnerships',
+        keywords:
+          'introducing broker, IB program, affiliate, partner, finsai partnerships, broker commission, trading affiliate',
+      }),
     },
     status: 'published',
   });
@@ -887,11 +1023,66 @@ async function seedBlogsPage(strapi: Core.Strapi) {
           href: 'https://lms.finsaitrade.com/#webinars',
         },
       ],
+
+      seo: buildSeo({
+        title: 'Trader Knowledge Hub — Blogs & Market News | Finsai Trade',
+        description:
+          'Sharp market insights, trading education, and analysis you can act on. Track macro events, technical setups, and platform updates from Finsai Trade.',
+        path: '/blogs',
+        keywords:
+          'finsai blogs, trading news, market analysis, trading education, finsai webinar, fintech blog',
+      }),
     },
     status: 'published',
   });
 
   strapi.log.info('[bootstrap] Seeded Blogs Page single type');
+}
+
+async function seedContactusPage(strapi: Core.Strapi) {
+  const existing = await strapi
+    .documents('api::contactus-page.contactus-page')
+    .findFirst({});
+  if (existing) return;
+
+  await strapi.documents('api::contactus-page.contactus-page').create({
+    data: {
+      heroBadge: 'CAREERS AT FINSAI TRADE',
+      heroTitle: 'We Are  Here to help\nyou',
+      heroDescription:
+        'Join a vibrant global team focused on fintech, trading technology, global markets, and customer growth.',
+      heroPrimaryCtaLabel: 'View Open Roles',
+      heroPrimaryCtaHref: '#open-roles',
+      heroSecondaryCtaLabel: 'Join Our Team  →',
+      heroSecondaryCtaHref: '#contact-form',
+
+      supportTitle: 'Global Support Availability',
+      supportDescription:
+        'Join a workplace focused on growth, flexibility, ownership, and meaningful impact across global fintech and trading markets.',
+      supportBenefits: [
+        { title: 'Quick Response',           description: 'We respond fast and value your time.' },
+        { title: 'Transparency',             description: 'Clear communication at every step.' },
+        { title: 'Dedicated Resolution',     description: 'We are committed to resolving your issues.' },
+        { title: 'Multi- Language Support',  description: 'English, Hindi, and more.' },
+      ],
+
+      formSubmitLabel: 'MESSAGE US',
+      formTermsText:
+        'I have read and accepted the terms and conditions specified in the Privacy Policy and do here by consent to the collecting, processing and/or disclosing of the personal data provided by me to fulfil the above-said purposes.',
+
+      seo: buildSeo({
+        title: 'Contact Finsai Trade — Global Support Across Fintech',
+        description:
+          'Get in touch with Finsai Trade for support, partnerships, and inquiries. Multilingual support team available across global markets — fast and transparent.',
+        path: '/contactus',
+        keywords:
+          'contact finsai, customer support, finsai help, partnership inquiry, broker support, contact us',
+      }),
+    },
+    status: 'published',
+  });
+
+  strapi.log.info('[bootstrap] Seeded Contact Us Page single type');
 }
 
 // ─── Lifecycle ───────────────────────────────────────────────────────
@@ -917,5 +1108,6 @@ export default {
     await seedServicesPage(strapi);
     await seedPartnershipsPage(strapi);
     await seedBlogsPage(strapi);
+    await seedContactusPage(strapi);
   },
 };

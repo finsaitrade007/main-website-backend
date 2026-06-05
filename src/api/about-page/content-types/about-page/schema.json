@@ -53,6 +53,12 @@
     "ctaPrimaryLabel": { "type": "string" },
     "ctaPrimaryHref": { "type": "string" },
     "ctaSecondaryLabel": { "type": "string" },
-    "ctaSecondaryHref": { "type": "string" }
+    "ctaSecondaryHref": { "type": "string" },
+
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo"
+    }
   }
 }

@@ -1,11 +1,11 @@
 {
   "kind": "singleType",
-  "collectionName": "careers_pages",
+  "collectionName": "contactus_pages",
   "info": {
-    "singularName": "careers-page",
-    "pluralName": "careers-pages",
-    "displayName": "Careers Page",
-    "description": "Editorial text for the /careers page."
+    "singularName": "contactus-page",
+    "pluralName": "contactus-pages",
+    "displayName": "Contact Us Page",
+    "description": "Editorial text and SEO for the /contactus page."
   },
   "options": { "draftAndPublish": true },
   "pluginOptions": {},
@@ -18,15 +18,14 @@
     "heroSecondaryCtaLabel": { "type": "string" },
     "heroSecondaryCtaHref": { "type": "string" },
 
-    "workspaceTitle": { "type": "string" },
-    "workspaceDescription": { "type": "text" },
-    "workspaceBenefits": {
+    "supportTitle": { "type": "string" },
+    "supportDescription": { "type": "text" },
+    "supportBenefits": {
       "type": "component",
       "repeatable": true,
       "component": "shared.point"
     },
 
-    "formTitle": { "type": "string" },
     "formSubmitLabel": { "type": "string" },
     "formTermsText": { "type": "text" },
 

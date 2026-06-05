@@ -41,6 +41,12 @@
       "type": "component",
       "repeatable": true,
       "component": "shared.benefit-card"
+    },
+
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo"
     }
   }
 }

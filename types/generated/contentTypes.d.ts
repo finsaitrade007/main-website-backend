@@ -653,6 +653,47 @@ export interface ApiBlogsPageBlogsPage extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiContactusPageContactusPage extends Struct.SingleTypeSchema {
+  collectionName: 'contactus_pages';
+  info: {
+    description: 'Editorial text and SEO for the /contactus page.';
+    displayName: 'Contact Us Page';
+    pluralName: 'contactus-pages';
+    singularName: 'contactus-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    formSubmitLabel: Schema.Attribute.String;
+    formTermsText: Schema.Attribute.Text;
+    heroBadge: Schema.Attribute.String;
+    heroDescription: Schema.Attribute.Text;
+    heroPrimaryCtaHref: Schema.Attribute.String;
+    heroPrimaryCtaLabel: Schema.Attribute.String;
+    heroSecondaryCtaHref: Schema.Attribute.String;
+    heroSecondaryCtaLabel: Schema.Attribute.String;
+    heroTitle: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::contactus-page.contactus-page'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    supportBenefits: Schema.Attribute.Component<'shared.point', true>;
+    supportDescription: Schema.Attribute.Text;
+    supportTitle: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiCareersPageCareersPage extends Struct.SingleTypeSchema {
   collectionName: 'careers_pages';
   info: {
@@ -1747,6 +1788,7 @@ declare module '@strapi/strapi' {
       'api::award.award': ApiAwardAward;
       'api::blogs-page.blogs-page': ApiBlogsPageBlogsPage;
       'api::careers-page.careers-page': ApiCareersPageCareersPage;
+      'api::contactus-page.contactus-page': ApiContactusPageContactusPage;
       'api::faq.faq': ApiFaqFaq;
       'api::homepage.homepage': ApiHomepageHomepage;
       'api::journey-card.journey-card': ApiJourneyCardJourneyCard;

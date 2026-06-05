@@ -17,8 +17,6 @@ const PUBLIC_READ: Record<string, ('find' | 'findOne')[]> = {
   // Page single types
   'about-page': ['find', 'findOne'],
   'careers-page': ['find', 'findOne'],
-  'rewards-page': ['find', 'findOne'],
-  'tools-page': ['find', 'findOne'],
   'accounts-page': ['find', 'findOne'],
   'payments-page': ['find', 'findOne'],
   'services-page': ['find', 'findOne'],
@@ -95,37 +93,25 @@ async function uploadFileFromSeed(
 // ─── Existing seeds (tiers, faqs) ────────────────────────────────────
 
 async function seedAccountTiers(strapi: Core.Strapi) {
-  // Build the 5-tier compare-table dataset.
-  // Feature order is fixed across all tiers so the FE table aligns rows cleanly.
-  const FEATURES: { label: string; values: [string, string, string, string, string] }[] = [
-    { label: 'Target Clients',                       values: ['Beginners (first Trader)', 'New Retail Clients', 'Mid-Tier Traders', 'Advanced Traders', 'Passive Investors'] },
-    { label: 'Min. Deposit',                         values: ['$10', '$100', '$1,000', '$5,000', '$10,000'] },
-    { label: 'Fixed Tradeable Welcome Bonus',        values: ['100%', '80%', '40%', '20%', '5%'] },
-    { label: 'Account Type',                         values: ['Client Account', 'Hedging Accounts', 'Hedging Accounts', 'Hedging/Netting Accounts', 'Hedging/Netting Accounts'] },
-    { label: 'Spread Type',                          values: ['1.8 pips', '1.4 pips', '0.6 pips', '0.0 to 0.1 pips', '0.0 pips'] },
-    { label: 'Markup Streams',                       values: ['Large', 'medium', 'Small', '0 & $10 Fixed Spread on gold', 'Zero'] },
-    { label: 'Commissions',                          values: ['No commission', 'No commission', 'No commission', 'No commission', '$8 per million'] },
-    { label: 'Swap Charges',                         values: ['Swap Free', 'SWAP Free', 'SWAP Free', 'SWAP Free', 'SWAP Free'] },
-    { label: 'Deposit Fees',                         values: ['No Fees charged', 'NO Fees charged', 'NO Fees charged', 'NO Fees charged', 'NO Fees charged'] },
-    { label: 'Withdrawal Fees',                      values: ['No Fees charged', 'No Fees charged', 'No Fees charged', 'No Fees charged', 'No Fees charged'] },
-    { label: 'Leverage',                             values: ['1:1000', '1:1000', '1:1000', '1:500', '1:500'] },
-    { label: 'Max. Lots',                            values: ['no restriction', 'no restriction', 'no restriction', 'Partial restriction', 'restriction'] },
-    { label: 'News, Calendar & Technical Analysis',  values: ['Yes', 'Yes', 'Yes', 'Yes', 'Yes'] },
-    { label: 'Social Trading',                       values: ['NO', 'NO', 'NO', 'Yes', 'Yes'] },
-    { label: 'PAMM/MAM',                             values: ['NO', 'NO', 'NO', 'NO', 'Yes'] },
-    { label: 'Algo/bot Trading Enable',              values: ['NO', 'NO', 'NO', 'Yes', 'NO'] },
-    { label: 'Copy Trading',                         values: ['NO', 'NO', 'NO', 'Yes', 'Yes'] },
-    { label: 'VPS Access',                           values: ['NO', 'NO', 'NO', 'Yes', 'Yes'] },
-    { label: 'Verify Trader Access',                 values: ['NO', 'NO', 'NO', 'NO', 'Yes'] },
-    { label: 'Dedicated Account Manager',            values: ['NO', 'NO', 'NO', 'NO', 'Yes'] },
+  // The FE AccountsCompareTable is now hardcoded with 3 tiers and 9 feature
+  // rows. We seed the same data so when Strapi is wired up the rendered
+  // table is identical to the FE fallback.
+  const FEATURES: { label: string; values: [string, string, string] }[] = [
+    { label: 'Target Clients',            values: ['New Retail Clients',  'Mid-Tier Traders',  'Advanced Traders'] },
+    { label: 'Min. Deposit',              values: ['$100',                '$1,000',            '$5,000'] },
+    { label: 'Account Type',              values: ['Hedging Accounts',    'Hedging Accounts',  'Hedging/Netting Accounts'] },
+    { label: 'Spread Type',               values: ['1.4 pips',            '0.6 pips',          '0.0 to 0.1 pips'] },
+    { label: 'Commissions',               values: ['No commission',       'No commission',     '0.03$'] },
+    { label: 'Swap Charges',              values: ['SWAP Free',           'SWAP Free',         'SWAP Free'] },
+    { label: 'Algo/bot Trading Enable',   values: ['Yes',                 'Yes',               'Yes'] },
+    { label: 'VPS Access',                values: ['NO',                  'NO',                'Yes'] },
+    { label: 'Dedicated Account Manager', values: ['NO',                  'NO',                'Yes'] },
   ];
 
   const TIER_META = [
-    { name: 'Smart Start',  price: '$10',     unit: 'Min. Deposit', featured: false, order: 1, col: 0 },
-    { name: 'Smart Choice', price: '$100',    unit: 'Min. Deposit', featured: false, order: 2, col: 1 },
-    { name: 'Smart Pro',    price: '$1,000',  unit: 'Min. Deposit', featured: true,  order: 3, col: 2 },
-    { name: 'Smart Elite',  price: '$5,000',  unit: 'Min. Deposit', featured: false, order: 4, col: 3 },
-    { name: 'Smart Vip',    price: '$10,000', unit: 'Min. Deposit', featured: false, order: 5, col: 4 },
+    { name: 'Smart Choice', price: '$100',   unit: 'Min. Deposit', featured: false, order: 1, col: 0 },
+    { name: 'Smart Pro',    price: '$1,000', unit: 'Min. Deposit', featured: true,  order: 2, col: 1 },
+    { name: 'Smart ECN',    price: '$5,000', unit: 'Min. Deposit', featured: false, order: 3, col: 2 },
   ];
 
   const desired = TIER_META.map((t) => ({
@@ -135,17 +121,19 @@ async function seedAccountTiers(strapi: Core.Strapi) {
     featured: t.featured,
     order: t.order,
     ctaLabel: 'Open Account',
-    ctaHref: '/register',
+    ctaHref: 'https://fx.finsaitrade.com/auth/register',
     features: FEATURES.map((f) => ({ label: f.label, value: f.values[t.col] })),
   }));
 
-  // One-shot migration: if the new tiers aren't present yet, wipe legacy
-  // entries and seed the full 5-tier dataset. Idempotent: re-runs are
-  // safe (early-exit once "Smart Start" exists).
+  // One-shot migration: if the new 3-tier dataset isn't present yet (e.g.
+  // legacy "Smart Start" / "Smart Vip" rows from the old 5-tier seed), wipe
+  // and reseed. Idempotent: re-runs are safe once the 3 tiers exist.
   const existing = await strapi
     .documents('api::account-tier.account-tier')
     .findMany({ status: 'draft' });
-  const alreadyMigrated = existing.some((t) => t.name === 'Smart Start');
+  const alreadyMigrated =
+    existing.length === TIER_META.length &&
+    TIER_META.every((t) => existing.some((e) => e.name === t.name));
   if (alreadyMigrated) return;
 
   if (existing.length > 0) {
@@ -170,40 +158,42 @@ async function seedFaqs(strapi: Core.Strapi) {
   const count = await strapi.documents('api::faq.faq').count({});
   if (count > 0) return;
 
+  // Mirrors FALLBACK_FAQS in src/components/FAQSection.tsx so the FE renders
+  // identically whether Strapi is connected or not.
   const faqs = [
     {
       question: 'What is Finsai Trade?',
       answer:
-        'Finsai Trade is a multi-asset trading platform offering forex, CFDs, indices, commodities and crypto with competitive spreads and fast execution.',
+        'Finsai Trade is a multi-asset trading platform that provides access to forex, cryptocurrencies, global stocks, indices, commodities, and CFDs through one secure and professional trading ecosystem.',
       category: 'General',
       order: 1,
     },
     {
-      question: 'How do I open a live trading account?',
+      question: 'What markets can I trade on Finsai Trade?',
       answer:
-        'Pick a tier on the /account-pricing page, click Open Account, and complete the registration + KYC. Most accounts are approved within one business day.',
-      category: 'Accounts',
+        'You can trade Forex, Cryptocurrencies, Indices, Metals, Stocks, and CFDs. We provide access to over 1,000+ trading instruments across all major global markets.',
+      category: 'Markets',
       order: 2,
+    },
+    {
+      question: 'Does Finsai Trade support MetaTrader 5 (MT5)?',
+      answer:
+        'Yes, Finsai Trade fully supports MetaTrader 5 (MT5), the industry-leading trading platform known for advanced charting, automated trading via Expert Advisors, and deep market analysis.',
+      category: 'Platforms',
+      order: 3,
+    },
+    {
+      question: 'How do I open an account?',
+      answer:
+        "Simply click 'Start Trading', fill in your details, verify your identity with a government-issued ID, fund your account, and you're ready to trade — the entire process takes under 10 minutes.",
+      category: 'Accounts',
+      order: 4,
     },
     {
       question: 'What is the minimum deposit?',
       answer:
-        'It depends on the tier — Smart Choice starts at $100, Smart Pro at $1,000, and Smart ECN at $5,000.',
+        'The minimum deposit varies by account type. Our Smart Choice account is designed for beginners with a low entry requirement. Contact our support team for the latest deposit requirements.',
       category: 'Accounts',
-      order: 3,
-    },
-    {
-      question: 'Which trading platforms are supported?',
-      answer:
-        'MetaTrader 5 (MT5) on desktop, web and mobile, plus our proprietary Finsai web terminal.',
-      category: 'Platforms',
-      order: 4,
-    },
-    {
-      question: 'Is Finsai regulated?',
-      answer:
-        'Yes — Finsai Trade operates under regulated entities. Check the footer of the site for the regulator and license number applicable to your region.',
-      category: 'Compliance',
       order: 5,
     },
   ];
@@ -222,22 +212,21 @@ async function seedHomepage(strapi: Core.Strapi) {
 
   await strapi.documents('api::homepage.homepage').create({
     data: {
-      heroTitle: 'Trade Global Markets Without Limits',
+      heroTitle: 'Trade Global Markets on a Powerful Multi-Asset Trading Platform',
       heroSubtitle:
-        'The powerful multi-asset trading platform for modern traders — all in one unified ecosystem.',
+        'Finsai Trade is a secure trading platform that gives modern traders access to forex, stocks, commodities, and indices through one advanced trading ecosystem.',
       heroTaglines: [
-        { label: 'Regulated Broker' },
-        { label: 'MT5 Platform' },
-        { label: 'Swap Free' },
-        { label: 'Reliable Support' },
+        { label: 'Fast Execution' },
+        { label: 'Advanced Trading Tools' },
+        { label: 'Secure & Regulated Infrastructure' },
       ],
       heroCtaPrimaryLabel: 'Start Trading Now',
-      heroCtaPrimaryHref: '/register',
+      heroCtaPrimaryHref: 'https://fx.finsaitrade.com/auth/register',
       heroCtaSecondaryLabel: 'Try Demo',
       heroCtaSecondaryHref: '/demo',
 
-      featuresBadge: 'Features of Finsai Trade',
-      featuresTitle: 'Discover Why Traders Trust and Choose Finsai Trade',
+      featuresBadge: 'What Sets Us Apart ',
+      featuresTitle: 'Why Top Traders Choose Finsai Trade',
       featuresDescription:
         'Trade securely across 1,000+ assets on a globally regulated platform with transparent pricing and 24/7 expert support.',
       featureItems: [
@@ -255,7 +244,7 @@ async function seedHomepage(strapi: Core.Strapi) {
       marketsDescription:
         'Finsai Trade gives modern traders access to 5,000+ trading instruments across forex, crypto, global stocks, indices, commodities, and CFDs.',
 
-      platformsBadge: 'Choose The Best - Platform',
+      platformsBadge: 'Seamless Trading Experience',
       platformsTitle: 'Powerful Platforms for Every Trader',
       platformsDescription:
         'Trade with speed, stability, and total control from your desk or on the move. Finsai Trade delivers professional-grade platforms to match your trading needs.',
@@ -288,11 +277,11 @@ async function seedHomepage(strapi: Core.Strapi) {
       ctaFooterText:
         'Trading Forex and CFDs involves significant risk and may not be suitable for all investors. Please\nensure you fully understand the risks involved.',
       ctaButton1Label: 'Start Trading',
-      ctaButton1Href: '/register',
+      ctaButton1Href: 'https://fx.finsaitrade.com/auth/register',
       ctaButton2Label: 'Try Demo',
       ctaButton2Href: '/demo',
       ctaButton3Label: 'Contact Us',
-      ctaButton3Href: '/contact',
+      ctaButton3Href: '/contactus',
     },
     status: 'published',
   });
@@ -307,11 +296,11 @@ async function seedMarkets(strapi: Core.Strapi) {
   if (count > 0) return;
 
   const items = [
-    { slug: 'forex', name: 'Forex', file: 'markets/forex.png', order: 1, description: 'Trade major, minor, and exotic forex pairs with deep liquidity, competitive spreads, and ultra-fast execution on the global foreign exchange market.' },
-    { slug: 'crypto', name: 'Crypto', file: 'markets/crypto.png', order: 2, description: 'Access Bitcoin, Ethereum, and hundreds of altcoins. Trade crypto CFDs with leverage around the clock on a secure, regulated platform.' },
+    { slug: 'forex',   name: 'Forex',   file: 'markets/forex.png',   order: 1, description: 'Trade major, minor, and exotic forex pairs with deep liquidity, competitive spreads, and ultra-fast execution on the global foreign exchange market.' },
+    { slug: 'crypto',  name: 'Crypto',  file: 'markets/crypto.png',  order: 2, description: 'Access Bitcoin, Ethereum, and hundreds of altcoins. Trade crypto CFDs with leverage around the clock on a secure, regulated platform.' },
     { slug: 'indices', name: 'Indices', file: 'markets/indices.png', order: 3, description: 'Trade top global stock indices and capture price movements across major economies, including US, European, Asian, and international markets.' },
-    { slug: 'metals', name: 'Metals', file: 'markets/metals.png', order: 4, description: 'Diversify your portfolio with gold, silver, crude oil, natural gas, and other high-demand commodities traded across global markets.' },
-    { slug: 'stocks', name: 'Stocks', file: 'markets/stocks.png', order: 5, description: 'Invest and trade shares of leading international companies listed on major global stock exchanges through a professional online trading platform.' },
+    { slug: 'metals',  name: 'Metals',  file: 'markets/metals.png',  order: 4, description: 'Diversify your portfolio with gold, silver, crude oil, natural gas, and other high-demand commodities traded across global markets.' },
+    { slug: 'stocks',  name: 'Stocks',  file: 'markets/stocks.png',  order: 5, description: 'Invest and trade shares of leading international companies listed on major global stock exchanges through a professional online trading platform.' },
   ];
 
   for (const m of items) {
@@ -328,10 +317,39 @@ async function seedPlatforms(strapi: Core.Strapi) {
   const count = await strapi.documents('api::platform.platform').count({});
   if (count > 0) return;
 
+  // Mirrors FALLBACK_PLATFORMS in src/components/PlatformsSection.tsx so the
+  // homepage rendering is identical whether Strapi is wired up or not.
   const items = [
-    { title: 'MT5', size: 'large', row: 1, order: 1, mockup: 'platforms/mt-mockup.png', icon: null, description: "The industry's gold standard for multi-asset trading. Advanced charting, automated trading, real-time analysis, and multi-asset access." },
-    { title: 'Social Trading', size: 'large', row: 2, order: 3, mockup: null, icon: 'platforms/social-icon.png', description: 'Follow top-performing traders, mirror proven strategies in real time, and grow your portfolio with confidence — all from within the Finsai Trade platform.' },
-    { title: 'App & More — Coming soon', size: 'small', row: 2, order: 4, mockup: null, icon: 'platforms/app-icon.png', description: 'Stay connected to the markets on the go with a fast, secure, and intuitive mobile trading experience.' },
+    {
+      title: 'MT5',
+      size: 'large',
+      row: 1,
+      order: 1,
+      mockup: 'platforms/mt-mockup.png',
+      icon: null,
+      description:
+        " Access 44+ advanced charting tools, 38 built-in indicators, and 2,000+ custom indicators for deeper market analysis. Monitor price action across 21 timeframes, create custom Expert Advisors (EAs) with MQL5, and test strategies faster with multi-threaded optimization.",
+    },
+    {
+      title: 'Social Trading',
+      size: 'large',
+      row: 2,
+      order: 3,
+      mockup: null,
+      icon: 'platforms/social-icon.png',
+      description:
+        'Follow top-performing traders, mirror proven strategies in real time, and grow your portfolio with confidence — all from within the Finsai Trade platform.',
+    },
+    {
+      title: 'App & More — Coming soon',
+      size: 'small',
+      row: 2,
+      order: 4,
+      mockup: null,
+      icon: 'platforms/app-icon.png',
+      description:
+        'Stay connected to the markets on the go with a fast, secure, and intuitive mobile trading experience.',
+    },
   ];
 
   for (const p of items) {
@@ -358,9 +376,9 @@ async function seedSteps(strapi: Core.Strapi) {
   if (count > 0) return;
 
   const items = [
-    { number: 1, title: 'Register', description: 'Create your Finsai Trade account and access global multi-asset markets..', file: 'steps/register.png', order: 1 },
-    { number: 2, title: 'Verify', description: 'Verify your identity securely to activate your trading account.', file: 'steps/verify.png', order: 2 },
-    { number: 3, title: 'Start Trading', description: 'Trade crypto, forex, commodities, indices, and more.', file: 'steps/start-trading.png', order: 3 },
+    { number: 1, title: 'Register',      description: 'Create your Finsai Trade account and access global multi-asset markets..', file: 'steps/register.png',      order: 1 },
+    { number: 2, title: 'Verify',        description: 'Verify your identity securely to activate your trading account.',          file: 'steps/verify.png',        order: 2 },
+    { number: 3, title: 'Start Trading', description: 'Trade crypto, forex, commodities, indices, and more.',                     file: 'steps/start-trading.png', order: 3 },
   ];
 
   for (const s of items) {
@@ -377,10 +395,12 @@ async function seedAwards(strapi: Core.Strapi) {
   const count = await strapi.documents('api::award.award').count({});
   if (count > 0) return;
 
+  // Title/image pairing mirrors LOCAL_AWARD_IMAGES order in AwardsSection.tsx:
+  // award #1 → wld-fi-2024, #2 → wld-fi-2025, #3 → world-forex-award, #4 → innovative-startup.
   const items = [
-    { title: 'The Fastest Growing\nBroker 2024', file: 'awards/wld-fi-2024.png', order: 1 },
-    { title: 'The Best IB\nProgram 2025', file: 'awards/world-forex-award.png', order: 2 },
-    { title: 'The Fastest Growing\nBroker 2025', file: 'awards/wld-fi-2025.png', order: 3 },
+    { title: 'The Fastest Growing\nBroker 2024',         file: 'awards/wld-fi-2024.png',        order: 1 },
+    { title: 'The Best IB\nProgram 2025',                file: 'awards/wld-fi-2025.png',        order: 2 },
+    { title: 'The Fastest Growing\nBroker 2025',         file: 'awards/world-forex-award.png',  order: 3 },
     { title: 'Innovative Startup in\nFinance Award 2023', file: 'awards/innovative-startup.png', order: 4 },
   ];
 
@@ -438,12 +458,13 @@ async function seedJourneyCards(strapi: Core.Strapi) {
   const count = await strapi.documents('api::journey-card.journey-card').count({});
   if (count > 0) return;
 
+  // Mirrors FALLBACK_CARDS in src/components/JourneySection.tsx.
   const items = [
-    { label: 'Blogs', description: 'Explore professional insights on trading strategies, psychology, platform guides, and market trends.', linkLabel: 'Read Latest Articles', linkHref: '/blogs', row: 'row1' as const, size: 'small' as const, order: 1 },
-    { label: 'Finsai Academy', description: 'Master trading with beginner-friendly lessons, advanced courses, and practical market education.', linkLabel: 'Start Learning Free', linkHref: '/academy', row: 'row1' as const, size: 'large' as const, order: 2 },
-    { label: 'News & Analysis', description: 'Stay updated with real-time market news, economic events, and expert commentary.', linkLabel: 'Explore Now', linkHref: '/news', row: 'row2' as const, size: 'equal' as const, order: 3 },
-    { label: 'Webinar', description: 'Join live sessions with market experts covering strategies, platform tips, and real-time market analysis.', linkLabel: 'Browse Webinars', linkHref: '/webinars', row: 'row2' as const, size: 'equal' as const, order: 4 },
-    { label: 'Glossary', description: 'Master trading terms and concepts with our comprehensive glossary built to help you trade with clarity and confidence.', linkLabel: 'Explore Glossary', linkHref: '/glossary', row: 'row2' as const, size: 'equal' as const, order: 5 },
+    { label: 'Blogs',           description: 'Explore professional insights on trading strategies, psychology, platform guides, and market trends.',                        linkLabel: 'Read Latest Articles', linkHref: '/blogs',                                  row: 'row1' as const, size: 'small' as const, order: 1 },
+    { label: 'Finsai Academy',  description: 'Master trading with beginner-friendly lessons, advanced courses, and practical market education.',                            linkLabel: 'Start Learning Free',  linkHref: '/academy',                                row: 'row1' as const, size: 'large' as const, order: 2 },
+    { label: 'News & Analysis', description: 'Stay updated with real-time market news, economic events, and expert commentary.',                                            linkLabel: 'Explore Now',          linkHref: '/news',                                   row: 'row2' as const, size: 'equal' as const, order: 3 },
+    { label: 'Webinar',         description: 'Join live sessions with market experts covering strategies, platform tips, and real-time market analysis.',                   linkLabel: 'Browse Webinars',      linkHref: 'https://lms.finsaitrade.com/#webinars',   row: 'row2' as const, size: 'equal' as const, order: 4 },
+    { label: 'Glossary',        description: 'Master trading terms and concepts with our comprehensive glossary built to help you trade with clarity and confidence.',      linkLabel: 'Explore Glossary',     linkHref: '/glossary',                               row: 'row2' as const, size: 'equal' as const, order: 5 },
   ];
 
   for (const j of items) {
@@ -464,20 +485,20 @@ async function seedAboutPage(strapi: Core.Strapi) {
   await strapi.documents('api::about-page.about-page').create({
     data: {
       heroBadge: 'About Finsai Trade Ltd',
-      heroTitle: 'Making Global\nTrading Accessible\nand Rewarding',
+      heroTitle: 'Our Mission, Our Markets, Our Edge',
       heroDescription:
-        'Helping traders access multiple asset classes while benefiting from educational resources, loyalty rewards, and partnership opportunities.',
+        'Helping traders access multiple asset classes while benefiting from educational resources, loyalty rewards, and partnership opportunities. ',
       heroPrimaryCtaLabel: 'Open Live Account',
-      heroPrimaryCtaHref: '/register',
+      heroPrimaryCtaHref: 'https://fx.finsaitrade.com/auth/register',
       heroSecondaryCtaLabel: 'Explore Our Services',
       heroSecondaryCtaHref: '/services',
 
       recognitionTitlePrefix: 'Recognized for Elite Trading ',
       recognitionTitleAccent: 'Excellence',
       recognitionDescription:
-        'Trade seamlessly on the go or from your desktop with our cutting-edge platforms.',
-      recognitionStatPrimaryValue: '168M+',
-      recognitionStatPrimaryLabel: 'Monthly Deals',
+        ' Trusted by a growing community of traders for reliable execution, modern trading tools, and scalable partnership opportunities. ',
+      recognitionStatPrimaryValue: '53k+',
+      recognitionStatPrimaryLabel: 'Registered Users',
       recognitionStatSecondaryValue: '3M+',
       recognitionStatSecondaryLabel: 'Monthly Worldwide',
 
@@ -504,26 +525,29 @@ async function seedAboutPage(strapi: Core.Strapi) {
       ],
 
       growthBadge: 'Our Principal',
-      growthTitle: 'We drive financial growth\nin the digital era.',
+      growthTitle: 'Your Trading Journey,\nStructured for Success.',
+      // growthDescription1 / growthDescription2 are retained in the schema
+      // for backwards compatibility but the FinancialGrowth section no
+      // longer renders them (features are hardcoded in the component).
       growthDescription1:
-        'By providing an integrated ecosystem that combines simplicity, innovation, and security, we aim to empower people to take charge of their financial future. Our goal is to create a financial environment where people can trade, invest, and bank with confidence by bridging the gap between conventional finance and technological breakthroughs.',
+        'By providing an integrated ecosystem that combines simplicity, innovation, and security, we aim to empower people to take charge of their financial future.',
       growthDescription2:
-        'By providing an integrated ecosystem that combines simplicity, innovation, and security, we aim to empower people to take charge of their financial future. Our goal is to create a financial environment where people can trade, invest, and bank with confidence by bridging the gap between conventional finance and technological breakthroughs.',
+        'Our goal is to create a financial environment where people can trade, invest, and bank with confidence by bridging the gap between conventional finance and technological breakthroughs.',
       growthCtaLabel: 'Contact Us',
-      growthCtaHref: '/contact',
+      growthCtaHref: '/contactus',
       growthStats: [
-        { value: '4.8k', label: 'Traders' },
-        { value: '12+', label: 'Industry Experience' },
-        { value: '2.5k+', label: 'World wide clients' },
-        { value: '120+', label: 'Won Awards' },
+        { value: '50,000+', label: 'Traders' },
+        { value: '20+',     label: 'Industry Experience' },
+        { value: '120+',    label: 'World wide clients' },
+        { value: '15+',     label: 'Industry Recognitions' },
       ],
 
       ctaBadge: 'Get Started',
-      ctaTitle: 'Ready to Start Trading with Finsai?',
+      ctaTitle: 'Ready to Trade Smarter?',
       ctaDescription:
-        'Open a live account or start with a demo account and explore global markets with Finsai Trade — at your pace, on your terms.',
-      ctaPrimaryLabel: 'Open Live Account',
-      ctaPrimaryHref: '/register',
+        'Join a platform built for active traders with multi-asset access, educational support, trading rewards, and scalable partner opportunities.',
+      ctaPrimaryLabel: 'Get Started Today',
+      ctaPrimaryHref: 'https://fx.finsaitrade.com/auth/register',
       ctaSecondaryLabel: 'Try Demo',
       ctaSecondaryHref: '/demo',
     },
@@ -542,7 +566,7 @@ async function seedCareersPage(strapi: Core.Strapi) {
       heroBadge: 'Careers at Finsai Trade',
       heroTitle: 'Build the Future of\nMulti-Asset Trading',
       heroDescription:
-        'Join a vibrant global team focused on fintech, trading technology, global markets, and customer growth. If you thrive on',
+        'Join a vibrant global team focused on fintech, trading technology, global markets, and customer growth.',
       heroPrimaryCtaLabel: 'View Open Roles →',
       heroPrimaryCtaHref: '#open-roles',
       heroSecondaryCtaLabel: 'Join Our Team →',
@@ -552,26 +576,14 @@ async function seedCareersPage(strapi: Core.Strapi) {
       workspaceDescription:
         "Finsai Trade is engineered to deliver seamless execution, institutional-grade tools and reliable uptime — so you can stay in control wherever you trade. Whether you're a beginner or a pro, our platform helps you trade smarter and faster.",
       workspaceBenefits: [
-        {
-          title: 'Collaborate with top talents',
-          description: 'Deep dive into market dynamics with institutional tools.',
-        },
-        {
-          title: 'Innovate & Make an Impact',
-          description: 'Real-time quotes and lightning-fast execution speed.',
-        },
-        {
-          title: 'Growth & Development',
-          description: 'Advanced calculators and margin alerts to stay safe.',
-        },
-        {
-          title: 'Global & Inclusive Culture',
-          description: 'Backtesting engines to refine your trading edge.',
-        },
+        { title: 'Collaborate with top talents', description: 'Deep dive into market dynamics with institutional tools.' },
+        { title: 'Innovate & Make an Impact',    description: 'Real-time quotes and lightning-fast execution speed.' },
+        { title: 'Growth & Development',         description: 'Advanced calculators and margin alerts to stay safe.' },
+        { title: 'Global & Inclusive Culture',   description: 'Backtesting engines to refine your trading edge.' },
       ],
 
       formTitle: 'Apply Now',
-      formSubmitLabel: 'Submit Application',
+      formSubmitLabel: 'MESSAGE US',
       formTermsText:
         'I have read and accepted the terms and conditions specified in the Privacy Policy and currently consent to the collecting, processing and disclosing of the personal data provided by me to fulfil the above-said purposes.',
     },
@@ -581,210 +593,44 @@ async function seedCareersPage(strapi: Core.Strapi) {
   strapi.log.info('[bootstrap] Seeded Careers Page single type');
 }
 
-async function seedRewardsPage(strapi: Core.Strapi) {
-  const existing = await strapi.documents('api::rewards-page.rewards-page').findFirst({});
-  if (existing) return;
-
-  await strapi.documents('api::rewards-page.rewards-page').create({
-    data: {
-      heroBadge: 'Trading Rewards Hub',
-      heroTitle: 'Rewards Built for\nActive Traders &\nPartners',
-      heroDescription:
-        'Earn more for trading and partnering with Finsai — across promotions, loyalty tiers and our global affiliate network.',
-      heroPrimaryCtaLabel: 'Explore Rewards',
-      heroPrimaryCtaHref: '#promotions',
-      heroSecondaryCtaLabel: 'Become an Affiliate',
-      heroSecondaryCtaHref: '/partnerships',
-
-      promotionsTitle: 'Promotions',
-      promotionsDescription:
-        'Boost every deposit, every trade and every milestone. Browse all our live offers and grab the ones that fit your strategy.',
-      promotionsCtaLabel: 'View All Promotions',
-      promotionsCtaHref: '#',
-      promotionCards: [
-        {
-          title: 'Bonuses',
-          description:
-            'Unlock deposit bonuses, signup credits and seasonal boosts as soon as you fund your account.',
-          iconKey: 'percent',
-        },
-        {
-          title: 'Risk-Free Trial Trades',
-          description:
-            'Test new strategies with protected positions — we cover the losses on qualifying trades.',
-          iconKey: 'shield',
-        },
-        {
-          title: 'Special Rewards',
-          description:
-            'Limited-time campaigns with cashback, free spreads and gear drops for active traders.',
-          iconKey: 'gift',
-        },
-      ],
-
-      loyaltyTitle: 'Loyalty Program\nOverview',
-      loyaltyDescription:
-        "Compounds the more you trade. Climb from Bronze to Diamond and unlock progressively better cashback, tighter spreads and exclusive events that money can't normally buy.",
-      loyaltyCtaLabel: 'Track Your Loyalty Level',
-      loyaltyCtaHref: '#',
-      loyaltyTiers: [
-        { title: 'Bronze', description: 'Onboarding', iconKey: 'bronze' },
-        { title: 'Silver', description: 'Active traders', iconKey: 'silver' },
-        { title: 'Gold', description: 'Loyal members', iconKey: 'gold' },
-        { title: 'Platinum', description: 'Frequent traders', iconKey: 'platinum' },
-        { title: 'Diamond', description: 'Top performers', iconKey: 'diamond' },
-      ],
-      loyaltyPerks: [
-        { label: 'Cashbacks' },
-        { label: 'Tradable Volume' },
-        { label: 'Exclusive Events' },
-        { label: 'Lifetime Perks' },
-      ],
-
-      ibTitle: 'IB Program',
-      ibDescription:
-        "Grow a global trading network with industry-leading payouts, deep sub-IB tools and a partner team that's actually responsive.",
-      ibCtaLabel: 'View All Promotions',
-      ibCtaHref: '/partnerships',
-      ibFeatures: [
-        {
-          title: 'Multi Asset',
-          description:
-            'Refer clients trading FX, crypto, indices, metals and stocks — earn on all volumes.',
-          iconKey: 'asset',
-        },
-        {
-          title: 'Personalized Dashboard',
-          description:
-            'Real-time commission tracking, sub-IB hierarchy and payout history at a glance.',
-          iconKey: 'dashboard',
-        },
-        {
-          title: 'Performance Bonus',
-          description:
-            'Hit monthly volume tiers and unlock booster commissions on top of base CPA.',
-          iconKey: 'trophy',
-        },
-        {
-          title: 'Strategy Support',
-          description:
-            'Dedicated success manager, co-branded creatives and conversion playbooks included.',
-          iconKey: 'support',
-        },
-      ],
-      ibStats: [
-        { value: '268', label: 'Total IB Partner' },
-        { value: '$36,702.35', label: 'Total IB Earnings' },
-        { value: '136', label: 'Active Network' },
-      ],
-
-      ctaTitle: 'Trade With the right tools at your side',
-      ctaDescription:
-        'Unlock cashbacks, exclusive promotions and partner payouts that scale with every trade you make on Finsai.',
-      ctaPrimaryLabel: 'Open Live Account',
-      ctaPrimaryHref: '/register',
-    },
-    status: 'published',
-  });
-
-  strapi.log.info('[bootstrap] Seeded Rewards Page single type');
-}
-
-async function seedToolsPage(strapi: Core.Strapi) {
-  const existing = await strapi.documents('api::tools-page.tools-page').findFirst({});
-  if (existing) return;
-
-  await strapi.documents('api::tools-page.tools-page').create({
-    data: {
-      heroBadge: 'Tools for Modern Traders',
-      heroTitle: 'Professional Trading\nTools — All in One Place',
-      heroDescription:
-        'Charts, analytics, automation and risk management built to scale with your strategy.',
-      heroProofText:
-        'Used by 50,000+ active traders · Real-time market data · 80+ indicators',
-      heroPrimaryCtaLabel: 'Explore Tools',
-      heroPrimaryCtaHref: '#tools',
-      heroSecondaryCtaLabel: 'Try Demo',
-      heroSecondaryCtaHref: '/demo',
-
-      builtForBadge: 'Built for every level',
-      builtForTitle: 'Built for Every Type of Trader',
-      builtForDescription:
-        'Whether you scalp tick-by-tick or hold for weeks, every tool we ship is designed to disappear into your workflow.',
-      builtForFeatures: [
-        { title: 'Day Traders', description: 'Tick charts, hotkeys and one-click execution.', iconKey: 'flash' },
-        { title: 'Swing Traders', description: 'Multi-timeframe analysis with saved templates.', iconKey: 'chart' },
-        { title: 'Algo Traders', description: 'Backtesting, automation and webhook bridges.', iconKey: 'bot' },
-      ],
-
-      chartingTitle: 'Charting & Technical Analysis Tools',
-      chartingDescription:
-        'Trade with confidence using professional-grade charting that fits the way you work.',
-
-      marketDataTitle: 'Market Data & Insights',
-      marketDataDescription:
-        'Stay ahead with real-time quotes, economic calendars and curated trade ideas.',
-
-      riskTitle: 'Risk and Position Management Tools',
-      riskDescription:
-        'Cap drawdowns, ladder stops and watch margin like a desk-grade risk manager.',
-
-      strategyTitle: 'Strategy and Automation Tools',
-      strategyDescription:
-        'Codify your edge, backtest it across years of data and deploy automated execution in minutes.',
-
-      communityTitle: 'Community and Insight Tools',
-      communityDescription:
-        'Learn from leaders, share setups, and copy verified strategies with one click.',
-
-      ctaTitle: 'Plug the Finsai toolset into your workflow',
-      ctaDescription:
-        'Spin up a demo or live account and connect every tool to a single, fast trading interface.',
-      ctaPrimaryLabel: 'Open Live Account',
-      ctaPrimaryHref: '/register',
-      ctaSecondaryLabel: 'Try Demo',
-      ctaSecondaryHref: '/demo',
-    },
-    status: 'published',
-  });
-
-  strapi.log.info('[bootstrap] Seeded Tools Page single type');
-}
-
 async function seedAccountsPage(strapi: Core.Strapi) {
   const existing = await strapi.documents('api::accounts-page.accounts-page').findFirst({});
   if (existing) return;
 
   await strapi.documents('api::accounts-page.accounts-page').create({
     data: {
-      heroBadge: 'Accounts Built for Every Trader',
-      heroTitle: 'Choose the Account that\nFits Your Trading Style',
+      heroBadge: 'Multi-Asset Trading Accounts',
+      heroTitle: 'Find the Right Account for Your Trading Style',
       heroDescription:
-        'From beginners to seasoned professionals, Finsai Trade offers account types designed to match every level of experience and trading goal.',
+        'From first-time traders to advanced professionals, Finsai Trade offers flexible account types built for every stage of your trading journey.',
       heroPrimaryCtaLabel: 'Open Live Account',
-      heroPrimaryCtaHref: '/register',
-      heroSecondaryCtaLabel: 'Try Demo',
+      heroPrimaryCtaHref: 'https://fx.finsaitrade.com/auth/register',
+      heroSecondaryCtaLabel: 'Try Free Demo',
       heroSecondaryCtaHref: '/demo',
 
-      compareTitle: 'Compare Account Types',
+      // FE compare table is hardcoded; only title + description are still
+      // sourced from Strapi.
+      compareTitle: 'Account Type',
       compareDescription:
-        'Side-by-side view of spreads, leverage, deposit minimums and feature access for every Smart account tier.',
+        'Trade with speed, stability, and total control from your desk or on the move. Finsai Trade delivers professional-grade platforms to match your trading needs',
 
       whyBadge: 'Why Trade Finsai',
-      whyTitle: 'Why Traders Choose Finsai',
+      whyTitle: 'Why trade with Finsai',
       whyDescription:
-        'Six reasons we are the platform of choice for serious traders worldwide.',
+        'Trade with speed, stability, and total control from your desk or on the move. Finsai Trade delivers professional-grade platforms to match your trading needs',
       whyFeatures: [
-        { title: 'Transparent Pricing', description: 'No hidden fees — every cost is shown upfront.', iconKey: 'transparency' },
-        { title: '1,000+ Assets', description: 'Forex, crypto, indices, metals and global equities.', iconKey: 'assets' },
-        { title: 'Up to 1:1000 Leverage', description: 'Tiered leverage that scales with your strategy.', iconKey: 'leverage' },
-        { title: 'Instant Deposits', description: 'Cards, UPI, crypto and bank transfer — settled fast.', iconKey: 'deposits' },
-        { title: 'Live Learning', description: 'Webinars, courses and 1-on-1 mentoring inside.', iconKey: 'learning' },
-        { title: 'Social Trading', description: 'Copy verified leaders directly inside your terminal.', iconKey: 'social' },
+        { title: 'Ultra fast order execution',           description: 'Real-time quotes and lightning-fast execution.',                iconKey: 'runner' },
+        { title: 'Raw spreads on ECN & Elite accounts',  description: 'Direct market pricing with no markup.',                          iconKey: 'users' },
+        { title: 'No hidden fees, no requotes',          description: 'Transparent costs and consistent execution.',                    iconKey: 'eyeOff' },
+        { title: 'Swap free account',                    description: 'No overnight financing on qualifying positions.',                iconKey: 'infinity' },
+        { title: 'Access MT5 on mobile, desktop & web',  description: 'Trade anywhere with the world-class MetaTrader 5 platform.',     iconKey: 'headset' },
+        { title: 'Priority support for smart elite traders', description: 'White-glove support for Elite & Smart ECN account holders.', iconKey: 'headphones' },
       ],
 
       onboardingBadge: 'Signup Procedure',
-      onboardingTitle: 'Get Trading in 3 Simple Steps',
+      // FE component now only reads `onboardingTitle` ("Open Your Trading
+      // Account" is the FE fallback).
+      onboardingTitle: 'Open Your Trading Account',
       onboardingDescription:
         'From signup to first trade in minutes — KYC is fast, deposits are instant, and our team is on hand 24/7.',
 
@@ -794,27 +640,27 @@ async function seedAccountsPage(strapi: Core.Strapi) {
         'Every Finsai tier ships with its own combination of bonus credit, support tier and platform perks.',
       benefitsCards: [
         {
-          title: 'Smart Start',
-          description: 'Best for new traders building their first portfolio.',
-          iconKey: 'start',
-          footer: 'From $10 minimum deposit',
+          title: 'Deposit & Withdrawal',
+          description: 'Smooth, Secure, and fast Transactions',
+          iconKey: 'wallet',
+          footer: 'Note:',
           bullets: [
-            { key: 'Welcome Bonus', value: '100%' },
-            { key: 'Spread Type', value: '1.8 pips' },
-            { key: 'Leverage', value: '1:1000' },
-            { key: 'Support', value: '24/7 Email + Chat' },
+            { key: 'Deposit Method',         value: 'Crypto, E-wallets' },
+            { key: 'Withdrawal Processing',  value: 'Within 24 business hours' },
+            { key: 'Security Method',        value: 'Crypto, E-wallets' },
+            { key: 'No Hidden Charges',      value: 'Transparent fee structure' },
           ],
         },
         {
-          title: 'Smart Pro',
-          description: 'For active traders who need tighter spreads and faster fills.',
-          iconKey: 'pro',
-          footer: 'From $1,000 minimum deposit',
+          title: 'Smart Elite - Request Only  VIP Access',
+          description: 'No downloads. Just log in and trade.',
+          iconKey: 'vip',
+          footer: 'Request Access',
           bullets: [
-            { key: 'Welcome Bonus', value: '40%' },
-            { key: 'Spread Type', value: '0.6 pips' },
-            { key: 'Leverage', value: '1:1000' },
-            { key: 'Support', value: 'Priority Live' },
+            { key: 'Deposit Method',         value: 'Crypto, E-wallets' },
+            { key: 'Withdrawal Processing',  value: 'Within 24 business hours' },
+            { key: 'Security Method',        value: 'Crypto, E-wallets' },
+            { key: 'No Hidden Charges',      value: 'Transparent fee structure' },
           ],
         },
       ],
@@ -831,35 +677,37 @@ async function seedPaymentsPage(strapi: Core.Strapi) {
 
   await strapi.documents('api::payments-page.payments-page').create({
     data: {
-      heroBadge: 'Payments & Funding',
-      heroTitle: 'Fund Your Account in Seconds',
+      heroBadge: 'SECURE DEPOSITS & WITHDRAWALS',
+      heroTitle: 'Fund Your Trading Account with Secure Payments',
       heroDescription:
-        'Deposit and withdraw with cards, UPI, e-wallets, crypto and bank transfer — all secured with PCI DSS encryption.',
-      heroPrimaryCtaLabel: 'Open Live Account',
-      heroPrimaryCtaHref: '/register',
+        'Deposit and withdraw funds seamlessly using trusted, fast and secure options.',
+      heroPrimaryCtaLabel: 'Deposit Funds',
+      heroPrimaryCtaHref: 'https://fx.finsaitrade.com/auth/register',
       heroSecondaryCtaLabel: 'View Methods',
       heroSecondaryCtaHref: '#methods',
 
       trustText:
-        'PCI DSS Level 1 · 3D Secure · Two-Factor Authentication · 256-bit SSL',
+        'Every transaction at Finsai Trade is protected by industry-leading security standards.',
 
       methodsBadge: 'Supported Methods',
-      methodsTitle: 'Choose How You Want to Fund',
+      methodsTitle: 'Deposits & Withdrawals You Can Trust .',
       methodsDescription:
-        'All major regional methods are supported. Most deposits clear instantly, withdrawals processed within 24 hours.',
+        'Deposits hit your account in seconds. Withdrawals are processed quickly, so your funds stay safe, accessible, and always within reach.',
+      // The FE PaymentsMethodsSection is now fully hardcoded, but the schema
+      // still exposes `methods` — keep a representative seed so the Strapi
+      // admin UI isn't empty.
       methods: [
-        { name: 'Credit / Debit Cards', description: 'Visa, MasterCard, RuPay accepted.', fee: '0%', processingTime: 'Instant' },
-        { name: 'UPI', description: 'Pay direct from any UPI app.', fee: '0%', processingTime: 'Instant' },
-        { name: 'Bank Transfer', description: 'IMPS, NEFT, SEPA and SWIFT.', fee: '0%', processingTime: '1–2 hrs' },
-        { name: 'Crypto', description: 'BTC, ETH, USDT (ERC-20 & TRC-20).', fee: '0%', processingTime: 'On confirmation' },
+        { name: 'Payment Stack',        description: 'Choose from convenient funding and withdrawal options designed for global traders.', fee: '0%', processingTime: 'Instant' },
+        { name: 'Fast Processing',      description: 'Fund your account instantly and access withdrawals without unnecessary delays.',     fee: '0%', processingTime: 'Instant' },
+        { name: 'Secure Transactions',  description: 'Advanced security systems help protect every deposit and payout.',                   fee: '0%', processingTime: '100% secure' },
       ],
 
       ctaBadge: 'Ready to fund?',
-      ctaTitle: 'Deposit Once, Trade Anywhere',
+      ctaTitle: 'Ready to Fund Your Account?',
       ctaDescription:
-        'Top up your account and start trading on the most secure platform in minutes.',
-      ctaPrimaryLabel: 'Open Live Account',
-      ctaPrimaryHref: '/register',
+        'Deposit instantly with the method you prefer — your funds are protected end-to-end and available the moment they arrive.',
+      ctaPrimaryLabel: 'Deposit Funds',
+      ctaPrimaryHref: 'https://fx.finsaitrade.com/auth/register',
     },
     status: 'published',
   });
@@ -873,41 +721,45 @@ async function seedServicesPage(strapi: Core.Strapi) {
 
   await strapi.documents('api::services-page.services-page').create({
     data: {
-      heroBadge: 'Services',
-      heroTitle: 'Built to Power Every Type of Trader',
+      heroBadge: 'SIGN IN TO YOUR SECURE WALLET',
+      heroTitle: 'Powerful Trading Platforms for Every Trader ',
       heroDescription:
-        'From copy trading to algo automation, Finsai Trade gives you the full service stack used by professional desks.',
-      heroPrimaryCtaLabel: 'Open Live Account',
-      heroPrimaryCtaHref: '/register',
+        'Discover three powerful trading environments built for ambitious beginners, active traders, and professional market participants.',
+      heroPrimaryCtaLabel: 'Start Trading →',
+      heroPrimaryCtaHref: 'https://fx.finsaitrade.com/auth/register',
       heroSecondaryCtaLabel: 'Try Demo',
       heroSecondaryCtaHref: '/demo',
 
-      featuresBadge: 'Services Highlights',
-      featuresTitle: 'Everything You Need in One Platform',
+      featuresBadge: 'Features of Finsai Trade',
+      featuresTitle: 'Built to Perform. Designed for You',
       featuresDescription:
-        'A single account that unlocks every market, every tool and every service.',
+        "Finsai Trade platforms are engineered to deliver seamless execution, institutional-level tools, and reliable uptime so you stay in control, wherever you trade. Whether you're a beginner or a pro, our platforms help you trade smarter and faster.",
       features: [
-        { title: 'Multi-Asset Trading', description: 'Trade FX, crypto, stocks, indices, metals and more.', iconKey: 'assets' },
-        { title: 'Copy Trading', description: 'Mirror top-performing traders in real-time.', iconKey: 'social' },
-        { title: 'Algo & Bots', description: 'Deploy automated strategies via MT5 or API.', iconKey: 'leverage' },
-        { title: 'VPS Hosting', description: 'Free VPS for qualifying accounts.', iconKey: 'deposits' },
-        { title: 'Education', description: 'Webinars, courses and 1-on-1 mentoring.', iconKey: 'learning' },
-        { title: 'Transparency', description: 'Tight spreads, no hidden fees, fast execution.', iconKey: 'transparency' },
+        { title: 'Lightning \n Fast Execution',     description: 'Microsecond order routing on every trade.',           iconKey: 'flash' },
+        { title: 'Bank-Grade \n Security',          description: 'Funds segregated and protected by best-in-class encryption.', iconKey: 'shield' },
+        { title: 'Multi-Device \n Compatibility',   description: 'Trade across desktop, web, and mobile seamlessly.',  iconKey: 'devices' },
+        { title: 'Access Globally \n(India & UAE)', description: 'Regional coverage with localized payment rails.',    iconKey: 'globe' },
+        { title: 'Advanced Charts \n& Tools',       description: '80+ indicators and pro charting on every screen.',   iconKey: 'chart' },
+        { title: '24/7 Expert \n Support',          description: 'Live human support, 365 days a year.',               iconKey: 'support' },
       ],
 
-      platformsBadge: 'Choose The Best - Platform',
-      platformsTitle: 'Powerful Platforms for Every Trader',
+      // FE platforms section is now three hardcoded stacked blocks (MT5,
+      // Social Trading, App). Header copy isn't rendered, but we keep
+      // sensible defaults for the Strapi admin UI.
+      platformsBadge: 'Choose Your Platform',
+      platformsTitle: 'Three Premium Platforms. Unlimited Trading Potential.',
       platformsDescription:
-        'Trade with speed, stability, and total control from your desk or on the move.',
+        'From advanced algorithmic trading to social copy trading, discover the ultimate platform for your trading style.',
 
       suiteBadge: 'Service Suite',
-      suiteTitle: 'A Complete Suite for Modern Trading',
+      suiteTitle: 'One platform suite\nEvery Trading Style',
       suiteDescription:
-        'Combine the tools you need into a single, fast trading experience.',
+        "Finsai Trade platforms are engineered to deliver seamless execution, institutional-level tools, and reliable uptime — so you stay in control, wherever you trade. Whether you're a beginner or a pro, our platforms help you trade smarter and faster.",
       suiteItems: [
-        { title: 'Risk Management', description: 'Smart stops, margin alerts and exposure dashboards.', iconKey: 'shield' },
-        { title: 'Analytics', description: 'Deep performance breakdowns and tax-ready exports.', iconKey: 'chart' },
-        { title: 'Partner Network', description: 'IB & affiliate programs with industry-leading payouts.', iconKey: 'percent' },
+        { title: 'Beginner Mode',         description: 'Guided trades, tutorials & Simplified Workflows', iconKey: 'beginner' },
+        { title: 'Pro Tools',             description: 'Guided trades, tutorials & Simplified Workflows', iconKey: 'pro' },
+        { title: 'Seamless Switching',    description: 'Guided trades, tutorials & Simplified Workflows', iconKey: 'switch' },
+        { title: 'Multi Lingual Support', description: 'Guided trades, tutorials & Simplified Workflows', iconKey: 'language' },
       ],
     },
     status: 'published',
@@ -923,60 +775,66 @@ async function seedPartnershipsPage(strapi: Core.Strapi) {
   await strapi.documents('api::partnerships-page.partnerships-page').create({
     data: {
       heroBadge: 'IB & Affiliate',
-      heroTitle: 'Grow With Finsai Partnerships',
+      heroTitle: 'Join Finsai Trade as an Introducing Broker',
       heroDescription:
-        'Industry-leading commissions, real-time dashboards and a partner team that actually picks up the phone.',
-      heroPrimaryCtaLabel: 'Become a Partner',
-      heroPrimaryCtaHref: '/register',
+        'Earn attractive commissions from every client trade with higher conversions and stronger client retention.',
+      heroPrimaryCtaLabel: 'Become an IB',
+      heroPrimaryCtaHref: 'https://fx.finsaitrade.com/auth/register',
       heroSecondaryCtaLabel: 'View Calculator',
       heroSecondaryCtaHref: '#calculator',
 
       whyBadge: 'Why Finsai IB',
-      whyTitle: 'Why Partner With Finsai',
+      whyTitle: 'Why Top IBs Choose Finsai Trade',
       whyDescription:
-        'Six reasons partners build their network on Finsai.',
+        'Built for partners who want faster growth, stronger earnings, and long-term success',
+      // IBWhyClient uses `iconKey` as the tab label. To match the FE
+      // FALLBACK_TABS labels we set iconKey to the tab name.
       whyFeatures: [
-        { title: 'High Payouts', description: 'Up to $15 per lot on FX majors.', iconKey: 'percent' },
-        { title: 'Multi-Tier IB', description: 'Earn from sub-IBs and second-line affiliates.', iconKey: 'social' },
-        { title: 'Marketing Toolkit', description: 'Banners, landing pages and creatives in 15+ languages.', iconKey: 'leverage' },
-        { title: 'Dedicated Manager', description: 'A real human, not a chatbot.', iconKey: 'support' },
-        { title: 'Real-Time Reports', description: 'See clicks, signups and commissions live.', iconKey: 'dashboard' },
-        { title: 'Fast Payouts', description: 'Weekly settlements, no minimum thresholds.', iconKey: 'deposits' },
+        { title: 'Earn More from Every Active Client',     description: 'Competitive rebates designed to reward performance as your network grows.',     iconKey: 'Rebates' },
+        { title: 'Track Every Result with Clarity',        description: 'Monitor referrals, trading activity, commissions, and payouts through detailed live reports.', iconKey: 'Detailed Reports' },
+        { title: 'Scale Your Network More Efficiently',    description: 'Build and manage multi-level partner structures designed for long-term growth.', iconKey: 'Multi-Tier Mode' },
+        { title: 'Trade with Confidence and Trust',        description: 'Partner with a secure and transparent trading environment built for modern traders.', iconKey: 'Regulated Broker' },
       ],
 
       calculatorBadge: 'Earnings Calculator',
-      calculatorTitle: 'Estimate Your Monthly Payout',
+      calculatorTitle: 'Unlock Your Earning Potential',
       calculatorDescription:
-        'Move the sliders to see what your IB network could earn at different volume tiers.',
+        'Specify the expected values of your partner network',
 
-      statsBadge: 'Numbers',
-      statsTitle: 'Trusted by a Global Partner Network',
+      statsBadge: 'Built for Ambitious IBs',
+      statsTitle: 'Join The Fastest Growing Partner Program Now',
       statsDescription:
-        'Partners across 70+ countries are earning with Finsai today.',
+        'Partners across the globe are scaling their networks with Finsai today.',
+      // Labels follow the `<prefix> <rest>` shape that IBStatsSection
+      // splits on (e.g. "Join Companies helped" → prefix "Join", label
+      // "Companies helped").
       stats: [
-        { value: '70+', label: 'Countries' },
-        { value: '12,000+', label: 'Active Partners' },
-        { value: '$42M+', label: 'Paid Out 2024' },
+        { value: '20,000 +', label: 'Join Companies helped' },
+        { value: '$10,000 +', label: 'Over Revenue generated' },
+        { value: '330 +', label: 'Over Companies helped' },
+        { value: '230 +', label: 'More than Revenue generated' },
       ],
 
       howToBadge: 'How It Works',
-      howToTitle: 'Get Started in 3 Steps',
+      howToTitle: ' How to Become a Successful Introducing Broker',
       howToDescription:
-        'Onboarding is fully digital — most partners go live the same day.',
+        'Start earning with an easy partner program built for long-term growth.',
       howToSteps: [
-        { title: 'Register', description: 'Sign up as an IB / Affiliate partner.', iconKey: 'pencil' },
-        { title: 'Promote', description: 'Use creatives, links and landing pages to drive signups.', iconKey: 'rocket' },
-        { title: 'Earn', description: 'Get paid weekly on every trade your network makes.', iconKey: 'money' },
+        { title: 'Sign Up',       description: 'Create your IB account and access your partner tools.', iconKey: 'pencil' },
+        { title: 'Refer Clients', description: 'Share your referral link and grow your network.',       iconKey: 'rocket' },
+        { title: 'Earn More',     description: 'Get rewarded from every eligible client trade.',        iconKey: 'money' },
       ],
 
+      // FE has no marketing section anymore, but the schema still exposes
+      // these fields — keep representative defaults.
       marketingBadge: 'Marketing Toolkit',
       marketingTitle: 'Everything You Need to Convert',
       marketingDescription:
         'High-converting marketing assets ready to go, no design team required.',
       marketingItems: [
-        { title: 'Banners', description: 'Display-ready banners in 50+ sizes.', iconKey: 'flash' },
-        { title: 'Landing Pages', description: 'High-converting localized landers.', iconKey: 'chart' },
-        { title: 'Video Assets', description: 'Short-form explainers and tutorials.', iconKey: 'bot' },
+        { title: 'Banners',        description: 'Display-ready banners in 50+ sizes.',           iconKey: 'flash' },
+        { title: 'Landing Pages',  description: 'High-converting localized landers.',            iconKey: 'chart' },
+        { title: 'Video Assets',   description: 'Short-form explainers and tutorials.',          iconKey: 'bot' },
       ],
     },
     status: 'published',
@@ -991,34 +849,42 @@ async function seedBlogsPage(strapi: Core.Strapi) {
 
   await strapi.documents('api::blogs-page.blogs-page').create({
     data: {
-      heroBadge: 'Blogs & News',
-      heroTitle: 'Trade Smarter With Real Market Insight',
+      heroBadge: 'Trader Knowledge Hub',
+      heroTitle: 'Market Insights & Education',
       heroDescription:
-        'Expert analysis, platform updates and curated reads to sharpen every trade.',
-      heroPrimaryCtaLabel: 'Read Latest',
-      heroPrimaryCtaHref: '#latest',
+        'Sharp market insights, real trading education, and analysis you can actually act on.',
+      heroPrimaryCtaLabel: 'Explore Insights',
+      heroPrimaryCtaHref: '/blogs',
       heroSecondaryCtaLabel: 'Subscribe',
       heroSecondaryCtaHref: '#subscribe',
 
-      newsBadge: 'Latest News',
-      newsTitle: 'Latest Articles & Market News',
+      newsBadge: 'Market News & Analysis ',
+      newsTitle: 'Stay Ahead of Every Market Move',
       newsDescription:
-        'Stay sharp with daily market briefs, technical setups and platform announcements.',
+        'Track market-moving events, technical setups, and macro trends shaping forex, crypto, commodities, and indices.',
+      // BlogsNewsSection prepends Strapi articles and fills the rest from a
+      // local fallback list. We seed 4 cards mirroring the FE fallback so
+      // the rendered output is identical.
       newsArticles: [
         {
-          title: 'Top 5 FX Pairs to Watch This Week',
-          description: 'Catalyst-driven setups across EUR, JPY and GBP majors.',
-          href: '/blogs/top-fx-pairs',
+          title: 'News & Analysis',
+          description: 'Stay updated with real-time market news, economic events, and expert commentary.',
+          href: '/news',
         },
         {
-          title: 'How to Backtest Strategies in MT5',
-          description: 'A step-by-step guide to validating your edge before going live.',
-          href: '/blogs/backtest-mt5',
+          title: 'Webinar',
+          description: 'Join live sessions with market experts covering strategies, platform tips, and real-time market analysis.',
+          href: 'https://lms.finsaitrade.com/#webinars',
         },
         {
-          title: 'Crypto Volatility Playbook',
-          description: 'Position sizing, stops and hedging during major news prints.',
-          href: '/blogs/crypto-volatility',
+          title: 'News & Analysis',
+          description: 'Stay updated with real-time market news, economic events, and expert commentary.',
+          href: '/news',
+        },
+        {
+          title: 'Webinar',
+          description: 'Join live sessions with market experts covering strategies, platform tips, and real-time market analysis.',
+          href: 'https://lms.finsaitrade.com/#webinars',
         },
       ],
     },
@@ -1046,8 +912,6 @@ export default {
     await seedJourneyCards(strapi);
     await seedAboutPage(strapi);
     await seedCareersPage(strapi);
-    await seedRewardsPage(strapi);
-    await seedToolsPage(strapi);
     await seedAccountsPage(strapi);
     await seedPaymentsPage(strapi);
     await seedServicesPage(strapi);

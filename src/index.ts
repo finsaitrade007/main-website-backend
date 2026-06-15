@@ -311,23 +311,23 @@ async function seedHomepage(strapi: Core.Strapi) {
         { iconKey: 'social', title: 'Social\ntrading' },
       ],
 
-      marketsBadge: 'Market You Can Trade',
+      marketsBadge: 'Trade Without Limits ',
       marketsTitlePrefix: 'Trade Every Market That ',
       marketsTitleAccent: 'Matters',
       marketsDescription:
         'Finsai Trade gives modern traders access to 5,000+ trading instruments across forex, crypto, global stocks, indices, commodities, and CFDs.',
 
       platformsBadge: 'Seamless Trading Experience',
-      platformsTitle: 'Powerful Platforms for Every Trader',
+      platformsTitle: 'Advanced Platforms for Every Trader',
       platformsDescription:
         'Trade with speed, stability, and total control from your desk or on the move. Finsai Trade delivers professional-grade platforms to match your trading needs.',
 
       accountsBadge: 'Finsai Trade Account Type',
       accountsTitle: 'Choose Your Account. Trade Your Way.',
       accountsDescription:
-        'From beginners to seasoned professionals, Finsai Trade offers account types designed to match every level of experience and trading goal.',
+        'Whether you’re just starting or trading at a higher level, find an account built to match your goals, experience, and trading style.',
 
-      stepsBadge: 'Signup Procedure',
+      stepsBadge: 'Get Started',
       stepsTitle: 'Trade Global Markets in 3 Simple Steps',
 
       awardsBadge: 'Our Awards',
@@ -344,7 +344,7 @@ async function seedHomepage(strapi: Core.Strapi) {
       testimonialsTitle: 'What Our Traders Say',
 
       ctaBadge: 'Get Started',
-      ctaTitle: 'Ready to Start Trading with Finsai?',
+      ctaTitle: 'Ready to Explore Global Markets? ',
       ctaDescription:
         'Open a live account or start with a demo account and explore global markets with Finsai Trade — at\nyour pace, on your terms.',
       ctaFooterText:
@@ -379,7 +379,7 @@ async function seedMarkets(strapi: Core.Strapi) {
 
   const items = [
     { slug: 'forex',   name: 'Forex',   file: 'markets/forex.png',   order: 1, description: 'Trade major, minor, and exotic forex pairs with deep liquidity, competitive spreads, and ultra-fast execution on the global foreign exchange market.' },
-    { slug: 'crypto',  name: 'Crypto',  file: 'markets/crypto.png',  order: 2, description: 'Access Bitcoin, Ethereum, and hundreds of altcoins. Trade crypto CFDs with leverage around the clock on a secure, regulated platform.' },
+    { slug: 'crypto',  name: 'Crypto',  file: 'markets/crypto.png',  order: 2, description: 'Access leading cryptocurrencies and trade the digital asset market 24/7 with advanced charting tools, real-time pricing, and seamless market execution.' },
     { slug: 'indices', name: 'Indices', file: 'markets/indices.png', order: 3, description: 'Trade top global stock indices and capture price movements across major economies, including US, European, Asian, and international markets.' },
     { slug: 'metals',  name: 'Metals',  file: 'markets/metals.png',  order: 4, description: 'Diversify your portfolio with gold, silver, crude oil, natural gas, and other high-demand commodities traded across global markets.' },
     { slug: 'stocks',  name: 'Stocks',  file: 'markets/stocks.png',  order: 5, description: 'Invest and trade shares of leading international companies listed on major global stock exchanges through a professional online trading platform.' },
@@ -727,7 +727,7 @@ async function seedAccountsPage(strapi: Core.Strapi) {
         { title: 'Priority support for smart elite traders', description: 'White-glove support for Elite & Smart ECN account holders.', iconKey: 'headphones' },
       ],
 
-      onboardingBadge: 'Signup Procedure',
+      onboardingBadge: 'Get Started',
       // FE component now only reads `onboardingTitle` ("Open Your Trading
       // Account" is the FE fallback).
       onboardingTitle: 'Open Your Trading Account',
@@ -906,7 +906,7 @@ async function seedPartnershipsPage(strapi: Core.Strapi) {
       heroDescription:
         'Earn attractive commissions from every client trade with higher conversions and stronger client retention.',
       heroPrimaryCtaLabel: 'Become an IB',
-      heroPrimaryCtaHref: 'https://fx.finsaitrade.com/auth/register',
+      heroPrimaryCtaHref: 'https://portal.finsaitrade.com/partner/register',
       heroSecondaryCtaLabel: 'View Calculator',
       heroSecondaryCtaHref: '#calculator',
 
@@ -924,7 +924,7 @@ async function seedPartnershipsPage(strapi: Core.Strapi) {
       ],
 
       calculatorBadge: 'Earnings Calculator',
-      calculatorTitle: 'Unlock Your Earning Potential',
+      calculatorTitle: 'Calculate Your Earning Potential',
       calculatorDescription:
         'Specify the expected values of your partner network',
 

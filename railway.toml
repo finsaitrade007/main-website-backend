@@ -27,11 +27,14 @@
 #   # ── Networking / CORS ──
 #   HOST                      = 0.0.0.0
 #   NODE_ENV                  = production
-#   CORS_ORIGINS              = https://finsai.com,https://www.finsai.com
+#   CORS_ORIGINS              = https://www.finsaitrade.com,https://finsaitrade.com
 #                               (comma-separated; matches config/middlewares.ts)
 #
-#   # ── Optional: media uploads (S3 or Cloudinary) ──
-#   # Configure via @strapi/provider-upload-aws-s3 in config/plugins.ts
+#   # ── Frontend cache bust (optional webhook) ──
+#   # In Strapi admin: Settings → Webhooks → add:
+#   #   URL: https://<frontend>/api/revalidate?secret=<REVALIDATE_SECRET>
+#   #   Events: entry.publish, entry.update, entry.unpublish, entry.delete
+#   # Set the same REVALIDATE_SECRET on the frontend Railway service.
 #
 # Notes:
 #   * Do NOT set PORT manually — Railway injects it and Strapi reads it via

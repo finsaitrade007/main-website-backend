@@ -951,12 +951,16 @@ export interface ApiPartnershipsPagePartnershipsPage
     seo: Schema.Attribute.Component<'shared.seo', false>;
     stats: Schema.Attribute.Component<'shared.stat', true>;
     statsBadge: Schema.Attribute.String;
+    statsCtaHref: Schema.Attribute.String;
+    statsCtaLabel: Schema.Attribute.String;
     statsDescription: Schema.Attribute.Text;
     statsTitle: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     whyBadge: Schema.Attribute.String;
+    whyCtaHref: Schema.Attribute.String;
+    whyCtaLabel: Schema.Attribute.String;
     whyDescription: Schema.Attribute.Text;
     whyFeatures: Schema.Attribute.Component<'shared.icon-feature', true>;
     whyTitle: Schema.Attribute.String;

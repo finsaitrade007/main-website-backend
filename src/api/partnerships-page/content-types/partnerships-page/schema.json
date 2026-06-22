@@ -21,6 +21,8 @@
     "whyBadge": { "type": "string" },
     "whyTitle": { "type": "string" },
     "whyDescription": { "type": "text" },
+    "whyCtaLabel": { "type": "string" },
+    "whyCtaHref": { "type": "string" },
     "whyFeatures": {
       "type": "component",
       "repeatable": true,
@@ -34,6 +36,8 @@
     "statsBadge": { "type": "string" },
     "statsTitle": { "type": "string" },
     "statsDescription": { "type": "text" },
+    "statsCtaLabel": { "type": "string" },
+    "statsCtaHref": { "type": "string" },
     "stats": {
       "type": "component",
       "repeatable": true,

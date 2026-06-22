@@ -124,7 +124,7 @@ async function setPublicReadPermissions(strapi: Core.Strapi) {
 
 // ─── Seed helpers ────────────────────────────────────────────────────
 
-async function seedSingleTypeIfMissing(
+async function syncSingleType(
   strapi: Core.Strapi,
   uid: string,
   data: Record<string, unknown>,
@@ -133,10 +133,17 @@ async function seedSingleTypeIfMissing(
   const existing = (await strapi.documents(uid as never).findFirst({})) as {
     documentId: string;
   } | null;
-  if (existing) return;
-
-  await strapi.documents(uid as never).create({ data, status: 'published' });
-  strapi.log.info(`[bootstrap] Seeded ${label}`);
+  if (existing) {
+    await strapi.documents(uid as never).update({
+      documentId: existing.documentId,
+      data,
+      status: 'published',
+    });
+    strapi.log.info(`[bootstrap] Synced ${label}`);
+  } else {
+    await strapi.documents(uid as never).create({ data, status: 'published' });
+    strapi.log.info(`[bootstrap] Seeded ${label}`);
+  }
 }
 
 async function replaceCollection(
@@ -279,7 +286,7 @@ async function seedFaqs(strapi: Core.Strapi) {
 // ─── Homepage single-type ────────────────────────────────────────────
 
 async function seedHomepage(strapi: Core.Strapi) {
-  await seedSingleTypeIfMissing(strapi, 'api::homepage.homepage', {
+  await syncSingleType(strapi, 'api::homepage.homepage', {
       heroTitle: 'Trade Global Markets on a Powerful Multi-Asset Trading Platform',
       heroSubtitle:
         'Finsai Trade is a secure trading platform that gives modern traders access to forex, stocks, commodities, and indices through one advanced trading ecosystem.',
@@ -293,7 +300,7 @@ async function seedHomepage(strapi: Core.Strapi) {
       heroCtaSecondaryLabel: 'Try Demo ->',
       heroCtaSecondaryHref: '/contactus',
 
-      featuresBadge: 'What Sets Us Apart ',
+      featuresBadge: 'What Sets Us Apart\u00a0',
       featuresTitle: 'Why Top Traders Choose Finsai Trade',
       featuresDescription:
         'Trade securely across 1,000+ assets on a globally regulated platform with transparent pricing and 24/7 expert support.',
@@ -317,8 +324,8 @@ async function seedHomepage(strapi: Core.Strapi) {
       platformsDescription:
         'Trade with speed, stability, and total control from your desk or on the move. Finsai Trade delivers professional-grade platforms to match your trading needs.',
 
-      accountsBadge: 'Finsai Trade Account Type',
-      accountsTitle: 'Choose Your Account. Trade Your Way.',
+      accountsBadge: 'Find Your Fit',
+      accountsTitle: 'Choose The Right Account For You.',
       accountsDescription:
         'Whether you’re just starting or trading at a higher level, find an account built to match your goals, experience, and trading style.',
 
@@ -533,11 +540,11 @@ async function seedJourneyCards(strapi: Core.Strapi) {
 // ─── Page single types ───────────────────────────────────────────────
 
 async function seedAboutPage(strapi: Core.Strapi) {
-  await seedSingleTypeIfMissing(strapi, 'api::about-page.about-page', {
+  await syncSingleType(strapi, 'api::about-page.about-page', {
       heroBadge: 'Who We Are',
       heroTitle: 'Our Mission, Our Markets, Our Edge',
       heroDescription:
-        'Helping traders access multiple asset classes while benefiting from educational resources, loyalty rewards, and partnership opportunities. ',
+        'Helping traders access multiple asset classes while benefiting from educational resources, loyalty rewards, and partnership opportunities.\u00a0',
       heroPrimaryCtaLabel: 'Open Live Account',
       heroPrimaryCtaHref: 'https://fx.finsaitrade.com/auth/register',
       heroSecondaryCtaLabel: 'Explore Our Services',
@@ -546,7 +553,7 @@ async function seedAboutPage(strapi: Core.Strapi) {
       recognitionTitlePrefix: 'Recognized for Elite Trading ',
       recognitionTitleAccent: 'Excellence',
       recognitionDescription:
-        ' Trusted by a growing community of traders for reliable execution, modern trading tools, and scalable partnership opportunities. ',
+        ' Trusted by a growing community of traders for reliable execution, modern trading tools, and scalable partnership opportunities.\u00a0',
       recognitionStatPrimaryValue: '50k+',
       recognitionStatPrimaryLabel: 'Registered Users',
       recognitionStatSecondaryValue: '3M+',
@@ -610,7 +617,7 @@ async function seedAboutPage(strapi: Core.Strapi) {
 }
 
 async function seedCareersPage(strapi: Core.Strapi) {
-  await seedSingleTypeIfMissing(strapi, 'api::careers-page.careers-page', {
+  await syncSingleType(strapi, 'api::careers-page.careers-page', {
       heroBadge: 'Careers at Finsai Trade',
       heroTitle: 'Build the Future of\nMulti-Asset Trading',
       heroDescription:
@@ -647,7 +654,7 @@ async function seedCareersPage(strapi: Core.Strapi) {
 }
 
 async function seedAccountsPage(strapi: Core.Strapi) {
-  await seedSingleTypeIfMissing(strapi, 'api::accounts-page.accounts-page', {
+  await syncSingleType(strapi, 'api::accounts-page.accounts-page', {
       heroBadge: 'Multi-Asset Trading Accounts',
       heroTitle: 'Find the Right Account for Your Trading Style',
       heroDescription:
@@ -666,12 +673,12 @@ async function seedAccountsPage(strapi: Core.Strapi) {
       whyDescription:
         'Choose an account designed for your trading style with competitive pricing, fast execution, and flexible trading conditions.',
       whyFeatures: [
-        { title: 'Ultra fast order execution',           description: 'Real-time quotes and lightning-fast execution.',                iconKey: 'runner' },
-        { title: 'Raw spreads on ECN & Elite accounts',  description: 'Direct market pricing with no markup.',                          iconKey: 'users' },
-        { title: 'No hidden fees, no requotes',          description: 'Transparent costs and consistent execution.',                    iconKey: 'eyeOff' },
-        { title: 'Swap free account',                    description: 'No overnight financing on qualifying positions.',                iconKey: 'infinity' },
-        { title: 'Access MT5 on mobile, desktop & web',  description: 'Trade anywhere with the world-class MetaTrader 5 platform.',     iconKey: 'headset' },
-        { title: 'Priority support for smart elite traders', description: 'White-glove support for Elite & Smart ECN account holders.', iconKey: 'headphones' },
+        { title: 'Tight spreads across\naccount types',        description: '', iconKey: 'chart' },
+        { title: 'Fast and reliable trade\n execution',        description: '', iconKey: 'bolt' },
+        { title: 'Flexible leverage\n options',               description: '', iconKey: 'scale' },
+        { title: 'Swap-free accounts available',              description: '', iconKey: 'moon' },
+        { title: 'MT5 access on desktop,\n web, and mobile', description: '', iconKey: 'devices' },
+        { title: 'Dedicated multilingual\n support',           description: '', iconKey: 'globe' },
       ],
 
       onboardingBadge: 'Get Started',
@@ -724,8 +731,8 @@ async function seedAccountsPage(strapi: Core.Strapi) {
 }
 
 async function seedPaymentsPage(strapi: Core.Strapi) {
-  await seedSingleTypeIfMissing(strapi, 'api::payments-page.payments-page', {
-      heroBadge: 'SECURE DEPOSITS & WITHDRAWALS',
+  await syncSingleType(strapi, 'api::payments-page.payments-page', {
+      heroBadge: 'Payment Solutions',
       heroTitle: 'Fund Your Trading Account with Secure Payments',
       heroDescription:
         'Deposit and withdraw funds seamlessly using trusted, fast and secure options.',
@@ -769,9 +776,9 @@ async function seedPaymentsPage(strapi: Core.Strapi) {
 }
 
 async function seedServicesPage(strapi: Core.Strapi) {
-  await seedSingleTypeIfMissing(strapi, 'api::services-page.services-page', {
-      heroBadge: 'Professional Trading, Simplified ',
-      heroTitle: 'Powerful Trading Platforms for Every Trader ',
+  await syncSingleType(strapi, 'api::services-page.services-page', {
+      heroBadge: 'Professional Trading, Simplified\u00a0',
+      heroTitle: 'Powerful Trading Platforms for Every Trader\u00a0',
       heroDescription:
         'Discover three powerful trading environments built for ambitious beginners, active traders, and professional market participants.',
       heroPrimaryCtaLabel: 'Start Trading →',
@@ -823,7 +830,7 @@ async function seedServicesPage(strapi: Core.Strapi) {
 }
 
 async function seedPartnershipsPage(strapi: Core.Strapi) {
-  await seedSingleTypeIfMissing(strapi, 'api::partnerships-page.partnerships-page', {
+  await syncSingleType(strapi, 'api::partnerships-page.partnerships-page', {
       heroBadge: 'IB & Affiliate',
       heroTitle: 'Join Finsai Trade as an Introducing Broker',
       heroDescription:
@@ -837,6 +844,8 @@ async function seedPartnershipsPage(strapi: Core.Strapi) {
       whyTitle: 'Why Top IBs Choose Finsai Trade',
       whyDescription:
         'Built for partners who want faster growth, stronger earnings, and long-term success',
+      whyCtaLabel: 'Start Earning Today →',
+      whyCtaHref: 'https://fx.finsaitrade.com/auth/register',
       // IBWhyClient uses `iconKey` as the tab label. To match the FE
       // FALLBACK_TABS labels we set iconKey to the tab name.
       whyFeatures: [
@@ -855,9 +864,8 @@ async function seedPartnershipsPage(strapi: Core.Strapi) {
       statsTitle: 'Join The Fastest Growing Partner Program Now',
       statsDescription:
         'Partners across the globe are scaling their networks with Finsai today.',
-      // Labels follow the `<prefix> <rest>` shape that IBStatsSection
-      // splits on (e.g. "Join Companies helped" → prefix "Join", label
-      // "Companies helped").
+      statsCtaLabel: 'Be Our Partner →',
+      statsCtaHref: 'https://fx.finsaitrade.com/auth/register',
       stats: [
         { value: '20,000 +', label: 'Trusted By Active Partners' },
         { value: '$10,000 +', label: 'Generated in Partner Revenue' },
@@ -868,7 +876,7 @@ async function seedPartnershipsPage(strapi: Core.Strapi) {
       howToBadge: 'How It Works',
       howToTitle: ' How to Become a Successful Introducing Broker',
       howToDescription:
-        'Start earning with an easy partner program built for long-term growth.',
+        'Start earning with an easy partner program built for long-term growth.\u00a0',
       howToSteps: [
         { title: 'Sign Up',       description: 'Create your IB account and access your partner tools.', iconKey: 'pencil' },
         { title: 'Refer Clients', description: 'Share your referral link and grow your network.',       iconKey: 'rocket' },
@@ -899,7 +907,7 @@ async function seedPartnershipsPage(strapi: Core.Strapi) {
 }
 
 async function seedBlogsPage(strapi: Core.Strapi) {
-  await seedSingleTypeIfMissing(strapi, 'api::blogs-page.blogs-page', {
+  await syncSingleType(strapi, 'api::blogs-page.blogs-page', {
       heroBadge: 'Trader Knowledge Hub',
       heroTitle: 'Market Insights & Education',
       heroDescription:
@@ -951,7 +959,7 @@ async function seedBlogsPage(strapi: Core.Strapi) {
 }
 
 async function seedContactusPage(strapi: Core.Strapi) {
-  await seedSingleTypeIfMissing(strapi, 'api::contactus-page.contactus-page', {
+  await syncSingleType(strapi, 'api::contactus-page.contactus-page', {
       heroBadge: 'SUPPORT AT FINSAI TRADE',
       heroTitle: 'We Are  Here to help\nyou',
       heroDescription:
@@ -968,7 +976,7 @@ async function seedContactusPage(strapi: Core.Strapi) {
         { title: 'Quick Response',           description: 'We respond fast and value your time.' },
         { title: 'Transparency',             description: 'Clear communication at every step.' },
         { title: 'Dedicated Resolution',     description: 'We are committed to resolving your issues.' },
-        { title: 'Multi- Language Support',  description: 'English, Hindi, and more.' },
+        { title: 'Multi- Language Support',  description: '' },
       ],
 
       formSubmitLabel: 'MESSAGE US',

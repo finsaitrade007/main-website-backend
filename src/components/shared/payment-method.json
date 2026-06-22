@@ -10,7 +10,6 @@
     "name": { "type": "string", "required": true },
     "description": { "type": "text" },
     "fee": { "type": "string" },
-    "processingTime": { "type": "string" },
-    "icon": { "type": "media", "multiple": false, "allowedTypes": ["images"] }
+    "processingTime": { "type": "string" }
   }
 }

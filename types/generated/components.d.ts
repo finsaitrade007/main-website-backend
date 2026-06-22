@@ -88,15 +88,39 @@ export interface SharedIconFeature extends Struct.ComponentSchema {
 export interface SharedImageCard extends Struct.ComponentSchema {
   collectionName: 'components_shared_image_cards';
   info: {
-    description: 'Card with title, description, and an image. Used in tool grids, news lists, etc.';
-    displayName: 'Image Card';
-    icon: 'picture';
+    description: 'Card with title, description, and link. Used in news lists, etc.';
+    displayName: 'Content Card';
+    icon: 'file';
   };
   attributes: {
     description: Schema.Attribute.Text;
     href: Schema.Attribute.String;
-    image: Schema.Attribute.Media<'images'>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedMetaSocial extends Struct.ComponentSchema {
+  collectionName: 'components_shared_meta_socials';
+  info: {
+    description: 'Social-network specific metadata override (Facebook / Twitter / LinkedIn).';
+    displayName: 'Meta Social';
+    icon: 'share-alt';
+  };
+  attributes: {
+    description: Schema.Attribute.Text &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 200;
+      }>;
+    socialNetwork: Schema.Attribute.Enumeration<
+      ['Facebook', 'Twitter', 'LinkedIn']
+    > &
+      Schema.Attribute.Required;
+    title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 60;
+      }>;
   };
 }
 
@@ -110,7 +134,6 @@ export interface SharedPaymentMethod extends Struct.ComponentSchema {
   attributes: {
     description: Schema.Attribute.Text;
     fee: Schema.Attribute.String;
-    icon: Schema.Attribute.Media<'images'>;
     name: Schema.Attribute.String & Schema.Attribute.Required;
     processingTime: Schema.Attribute.String;
   };
@@ -129,22 +152,6 @@ export interface SharedPoint extends Struct.ComponentSchema {
   };
 }
 
-export interface SharedMetaSocial extends Struct.ComponentSchema {
-  collectionName: 'components_shared_meta_socials';
-  info: {
-    description: 'Social-network specific metadata override (Facebook / Twitter / LinkedIn).';
-    displayName: 'Meta Social';
-    icon: 'share-alt';
-  };
-  attributes: {
-    description: Schema.Attribute.Text & Schema.Attribute.Required;
-    image: Schema.Attribute.Media<'images'>;
-    socialNetwork: Schema.Attribute.Enumeration<['Facebook', 'Twitter', 'LinkedIn']> &
-      Schema.Attribute.Required;
-    title: Schema.Attribute.String & Schema.Attribute.Required;
-  };
-}
-
 export interface SharedSeo extends Struct.ComponentSchema {
   collectionName: 'components_shared_seos';
   info: {
@@ -155,12 +162,23 @@ export interface SharedSeo extends Struct.ComponentSchema {
   attributes: {
     canonicalURL: Schema.Attribute.String;
     keywords: Schema.Attribute.Text;
-    metaDescription: Schema.Attribute.Text & Schema.Attribute.Required;
-    metaImage: Schema.Attribute.Media<'images'>;
-    metaRobots: Schema.Attribute.String;
+    metaDescription: Schema.Attribute.Text &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 160;
+        minLength: 50;
+      }>;
+    metaRobots: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'index, follow'>;
     metaSocial: Schema.Attribute.Component<'shared.meta-social', true>;
-    metaTitle: Schema.Attribute.String & Schema.Attribute.Required;
-    metaViewport: Schema.Attribute.String;
+    metaTitle: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 60;
+        minLength: 5;
+      }>;
+    metaViewport: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'width=device-width, initial-scale=1'>;
     structuredData: Schema.Attribute.JSON;
   };
 }

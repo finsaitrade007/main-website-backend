@@ -21,12 +21,6 @@
       "type": "text",
       "required": true,
       "maxLength": 200
-    },
-    "image": {
-      "type": "media",
-      "multiple": false,
-      "required": false,
-      "allowedTypes": ["images"]
     }
   }
 }

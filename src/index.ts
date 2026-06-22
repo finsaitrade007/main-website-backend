@@ -1,6 +1,4 @@
 import type { Core } from '@strapi/strapi';
-import fs from 'fs';
-import path from 'path';
 
 // ─── Public read permissions ─────────────────────────────────────────
 
@@ -124,43 +122,44 @@ async function setPublicReadPermissions(strapi: Core.Strapi) {
   }
 }
 
-// ─── Media upload helper ─────────────────────────────────────────────
+// ─── Seed helpers ────────────────────────────────────────────────────
 
-async function uploadFileFromSeed(
+async function seedSingleTypeIfMissing(
   strapi: Core.Strapi,
-  relPath: string,
-): Promise<{ id: number; url: string } | null> {
-  const abs = path.join(strapi.dirs.app.root, 'seed-assets', relPath);
+  uid: string,
+  data: Record<string, unknown>,
+  label: string,
+) {
+  const existing = (await strapi.documents(uid as never).findFirst({})) as {
+    documentId: string;
+  } | null;
+  if (existing) return;
 
-  if (!fs.existsSync(abs)) {
-    strapi.log.warn(`[seed] missing asset: ${abs}`);
-    return null;
+  await strapi.documents(uid as never).create({ data, status: 'published' });
+  strapi.log.info(`[bootstrap] Seeded ${label}`);
+}
+
+async function replaceCollection(
+  strapi: Core.Strapi,
+  uid: string,
+  items: Record<string, unknown>[],
+  label: string,
+  isCurrent: (existing: Array<Record<string, unknown>>) => boolean,
+) {
+  const existing = (await strapi.documents(uid as never).findMany({})) as Array<
+    Record<string, unknown>
+  >;
+  if (existing.length > 0 && isCurrent(existing)) return;
+
+  for (const row of existing) {
+    await strapi.documents(uid as never).delete({
+      documentId: row.documentId as string,
+    });
   }
-
-  const stats = fs.statSync(abs);
-  const ext = path.extname(abs).slice(1).toLowerCase();
-  const mime = ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg' : `image/${ext}`;
-  const filename = path.basename(abs);
-
-  // Reuse if already uploaded (so re-running bootstrap doesn't duplicate)
-  const existing = (await strapi.query('plugin::upload.file').findMany({
-    where: { name: filename },
-    limit: 1,
-  })) as Array<{ id: number; url: string }>;
-  if (existing.length > 0) return existing[0];
-
-  const uploaded = (await strapi.plugin('upload').service('upload').upload({
-    data: {},
-    files: {
-      filepath: abs,
-      originalFilename: filename,
-      mimetype: mime,
-      size: stats.size,
-    },
-  })) as Array<{ id: number; url: string }>;
-
-  strapi.log.info(`[seed] uploaded ${relPath} → id=${uploaded[0].id}`);
-  return uploaded[0];
+  for (const item of items) {
+    await strapi.documents(uid as never).create({ data: item, status: 'published' });
+  }
+  strapi.log.info(`[bootstrap] Seeded ${items.length} ${label}`);
 }
 
 // ─── Existing seeds (tiers, faqs) ────────────────────────────────────
@@ -280,11 +279,7 @@ async function seedFaqs(strapi: Core.Strapi) {
 // ─── Homepage single-type ────────────────────────────────────────────
 
 async function seedHomepage(strapi: Core.Strapi) {
-  const existing = await strapi.documents('api::homepage.homepage').findFirst({});
-  if (existing) return;
-
-  await strapi.documents('api::homepage.homepage').create({
-    data: {
+  await seedSingleTypeIfMissing(strapi, 'api::homepage.homepage', {
       heroTitle: 'Trade Global Markets on a Powerful Multi-Asset Trading Platform',
       heroSubtitle:
         'Finsai Trade is a secure trading platform that gives modern traders access to forex, stocks, commodities, and indices through one advanced trading ecosystem.',
@@ -295,8 +290,8 @@ async function seedHomepage(strapi: Core.Strapi) {
       ],
       heroCtaPrimaryLabel: 'Start Trading Now',
       heroCtaPrimaryHref: 'https://fx.finsaitrade.com/auth/register',
-      heroCtaSecondaryLabel: 'Try Demo',
-      heroCtaSecondaryHref: '/demo',
+      heroCtaSecondaryLabel: 'Try Demo ->',
+      heroCtaSecondaryHref: '/contactus',
 
       featuresBadge: 'What Sets Us Apart ',
       featuresTitle: 'Why Top Traders Choose Finsai Trade',
@@ -306,14 +301,14 @@ async function seedHomepage(strapi: Core.Strapi) {
         { iconKey: 'transparency', title: 'No Hidden Fees,\nTransparent Trades' },
         { iconKey: 'assets', title: '1000+\nAssets' },
         { iconKey: 'leverage', title: 'Up to 500x\nLeverage' },
-        { iconKey: 'deposits', title: 'Easy Deposits &\nWithdrawals' },
+        { iconKey: 'deposits', title: 'Instant Withdrawal \nand Deposits' },
         { iconKey: 'learning', title: 'Live\nLearning' },
         { iconKey: 'social', title: 'Social\ntrading' },
       ],
 
       marketsBadge: 'Trade Without Limits ',
-      marketsTitlePrefix: 'Trade Every Market That ',
-      marketsTitleAccent: 'Matters',
+      marketsTitlePrefix: 'Trade Every Market That Matters',
+      marketsTitleAccent: '',
       marketsDescription:
         'Finsai Trade gives modern traders access to 5,000+ trading instruments across forex, crypto, global stocks, indices, commodities, and CFDs.',
 
@@ -346,13 +341,13 @@ async function seedHomepage(strapi: Core.Strapi) {
       ctaBadge: 'Get Started',
       ctaTitle: 'Ready to Explore Global Markets? ',
       ctaDescription:
-        'Open a live account or start with a demo account and explore global markets with Finsai Trade — at\nyour pace, on your terms.',
+        'Join active traders across 100+ global markets. Open a live account or try our demo of  powerful trading at your fingertips.',
       ctaFooterText:
         'Trading Forex and CFDs involves significant risk and may not be suitable for all investors. Please\nensure you fully understand the risks involved.',
       ctaButton1Label: 'Start Trading',
       ctaButton1Href: 'https://fx.finsaitrade.com/auth/register',
       ctaButton2Label: 'Try Demo',
-      ctaButton2Href: '/demo',
+      ctaButton2Href: 'https://fx.finsaitrade.com/auth/register',
       ctaButton3Label: 'Contact Us',
       ctaButton3Href: '/contactus',
 
@@ -364,35 +359,29 @@ async function seedHomepage(strapi: Core.Strapi) {
         keywords:
           'finsai, finsai trade, online trading, forex, CFD, crypto trading, stocks, indices, MT5, multi-asset broker',
       }),
-    },
-    status: 'published',
-  });
-
-  strapi.log.info('[bootstrap] Seeded Homepage single type');
+  }, 'Homepage');
 }
 
-// ─── Collection seeds (with image uploads) ───────────────────────────
+// ─── Collection seeds ────────────────────────────────────────────────
 
 async function seedMarkets(strapi: Core.Strapi) {
-  const count = await strapi.documents('api::market.market').count({});
-  if (count > 0) return;
-
   const items = [
-    { slug: 'forex',   name: 'Forex',   file: 'markets/forex.png',   order: 1, description: 'Trade major, minor, and exotic forex pairs with deep liquidity, competitive spreads, and ultra-fast execution on the global foreign exchange market.' },
-    { slug: 'crypto',  name: 'Crypto',  file: 'markets/crypto.png',  order: 2, description: 'Access leading cryptocurrencies and trade the digital asset market 24/7 with advanced charting tools, real-time pricing, and seamless market execution.' },
-    { slug: 'indices', name: 'Indices', file: 'markets/indices.png', order: 3, description: 'Trade top global stock indices and capture price movements across major economies, including US, European, Asian, and international markets.' },
-    { slug: 'metals',  name: 'Metals',  file: 'markets/metals.png',  order: 4, description: 'Diversify your portfolio with gold, silver, crude oil, natural gas, and other high-demand commodities traded across global markets.' },
-    { slug: 'stocks',  name: 'Stocks',  file: 'markets/stocks.png',  order: 5, description: 'Invest and trade shares of leading international companies listed on major global stock exchanges through a professional online trading platform.' },
+    { slug: 'forex',   name: 'Forex',   order: 1, description: 'Trade major, minor, and exotic forex pairs with deep liquidity, competitive spreads, and ultra-fast execution on the global foreign exchange market.' },
+    { slug: 'crypto',  name: 'Crypto',  order: 2, description: 'Access leading cryptocurrencies and trade the digital asset market 24/7 with advanced charting tools, real-time pricing, and seamless execution.' },
+    { slug: 'indices', name: 'Indices', order: 3, description: 'Trade top global stock indices and capture price movements across major economies, including US, European, Asian, and international markets.' },
+    { slug: 'metals',  name: 'Metals',  order: 4, description: 'Diversify your portfolio with gold, silver, crude oil, natural gas, and other high-demand commodities traded across global markets.' },
+    { slug: 'stocks',  name: 'Stocks',  order: 5, description: 'Invest and trade shares of leading international companies listed on major global stock exchanges through a professional online trading platform.' },
   ];
 
-  for (const m of items) {
-    const img = await uploadFileFromSeed(strapi, m.file);
-    await strapi.documents('api::market.market').create({
-      data: { slug: m.slug, name: m.name, description: m.description, order: m.order, image: img?.id },
-      status: 'published',
-    });
-  }
-  strapi.log.info(`[bootstrap] Seeded ${items.length} markets`);
+  await replaceCollection(
+    strapi,
+    'api::market.market',
+    items,
+    'markets',
+    (existing) =>
+      existing.length === items.length &&
+      existing.some((m) => m.slug === 'crypto' && String(m.description).includes('seamless execution.')),
+  );
 }
 
 async function seedPlatforms(strapi: Core.Strapi) {
@@ -407,8 +396,6 @@ async function seedPlatforms(strapi: Core.Strapi) {
       size: 'large',
       row: 1,
       order: 1,
-      mockup: 'platforms/mt-mockup.png',
-      icon: null,
       description:
         " Access 44+ advanced charting tools, 38 built-in indicators, and 2,000+ custom indicators for deeper market analysis. Monitor price action across 21 timeframes, create custom Expert Advisors (EAs) with MQL5, and test strategies faster with multi-threaded optimization.",
     },
@@ -417,8 +404,6 @@ async function seedPlatforms(strapi: Core.Strapi) {
       size: 'large',
       row: 2,
       order: 3,
-      mockup: null,
-      icon: 'platforms/social-icon.png',
       description:
         'Follow top-performing traders, mirror proven strategies in real time, and grow your portfolio with confidence — all from within the Finsai Trade platform.',
     },
@@ -427,16 +412,12 @@ async function seedPlatforms(strapi: Core.Strapi) {
       size: 'small',
       row: 2,
       order: 4,
-      mockup: null,
-      icon: 'platforms/app-icon.png',
       description:
         'Stay connected to the markets on the go with a fast, secure, and intuitive mobile trading experience.',
     },
   ];
 
   for (const p of items) {
-    const mockup = p.mockup ? await uploadFileFromSeed(strapi, p.mockup) : null;
-    const icon = p.icon ? await uploadFileFromSeed(strapi, p.icon) : null;
     await strapi.documents('api::platform.platform').create({
       data: {
         title: p.title,
@@ -444,8 +425,6 @@ async function seedPlatforms(strapi: Core.Strapi) {
         size: p.size as 'small' | 'large',
         row: p.row,
         order: p.order,
-        mockupImage: mockup?.id,
-        iconImage: icon?.id,
       },
       status: 'published',
     });
@@ -458,15 +437,14 @@ async function seedSteps(strapi: Core.Strapi) {
   if (count > 0) return;
 
   const items = [
-    { number: 1, title: 'Register',      description: 'Create your Finsai Trade account and access global multi-asset markets..', file: 'steps/register.png',      order: 1 },
-    { number: 2, title: 'Verify',        description: 'Verify your identity securely to activate your trading account.',          file: 'steps/verify.png',        order: 2 },
-    { number: 3, title: 'Start Trading', description: 'Trade crypto, forex, commodities, indices, and more.',                     file: 'steps/start-trading.png', order: 3 },
+    { number: 1, title: 'Register',      description: 'Create your Finsai Trade account and access global multi-asset markets..', order: 1 },
+    { number: 2, title: 'Verify',        description: 'Verify your identity securely to activate your trading account.',          order: 2 },
+    { number: 3, title: 'Start Trading', description: 'Trade crypto, forex, commodities, indices, and more.',                     order: 3 },
   ];
 
   for (const s of items) {
-    const img = await uploadFileFromSeed(strapi, s.file);
     await strapi.documents('api::step.step').create({
-      data: { number: s.number, title: s.title, description: s.description, order: s.order, image: img?.id },
+      data: s,
       status: 'published',
     });
   }
@@ -474,66 +452,60 @@ async function seedSteps(strapi: Core.Strapi) {
 }
 
 async function seedAwards(strapi: Core.Strapi) {
-  const count = await strapi.documents('api::award.award').count({});
-  if (count > 0) return;
-
-  // Title/image pairing mirrors LOCAL_AWARD_IMAGES order in AwardsSection.tsx:
-  // award #1 → wld-fi-2024, #2 → wld-fi-2025, #3 → world-forex-award, #4 → innovative-startup.
   const items = [
-    { title: 'The Fastest Growing\nBroker 2024',         file: 'awards/wld-fi-2024.png',        order: 1 },
-    { title: 'The Best IB\nProgram 2025',                file: 'awards/wld-fi-2025.png',        order: 2 },
-    { title: 'The Fastest Growing\nBroker 2025',         file: 'awards/world-forex-award.png',  order: 3 },
-    { title: 'Innovative Startup in\nFinance Award 2023', file: 'awards/innovative-startup.png', order: 4 },
+    { title: 'The Fastest Growing\nBroker 2024',         order: 1 },
+    { title: 'The Fastest Growing\nBroker 2025',         order: 2 },
+    { title: 'The Fastest Growing\nBroker 2025',         order: 3 },
+    { title: 'Innovative Startup in\nFinance Award 2023', order: 4 },
   ];
 
-  for (const a of items) {
-    const img = await uploadFileFromSeed(strapi, a.file);
-    await strapi.documents('api::award.award').create({
-      data: { title: a.title, order: a.order, image: img?.id },
-      status: 'published',
-    });
-  }
-  strapi.log.info(`[bootstrap] Seeded ${items.length} awards`);
+  await replaceCollection(
+    strapi,
+    'api::award.award',
+    items,
+    'awards',
+    (existing) =>
+      existing.length === items.length &&
+      existing.some((a) => a.order === 2 && a.title === items[1].title),
+  );
 }
 
 async function seedTestimonials(strapi: Core.Strapi) {
-  const count = await strapi.documents('api::testimonial.testimonial').count({});
-  if (count > 0) return;
-
   const items = [
     {
-      name: 'Jamson Holo',
+      name: 'David k',
       role: 'Client',
-      initials: 'JH',
+      initials: 'DK',
       quote:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porta, ex at luctus commodo, metus erat dictum sapien, eget dictum turpis felis vitae ligula. Sed porta, ex at luctus commodo,',
+        'Customer support actually listens and resolves issues quickly. It feels like a platform that really cares about its traders.',
       order: 1,
     },
     {
-      name: 'Deepak Rana',
+      name: 'Rohan M',
       role: 'Client',
-      initials: 'DR',
+      initials: 'RM',
       quote:
-        'Good customer care. I got rapidly answered and have my problems solved. I am very thankful to finsai trading support team.',
+        'I’ve tried multiple trading platforms, but Finsai Trade feels different. The interface is clean and intuitive, making it so easy to track trades.',
       order: 2,
     },
     {
-      name: 'Satish Kumar',
+      name: 'Sarah L',
       role: 'Client',
-      initials: 'SK',
+      initials: 'SL',
       quote:
-        'The withdrawal and trading experience was very good. The support was available all the time. I was fearing at first to use the platform as they are new, but their withdrawal process was very easy, hence I am giving 4 stars.',
+        'The webinars are incredibly valuable. I learned strategies in one session that I applied the very next day with great results.',
       order: 3,
     },
   ];
 
-  for (const t of items) {
-    await strapi.documents('api::testimonial.testimonial').create({
-      data: t,
-      status: 'published',
-    });
-  }
-  strapi.log.info(`[bootstrap] Seeded ${items.length} testimonials`);
+  await replaceCollection(
+    strapi,
+    'api::testimonial.testimonial',
+    items,
+    'testimonials',
+    (existing) =>
+      existing.length === items.length && existing[0]?.name === items[0].name,
+  );
 }
 
 async function seedJourneyCards(strapi: Core.Strapi) {
@@ -561,12 +533,8 @@ async function seedJourneyCards(strapi: Core.Strapi) {
 // ─── Page single types ───────────────────────────────────────────────
 
 async function seedAboutPage(strapi: Core.Strapi) {
-  const existing = await strapi.documents('api::about-page.about-page').findFirst({});
-  if (existing) return;
-
-  await strapi.documents('api::about-page.about-page').create({
-    data: {
-      heroBadge: 'About Finsai Trade Ltd',
+  await seedSingleTypeIfMissing(strapi, 'api::about-page.about-page', {
+      heroBadge: 'Who We Are',
       heroTitle: 'Our Mission, Our Markets, Our Edge',
       heroDescription:
         'Helping traders access multiple asset classes while benefiting from educational resources, loyalty rewards, and partnership opportunities. ',
@@ -579,20 +547,20 @@ async function seedAboutPage(strapi: Core.Strapi) {
       recognitionTitleAccent: 'Excellence',
       recognitionDescription:
         ' Trusted by a growing community of traders for reliable execution, modern trading tools, and scalable partnership opportunities. ',
-      recognitionStatPrimaryValue: '53k+',
+      recognitionStatPrimaryValue: '50k+',
       recognitionStatPrimaryLabel: 'Registered Users',
       recognitionStatSecondaryValue: '3M+',
       recognitionStatSecondaryLabel: 'Monthly Worldwide',
 
       builtBadge: 'Our Story',
-      builtTitle: 'Built by Traders. Driven by Purpose',
+      builtTitle: 'Built to Make Global Trading Simpler and More Accessible',
       builtDescription:
-        "Finsai Trade platforms are engineered to deliver seamless execution, institutional-level tools, and reliable uptime — so you stay in control, wherever you trade. Whether you're a beginner or a pro, our platforms help you trade smarter and faster.",
+        'Founded by experienced traders and investors, Finsai Trade combines powerful market access, intuitive technology, and trader education into one seamless ecosystem.',
       builtPoints: [
         {
-          title: 'The Problem',
+          title: 'Built By Traders',
           description:
-            'Trade major, minor, and exotic forex pairs with deep liquidity, competitive spreads, and ultra-fast execution on the global foreign exchange market.',
+            'Created by a team with deep experience across global markets, Finsai Trade was designed to solve the complexity traders face every day.',
         },
         {
           title: 'The Solutions',
@@ -608,9 +576,6 @@ async function seedAboutPage(strapi: Core.Strapi) {
 
       growthBadge: 'Our Principal',
       growthTitle: 'Your Trading Journey,\nStructured for Success.',
-      // growthDescription1 / growthDescription2 are retained in the schema
-      // for backwards compatibility but the FinancialGrowth section no
-      // longer renders them (features are hardcoded in the component).
       growthDescription1:
         'By providing an integrated ecosystem that combines simplicity, innovation, and security, we aim to empower people to take charge of their financial future.',
       growthDescription2:
@@ -641,19 +606,11 @@ async function seedAboutPage(strapi: Core.Strapi) {
         keywords:
           'about finsai trade, multi-asset broker, regulated broker, trading platform, online broker, finsai company',
       }),
-    },
-    status: 'published',
-  });
-
-  strapi.log.info('[bootstrap] Seeded About Page single type');
+  }, 'About Page');
 }
 
 async function seedCareersPage(strapi: Core.Strapi) {
-  const existing = await strapi.documents('api::careers-page.careers-page').findFirst({});
-  if (existing) return;
-
-  await strapi.documents('api::careers-page.careers-page').create({
-    data: {
+  await seedSingleTypeIfMissing(strapi, 'api::careers-page.careers-page', {
       heroBadge: 'Careers at Finsai Trade',
       heroTitle: 'Build the Future of\nMulti-Asset Trading',
       heroDescription:
@@ -686,19 +643,11 @@ async function seedCareersPage(strapi: Core.Strapi) {
         keywords:
           'finsai careers, fintech jobs, trading platform jobs, work at finsai, open positions, careers',
       }),
-    },
-    status: 'published',
-  });
-
-  strapi.log.info('[bootstrap] Seeded Careers Page single type');
+  }, 'Careers Page');
 }
 
 async function seedAccountsPage(strapi: Core.Strapi) {
-  const existing = await strapi.documents('api::accounts-page.accounts-page').findFirst({});
-  if (existing) return;
-
-  await strapi.documents('api::accounts-page.accounts-page').create({
-    data: {
+  await seedSingleTypeIfMissing(strapi, 'api::accounts-page.accounts-page', {
       heroBadge: 'Multi-Asset Trading Accounts',
       heroTitle: 'Find the Right Account for Your Trading Style',
       heroDescription:
@@ -706,18 +655,16 @@ async function seedAccountsPage(strapi: Core.Strapi) {
       heroPrimaryCtaLabel: 'Open Live Account',
       heroPrimaryCtaHref: 'https://fx.finsaitrade.com/auth/register',
       heroSecondaryCtaLabel: 'Try Free Demo',
-      heroSecondaryCtaHref: '/demo',
+      heroSecondaryCtaHref: 'https://fx.finsaitrade.com/auth/register',
 
-      // FE compare table is hardcoded; only title + description are still
-      // sourced from Strapi.
-      compareTitle: 'Account Type',
+      compareTitle: 'Which Account Fits You Best?',
       compareDescription:
-        'Trade with speed, stability, and total control from your desk or on the move. Finsai Trade delivers professional-grade platforms to match your trading needs',
+        'Choose the trading conditions that match your goals, strategy, and experience level.',
 
       whyBadge: 'Why Trade Finsai',
-      whyTitle: 'Why trade with Finsai',
+      whyTitle: 'Everything You Need to Trade with Confidence',
       whyDescription:
-        'Trade with speed, stability, and total control from your desk or on the move. Finsai Trade delivers professional-grade platforms to match your trading needs',
+        'Choose an account designed for your trading style with competitive pricing, fast execution, and flexible trading conditions.',
       whyFeatures: [
         { title: 'Ultra fast order execution',           description: 'Real-time quotes and lightning-fast execution.',                iconKey: 'runner' },
         { title: 'Raw spreads on ECN & Elite accounts',  description: 'Direct market pricing with no markup.',                          iconKey: 'users' },
@@ -773,19 +720,11 @@ async function seedAccountsPage(strapi: Core.Strapi) {
         keywords:
           'trading account, smart choice, smart pro, smart ECN, MT5 account, low spread, high leverage, swap free',
       }),
-    },
-    status: 'published',
-  });
-
-  strapi.log.info('[bootstrap] Seeded Accounts Page single type');
+  }, 'Accounts Page');
 }
 
 async function seedPaymentsPage(strapi: Core.Strapi) {
-  const existing = await strapi.documents('api::payments-page.payments-page').findFirst({});
-  if (existing) return;
-
-  await strapi.documents('api::payments-page.payments-page').create({
-    data: {
+  await seedSingleTypeIfMissing(strapi, 'api::payments-page.payments-page', {
       heroBadge: 'SECURE DEPOSITS & WITHDRAWALS',
       heroTitle: 'Fund Your Trading Account with Secure Payments',
       heroDescription:
@@ -812,10 +751,10 @@ async function seedPaymentsPage(strapi: Core.Strapi) {
       ],
 
       ctaBadge: 'Ready to fund?',
-      ctaTitle: 'Ready to Fund Your Account?',
+      ctaTitle: ' Move Funds Faster. Trade Without Delays.',
       ctaDescription:
-        'Deposit instantly with the method you prefer — your funds are protected end-to-end and available the moment they arrive.',
-      ctaPrimaryLabel: 'Deposit Funds',
+        'Add funds through trusted payment methods and stay focused on opportunities across forex, crypto, indices, and more.',
+      ctaPrimaryLabel: 'Start Funding Now',
       ctaPrimaryHref: 'https://fx.finsaitrade.com/auth/register',
 
       seo: buildSeo({
@@ -826,20 +765,12 @@ async function seedPaymentsPage(strapi: Core.Strapi) {
         keywords:
           'finsai payments, deposit, withdrawal, crypto deposit, UPI deposit, secure payments, trading deposit',
       }),
-    },
-    status: 'published',
-  });
-
-  strapi.log.info('[bootstrap] Seeded Payments Page single type');
+  }, 'Payments Page');
 }
 
 async function seedServicesPage(strapi: Core.Strapi) {
-  const existing = await strapi.documents('api::services-page.services-page').findFirst({});
-  if (existing) return;
-
-  await strapi.documents('api::services-page.services-page').create({
-    data: {
-      heroBadge: 'SIGN IN TO YOUR SECURE WALLET',
+  await seedSingleTypeIfMissing(strapi, 'api::services-page.services-page', {
+      heroBadge: 'Professional Trading, Simplified ',
       heroTitle: 'Powerful Trading Platforms for Every Trader ',
       heroDescription:
         'Discover three powerful trading environments built for ambitious beginners, active traders, and professional market participants.',
@@ -888,19 +819,11 @@ async function seedServicesPage(strapi: Core.Strapi) {
         keywords:
           'finsai services, MT5 platform, social trading, copy trading, trading app, multi-asset broker',
       }),
-    },
-    status: 'published',
-  });
-
-  strapi.log.info('[bootstrap] Seeded Services Page single type');
+  }, 'Services Page');
 }
 
 async function seedPartnershipsPage(strapi: Core.Strapi) {
-  const existing = await strapi.documents('api::partnerships-page.partnerships-page').findFirst({});
-  if (existing) return;
-
-  await strapi.documents('api::partnerships-page.partnerships-page').create({
-    data: {
+  await seedSingleTypeIfMissing(strapi, 'api::partnerships-page.partnerships-page', {
       heroBadge: 'IB & Affiliate',
       heroTitle: 'Join Finsai Trade as an Introducing Broker',
       heroDescription:
@@ -926,7 +849,7 @@ async function seedPartnershipsPage(strapi: Core.Strapi) {
       calculatorBadge: 'Earnings Calculator',
       calculatorTitle: 'Calculate Your Earning Potential',
       calculatorDescription:
-        'Specify the expected values of your partner network',
+        'Adjust referrals and trade volume to estimate your monthly earnings instantly.',
 
       statsBadge: 'Built for Ambitious IBs',
       statsTitle: 'Join The Fastest Growing Partner Program Now',
@@ -936,10 +859,10 @@ async function seedPartnershipsPage(strapi: Core.Strapi) {
       // splits on (e.g. "Join Companies helped" → prefix "Join", label
       // "Companies helped").
       stats: [
-        { value: '20,000 +', label: 'Join Companies helped' },
-        { value: '$10,000 +', label: 'Over Revenue generated' },
-        { value: '330 +', label: 'Over Companies helped' },
-        { value: '230 +', label: 'More than Revenue generated' },
+        { value: '20,000 +', label: 'Trusted By Active Partners' },
+        { value: '$10,000 +', label: 'Generated in Partner Revenue' },
+        { value: '330 +', label: 'Explore Global Markets' },
+        { value: '230 +', label: 'Reached  Partner Milestones' },
       ],
 
       howToBadge: 'How It Works',
@@ -972,19 +895,11 @@ async function seedPartnershipsPage(strapi: Core.Strapi) {
         keywords:
           'introducing broker, IB program, affiliate, partner, finsai partnerships, broker commission, trading affiliate',
       }),
-    },
-    status: 'published',
-  });
-
-  strapi.log.info('[bootstrap] Seeded Partnerships Page single type');
+  }, 'Partnerships Page');
 }
 
 async function seedBlogsPage(strapi: Core.Strapi) {
-  const existing = await strapi.documents('api::blogs-page.blogs-page').findFirst({});
-  if (existing) return;
-
-  await strapi.documents('api::blogs-page.blogs-page').create({
-    data: {
+  await seedSingleTypeIfMissing(strapi, 'api::blogs-page.blogs-page', {
       heroBadge: 'Trader Knowledge Hub',
       heroTitle: 'Market Insights & Education',
       heroDescription:
@@ -1032,28 +947,18 @@ async function seedBlogsPage(strapi: Core.Strapi) {
         keywords:
           'finsai blogs, trading news, market analysis, trading education, finsai webinar, fintech blog',
       }),
-    },
-    status: 'published',
-  });
-
-  strapi.log.info('[bootstrap] Seeded Blogs Page single type');
+  }, 'Blogs Page');
 }
 
 async function seedContactusPage(strapi: Core.Strapi) {
-  const existing = await strapi
-    .documents('api::contactus-page.contactus-page')
-    .findFirst({});
-  if (existing) return;
-
-  await strapi.documents('api::contactus-page.contactus-page').create({
-    data: {
-      heroBadge: 'CAREERS AT FINSAI TRADE',
+  await seedSingleTypeIfMissing(strapi, 'api::contactus-page.contactus-page', {
+      heroBadge: 'SUPPORT AT FINSAI TRADE',
       heroTitle: 'We Are  Here to help\nyou',
       heroDescription:
         'Join a vibrant global team focused on fintech, trading technology, global markets, and customer growth.',
       heroPrimaryCtaLabel: 'View Open Roles',
       heroPrimaryCtaHref: '#open-roles',
-      heroSecondaryCtaLabel: 'Join Our Team  →',
+      heroSecondaryCtaLabel: 'Reach Out to our Team',
       heroSecondaryCtaHref: '#contact-form',
 
       supportTitle: 'Global Support Availability',
@@ -1078,11 +983,7 @@ async function seedContactusPage(strapi: Core.Strapi) {
         keywords:
           'contact finsai, customer support, finsai help, partnership inquiry, broker support, contact us',
       }),
-    },
-    status: 'published',
-  });
-
-  strapi.log.info('[bootstrap] Seeded Contact Us Page single type');
+  }, 'Contact Us Page');
 }
 
 // ─── Lifecycle ───────────────────────────────────────────────────────

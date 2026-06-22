@@ -494,6 +494,7 @@ export interface ApiAboutPageAboutPage extends Struct.SingleTypeSchema {
     recognitionStatSecondaryValue: Schema.Attribute.String;
     recognitionTitleAccent: Schema.Attribute.String;
     recognitionTitlePrefix: Schema.Attribute.String;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -576,6 +577,7 @@ export interface ApiAccountsPageAccountsPage extends Struct.SingleTypeSchema {
     onboardingDescription: Schema.Attribute.Text;
     onboardingTitle: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -601,7 +603,6 @@ export interface ApiAwardAward extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    image: Schema.Attribute.Media<'images'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::award.award'> &
       Schema.Attribute.Private;
@@ -647,9 +648,52 @@ export interface ApiBlogsPageBlogsPage extends Struct.SingleTypeSchema {
     newsDescription: Schema.Attribute.Text;
     newsTitle: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+  };
+}
+
+export interface ApiCareersPageCareersPage extends Struct.SingleTypeSchema {
+  collectionName: 'careers_pages';
+  info: {
+    description: 'Editorial text for the /careers page.';
+    displayName: 'Careers Page';
+    pluralName: 'careers-pages';
+    singularName: 'careers-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    formSubmitLabel: Schema.Attribute.String;
+    formTermsText: Schema.Attribute.Text;
+    formTitle: Schema.Attribute.String;
+    heroBadge: Schema.Attribute.String;
+    heroDescription: Schema.Attribute.Text;
+    heroPrimaryCtaHref: Schema.Attribute.String;
+    heroPrimaryCtaLabel: Schema.Attribute.String;
+    heroSecondaryCtaHref: Schema.Attribute.String;
+    heroSecondaryCtaLabel: Schema.Attribute.String;
+    heroTitle: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::careers-page.careers-page'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    workspaceBenefits: Schema.Attribute.Component<'shared.point', true>;
+    workspaceDescription: Schema.Attribute.Text;
+    workspaceTitle: Schema.Attribute.String;
   };
 }
 
@@ -694,47 +738,6 @@ export interface ApiContactusPageContactusPage extends Struct.SingleTypeSchema {
   };
 }
 
-export interface ApiCareersPageCareersPage extends Struct.SingleTypeSchema {
-  collectionName: 'careers_pages';
-  info: {
-    description: 'Editorial text for the /careers page.';
-    displayName: 'Careers Page';
-    pluralName: 'careers-pages';
-    singularName: 'careers-page';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    formSubmitLabel: Schema.Attribute.String;
-    formTermsText: Schema.Attribute.Text;
-    formTitle: Schema.Attribute.String;
-    heroBadge: Schema.Attribute.String;
-    heroDescription: Schema.Attribute.Text;
-    heroPrimaryCtaHref: Schema.Attribute.String;
-    heroPrimaryCtaLabel: Schema.Attribute.String;
-    heroSecondaryCtaHref: Schema.Attribute.String;
-    heroSecondaryCtaLabel: Schema.Attribute.String;
-    heroTitle: Schema.Attribute.String;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::careers-page.careers-page'
-    > &
-      Schema.Attribute.Private;
-    publishedAt: Schema.Attribute.DateTime;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    workspaceBenefits: Schema.Attribute.Component<'shared.point', true>;
-    workspaceDescription: Schema.Attribute.Text;
-    workspaceTitle: Schema.Attribute.String;
-  };
-}
-
 export interface ApiFaqFaq extends Struct.CollectionTypeSchema {
   collectionName: 'faqs';
   info: {
@@ -767,7 +770,7 @@ export interface ApiFaqFaq extends Struct.CollectionTypeSchema {
 export interface ApiHomepageHomepage extends Struct.SingleTypeSchema {
   collectionName: 'homepages';
   info: {
-    description: 'All editorial text shown on the homepage. Lists with their own images (markets, platforms, steps, awards, testimonials, journey cards) live in separate collection types.';
+    description: 'All editorial text shown on the homepage. Markets, platforms, steps, awards, testimonials, and journey cards live in separate collection types (text only \u2014 images are managed in the frontend).';
     displayName: 'Homepage';
     pluralName: 'homepages';
     singularName: 'homepage';
@@ -823,6 +826,7 @@ export interface ApiHomepageHomepage extends Struct.SingleTypeSchema {
     platformsDescription: Schema.Attribute.Text;
     platformsTitle: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
     stepsBadge: Schema.Attribute.String;
     stepsTitle: Schema.Attribute.String;
     testimonialsBadge: Schema.Attribute.String;
@@ -887,7 +891,6 @@ export interface ApiMarketMarket extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     description: Schema.Attribute.Text & Schema.Attribute.Required;
-    image: Schema.Attribute.Media<'images'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -945,6 +948,7 @@ export interface ApiPartnershipsPagePartnershipsPage
     marketingItems: Schema.Attribute.Component<'shared.icon-feature', true>;
     marketingTitle: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
     stats: Schema.Attribute.Component<'shared.stat', true>;
     statsBadge: Schema.Attribute.String;
     statsDescription: Schema.Attribute.Text;
@@ -997,6 +1001,7 @@ export interface ApiPaymentsPagePaymentsPage extends Struct.SingleTypeSchema {
     methodsDescription: Schema.Attribute.Text;
     methodsTitle: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
     trustText: Schema.Attribute.Text;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -1020,14 +1025,12 @@ export interface ApiPlatformPlatform extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     description: Schema.Attribute.Text & Schema.Attribute.Required;
-    iconImage: Schema.Attribute.Media<'images'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::platform.platform'
     > &
       Schema.Attribute.Private;
-    mockupImage: Schema.Attribute.Media<'images'>;
     order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     publishedAt: Schema.Attribute.DateTime;
     row: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<1>;
@@ -1035,62 +1038,6 @@ export interface ApiPlatformPlatform extends Struct.CollectionTypeSchema {
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'small'>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
-export interface ApiRewardsPageRewardsPage extends Struct.SingleTypeSchema {
-  collectionName: 'rewards_pages';
-  info: {
-    description: 'Editorial text for the /rewards page.';
-    displayName: 'Rewards Page';
-    pluralName: 'rewards-pages';
-    singularName: 'rewards-page';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    ctaDescription: Schema.Attribute.Text;
-    ctaPrimaryHref: Schema.Attribute.String;
-    ctaPrimaryLabel: Schema.Attribute.String;
-    ctaTitle: Schema.Attribute.String;
-    heroBadge: Schema.Attribute.String;
-    heroDescription: Schema.Attribute.Text;
-    heroPrimaryCtaHref: Schema.Attribute.String;
-    heroPrimaryCtaLabel: Schema.Attribute.String;
-    heroSecondaryCtaHref: Schema.Attribute.String;
-    heroSecondaryCtaLabel: Schema.Attribute.String;
-    heroTitle: Schema.Attribute.String;
-    ibCtaHref: Schema.Attribute.String;
-    ibCtaLabel: Schema.Attribute.String;
-    ibDescription: Schema.Attribute.Text;
-    ibFeatures: Schema.Attribute.Component<'shared.icon-feature', true>;
-    ibStats: Schema.Attribute.Component<'shared.stat', true>;
-    ibTitle: Schema.Attribute.String;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::rewards-page.rewards-page'
-    > &
-      Schema.Attribute.Private;
-    loyaltyCtaHref: Schema.Attribute.String;
-    loyaltyCtaLabel: Schema.Attribute.String;
-    loyaltyDescription: Schema.Attribute.Text;
-    loyaltyPerks: Schema.Attribute.Component<'shared.tagline', true>;
-    loyaltyTiers: Schema.Attribute.Component<'shared.icon-feature', true>;
-    loyaltyTitle: Schema.Attribute.String;
-    promotionCards: Schema.Attribute.Component<'shared.icon-feature', true>;
-    promotionsCtaHref: Schema.Attribute.String;
-    promotionsCtaLabel: Schema.Attribute.String;
-    promotionsDescription: Schema.Attribute.Text;
-    promotionsTitle: Schema.Attribute.String;
-    publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1133,6 +1080,7 @@ export interface ApiServicesPageServicesPage extends Struct.SingleTypeSchema {
     platformsDescription: Schema.Attribute.Text;
     platformsTitle: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
     suiteBadge: Schema.Attribute.String;
     suiteDescription: Schema.Attribute.Text;
     suiteItems: Schema.Attribute.Component<'shared.icon-feature', true>;
@@ -1159,7 +1107,6 @@ export interface ApiStepStep extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     description: Schema.Attribute.Text & Schema.Attribute.Required;
-    image: Schema.Attribute.Media<'images'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::step.step'> &
       Schema.Attribute.Private;
@@ -1185,7 +1132,6 @@ export interface ApiTestimonialTestimonial extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    avatar: Schema.Attribute.Media<'images'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1205,66 +1151,6 @@ export interface ApiTestimonialTestimonial extends Struct.CollectionTypeSchema {
     publishedAt: Schema.Attribute.DateTime;
     quote: Schema.Attribute.Text & Schema.Attribute.Required;
     role: Schema.Attribute.String & Schema.Attribute.DefaultTo<'Client'>;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
-export interface ApiToolsPageToolsPage extends Struct.SingleTypeSchema {
-  collectionName: 'tools_pages';
-  info: {
-    description: 'Editorial text for the /tools page.';
-    displayName: 'Tools Page';
-    pluralName: 'tools-pages';
-    singularName: 'tools-page';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    builtForBadge: Schema.Attribute.String;
-    builtForDescription: Schema.Attribute.Text;
-    builtForFeatures: Schema.Attribute.Component<'shared.icon-feature', true>;
-    builtForTitle: Schema.Attribute.String;
-    chartingCards: Schema.Attribute.Component<'shared.image-card', true>;
-    chartingDescription: Schema.Attribute.Text;
-    chartingTitle: Schema.Attribute.String;
-    communityCards: Schema.Attribute.Component<'shared.image-card', true>;
-    communityDescription: Schema.Attribute.Text;
-    communityTitle: Schema.Attribute.String;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    ctaDescription: Schema.Attribute.Text;
-    ctaPrimaryHref: Schema.Attribute.String;
-    ctaPrimaryLabel: Schema.Attribute.String;
-    ctaSecondaryHref: Schema.Attribute.String;
-    ctaSecondaryLabel: Schema.Attribute.String;
-    ctaTitle: Schema.Attribute.String;
-    heroBadge: Schema.Attribute.String;
-    heroDescription: Schema.Attribute.Text;
-    heroPrimaryCtaHref: Schema.Attribute.String;
-    heroPrimaryCtaLabel: Schema.Attribute.String;
-    heroProofText: Schema.Attribute.Text;
-    heroSecondaryCtaHref: Schema.Attribute.String;
-    heroSecondaryCtaLabel: Schema.Attribute.String;
-    heroTitle: Schema.Attribute.String;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::tools-page.tools-page'
-    > &
-      Schema.Attribute.Private;
-    marketDataDescription: Schema.Attribute.Text;
-    marketDataTitle: Schema.Attribute.String;
-    publishedAt: Schema.Attribute.DateTime;
-    riskCards: Schema.Attribute.Component<'shared.image-card', true>;
-    riskDescription: Schema.Attribute.Text;
-    riskTitle: Schema.Attribute.String;
-    strategyCards: Schema.Attribute.Component<'shared.image-card', true>;
-    strategyDescription: Schema.Attribute.Text;
-    strategyTitle: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1796,11 +1682,9 @@ declare module '@strapi/strapi' {
       'api::partnerships-page.partnerships-page': ApiPartnershipsPagePartnershipsPage;
       'api::payments-page.payments-page': ApiPaymentsPagePaymentsPage;
       'api::platform.platform': ApiPlatformPlatform;
-      'api::rewards-page.rewards-page': ApiRewardsPageRewardsPage;
       'api::services-page.services-page': ApiServicesPageServicesPage;
       'api::step.step': ApiStepStep;
       'api::testimonial.testimonial': ApiTestimonialTestimonial;
-      'api::tools-page.tools-page': ApiToolsPageToolsPage;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

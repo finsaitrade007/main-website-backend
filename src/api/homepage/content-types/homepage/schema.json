@@ -5,7 +5,7 @@
     "singularName": "homepage",
     "pluralName": "homepages",
     "displayName": "Homepage",
-    "description": "All editorial text shown on the homepage. Lists with their own images (markets, platforms, steps, awards, testimonials, journey cards) live in separate collection types."
+    "description": "All editorial text shown on the homepage. Markets, platforms, steps, awards, testimonials, and journey cards live in separate collection types (text only — images are managed in the frontend)."
   },
   "options": {
     "draftAndPublish": true

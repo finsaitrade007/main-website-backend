@@ -19,8 +19,6 @@
       "required": true
     },
     "row": { "type": "integer", "default": 1 },
-    "mockupImage": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
-    "iconImage": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
     "order": { "type": "integer", "default": 0 }
   }
 }

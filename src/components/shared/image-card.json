@@ -1,15 +1,14 @@
 {
   "collectionName": "components_shared_image_cards",
   "info": {
-    "displayName": "Image Card",
-    "description": "Card with title, description, and an image. Used in tool grids, news lists, etc.",
-    "icon": "picture"
+    "displayName": "Content Card",
+    "description": "Card with title, description, and link. Used in news lists, etc.",
+    "icon": "file"
   },
   "options": {},
   "attributes": {
     "title": { "type": "string", "required": true },
     "description": { "type": "text" },
-    "image": { "type": "media", "multiple": false, "allowedTypes": ["images"] },
     "href": { "type": "string" }
   }
 }

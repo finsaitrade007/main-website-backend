@@ -5,7 +5,7 @@
     "singularName": "faq",
     "pluralName": "faqs",
     "displayName": "FAQ",
-    "description": "Frequently asked questions"
+    "description": "Frequently asked questions grouped by page section (homepage, accounts, services, payments, partnerships, social-trading)."
   },
   "options": {
     "draftAndPublish": true
@@ -20,8 +20,18 @@
       "type": "text",
       "required": true
     },
-    "category": {
-      "type": "string"
+    "section": {
+      "type": "enumeration",
+      "enum": [
+        "homepage",
+        "accounts",
+        "services",
+        "payments",
+        "partnerships",
+        "social-trading"
+      ],
+      "required": true,
+      "default": "homepage"
     },
     "order": {
       "type": "integer",

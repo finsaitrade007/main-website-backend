@@ -741,7 +741,7 @@ export interface ApiContactusPageContactusPage extends Struct.SingleTypeSchema {
 export interface ApiFaqFaq extends Struct.CollectionTypeSchema {
   collectionName: 'faqs';
   info: {
-    description: 'Frequently asked questions';
+    description: 'Frequently asked questions grouped by page section (homepage, accounts, services, payments, partnerships, social-trading).';
     displayName: 'FAQ';
     pluralName: 'faqs';
     singularName: 'faq';
@@ -751,7 +751,6 @@ export interface ApiFaqFaq extends Struct.CollectionTypeSchema {
   };
   attributes: {
     answer: Schema.Attribute.Text & Schema.Attribute.Required;
-    category: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -761,6 +760,18 @@ export interface ApiFaqFaq extends Struct.CollectionTypeSchema {
     order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     publishedAt: Schema.Attribute.DateTime;
     question: Schema.Attribute.String & Schema.Attribute.Required;
+    section: Schema.Attribute.Enumeration<
+      [
+        'homepage',
+        'accounts',
+        'services',
+        'payments',
+        'partnerships',
+        'social-trading',
+      ]
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'homepage'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

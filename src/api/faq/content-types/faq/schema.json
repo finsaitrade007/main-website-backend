@@ -5,21 +5,13 @@
     "singularName": "faq",
     "pluralName": "faqs",
     "displayName": "FAQ",
-    "description": "Frequently asked questions grouped by page section (homepage, accounts, services, payments, partnerships, social-trading)."
+    "description": "Frequently asked questions grouped by page section."
   },
   "options": {
     "draftAndPublish": true
   },
   "pluginOptions": {},
   "attributes": {
-    "question": {
-      "type": "string",
-      "required": true
-    },
-    "answer": {
-      "type": "text",
-      "required": true
-    },
     "section": {
       "type": "enumeration",
       "enum": [
@@ -30,12 +22,19 @@
         "partnerships",
         "social-trading"
       ],
-      "required": true,
-      "default": "homepage"
+      "required": true
     },
     "order": {
       "type": "integer",
       "default": 0
+    },
+    "question": {
+      "type": "string",
+      "required": true
+    },
+    "answer": {
+      "type": "text",
+      "required": true
     }
   }
 }

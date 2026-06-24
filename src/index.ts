@@ -57,7 +57,8 @@ function buildSeo(args: {
   keywords?: string;
   type?: 'website' | 'article';
 }): SeoSeed {
-  const canonicalURL = `${SITE_BASE}${args.path === '/' ? '' : args.path}`;
+  const canonicalURL =
+    args.path === '/' ? `${SITE_BASE}/` : `${SITE_BASE}${args.path}`;
   return {
     metaTitle: args.title.length > 60 ? args.title.slice(0, 60) : args.title,
     metaDescription:
@@ -366,12 +367,12 @@ async function seedHomepage(strapi: Core.Strapi) {
       ctaButton3Href: '/contactus',
 
       seo: buildSeo({
-        title: 'Finsai Trade — Trade Global Markets Without Limits',
+        title: 'Finsai Trade | Multi-Asset Online Trading Platform',
         description:
-          'The powerful multi-asset trading platform for modern traders. Trade Forex, Crypto, Stocks, Indices, and Metals with tight spreads, up to 500x leverage, and 24/7 support.',
+          'Trade forex, stocks, cryptocurrencies, commodities, indices, and CFDs through a professional multi-asset trading platform powered by MetaTrader 5 (MT5).',
         path: '/',
         keywords:
-          'finsai, finsai trade, online trading, forex, CFD, crypto trading, stocks, indices, MT5, multi-asset broker',
+          'finsai, finsai trade, online trading, forex, CFD, crypto trading, stocks, indices, MT5, MetaTrader 5, multi-asset broker',
       }),
   }, 'Homepage');
 }
@@ -615,7 +616,7 @@ async function seedAboutPage(strapi: Core.Strapi) {
       seo: buildSeo({
         title: 'About Finsai Trade — Multi-Asset Broker & Trading Ecosystem',
         description:
-          'Finsai Trade is a regulated multi-asset broker built by traders. Learn about our mission, recognition, and the integrated platform powering modern markets.',
+          'Finsai Trade is a multi-asset broker built by traders. Discover our mission, vision, awards and the team driving financial growth in the digital era.',
         path: '/about',
         keywords:
           'about finsai trade, multi-asset broker, regulated broker, trading platform, online broker, finsai company',
@@ -652,7 +653,7 @@ async function seedCareersPage(strapi: Core.Strapi) {
       seo: buildSeo({
         title: 'Careers at Finsai Trade — Build the Future of Trading',
         description:
-          'Join a global fintech team building the next generation of multi-asset trading. Open roles in engineering, trading, partnerships, and customer growth.',
+          'Join the Finsai Trade team and help build the future of multi-asset trading.',
         path: '/careers',
         keywords:
           'finsai careers, fintech jobs, trading platform jobs, work at finsai, open positions, careers',
@@ -729,7 +730,7 @@ async function seedAccountsPage(strapi: Core.Strapi) {
       seo: buildSeo({
         title: 'Trading Accounts | Finsai Trade — Smart Choice, Pro & ECN',
         description:
-          'Compare Finsai Trade account types — Smart Choice, Smart Pro, and Smart ECN. Tight spreads, up to 1:500 leverage, MT5 across all devices, swap-free.',
+          'Compare Finsai Trade account types and pick the one that fits your style — Smart Choice, Smart Pro, and Smart ECN.',
         path: '/accounts',
         keywords:
           'trading account, smart choice, smart pro, smart ECN, MT5 account, low spread, high leverage, swap free',
@@ -774,7 +775,7 @@ async function seedPaymentsPage(strapi: Core.Strapi) {
       seo: buildSeo({
         title: 'Payments — Secure Deposits & Withdrawals | Finsai Trade',
         description:
-          'Fund your Finsai Trade account with cards, UPI, e-wallets, crypto, or bank transfer. Instant deposits, fast withdrawals, and PCI DSS-grade security.',
+          'Fund your Finsai Trade account securely with cards, UPI, e-wallets, crypto, and bank transfer. Industry-leading PCI DSS encryption.',
         path: '/payments',
         keywords:
           'finsai payments, deposit, withdrawal, crypto deposit, UPI deposit, secure payments, trading deposit',
@@ -993,7 +994,7 @@ async function seedContactusPage(strapi: Core.Strapi) {
       seo: buildSeo({
         title: 'Contact Finsai Trade — Global Support Across Fintech',
         description:
-          'Get in touch with Finsai Trade for support, partnerships, and inquiries. Multilingual support team available across global markets — fast and transparent.',
+          'Get in touch with the Finsai Trade team for support, partnerships, and inquiries.',
         path: '/contactus',
         keywords:
           'contact finsai, customer support, finsai help, partnership inquiry, broker support, contact us',
@@ -1025,5 +1026,8 @@ export default {
     await seedPartnershipsPage(strapi);
     await seedBlogsPage(strapi);
     await seedContactusPage(strapi);
+    strapi.log.info(
+      '[bootstrap] Single-type pages and SEO synced with frontend fallbacks',
+    );
   },
 };

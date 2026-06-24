@@ -48,7 +48,7 @@ type SeoSeed = {
   }[];
 };
 
-const SITE_BASE = 'https://www.finsaitrade.com';
+const SITE_BASE = 'https://finsaitrade.com';
 
 function buildSeo(args: {
   title: string;

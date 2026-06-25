@@ -381,11 +381,11 @@ async function seedHomepage(strapi: Core.Strapi) {
 
 async function seedMarkets(strapi: Core.Strapi) {
   const items = [
-    { slug: 'forex',   name: 'Forex',   order: 1, description: 'Trade major, minor, and exotic forex pairs with deep liquidity, competitive spreads, and ultra-fast execution on the global foreign exchange market.' },
-    { slug: 'crypto',  name: 'Crypto',  order: 2, description: 'Access leading cryptocurrencies and trade the digital asset market 24/7 with advanced charting tools, real-time pricing, and seamless execution.' },
-    { slug: 'indices', name: 'Indices', order: 3, description: 'Trade top global stock indices and capture price movements across major economies, including US, European, Asian, and international markets.' },
-    { slug: 'metals',  name: 'Metals',  order: 4, description: 'Diversify your portfolio with gold, silver, crude oil, natural gas, and other high-demand commodities traded across global markets.' },
-    { slug: 'stocks',  name: 'Stocks',  order: 5, description: 'Invest and trade shares of leading international companies listed on major global stock exchanges through a professional online trading platform.' },
+    { slug: 'forex',   name: 'Forex',   order: 1, description: 'Trade the global forex market with a trusted forex broker, offering major, minor, and exotic currency pairs, deep liquidity, competitive spreads, and ultra-fast execution.' },
+    { slug: 'crypto',  name: 'Crypto',  order: 2, description: 'Access leading cryptocurrency trading markets 24/7 with real-time pricing, advanced charting, and seamless execution on a professional trading platform.' },
+    { slug: 'indices', name: 'Indices', order: 3, description: 'Trade major stock indices from the US, Europe, Asia, and global markets to capitalize on market movements through advanced indices trading tools.' },
+    { slug: 'metals',  name: 'Metals',  order: 4, description: 'Explore commodity trading opportunities with gold, silver, crude oil, natural gas, and other globally traded commodities from a single platform.' },
+    { slug: 'stocks',  name: 'Stocks',  order: 5, description: 'Experience online stock trading with access to leading international companies listed on major global stock exchanges through one professional trading platform.' },
   ];
 
   await replaceCollection(
@@ -412,7 +412,7 @@ async function seedPlatforms(strapi: Core.Strapi) {
       row: 1,
       order: 1,
       description:
-        " Access 44+ advanced charting tools, 38 built-in indicators, and 2,000+ custom indicators for deeper market analysis. Monitor price action across 21 timeframes, create custom Expert Advisors (EAs) with MQL5, and test strategies faster with multi-threaded optimization.",
+        " Trade on MetaTrader 5 (MT5), the leading forex trading platform. Leverage 44+ charting tools, 38 built-in + 2,000+ custom indicators, and 21 timeframes for deeper analysis. Create expert advisors with MQL5 and optimize algorithmic trading strategies through multi-threaded testing.",
     },
     {
       title: 'Social Trading',
@@ -420,7 +420,7 @@ async function seedPlatforms(strapi: Core.Strapi) {
       row: 2,
       order: 3,
       description:
-        'Follow top-performing traders, mirror proven strategies in real time, and grow your portfolio with confidence — all from within the Finsai Trade platform.',
+        "Follow top-performing traders and mirror proven strategies in real time with Finsai Trade's social trading and copy trading platform, grow your portfolio with confidence, all in one place.",
     },
     {
       title: 'App & More — Coming soon',
@@ -428,7 +428,7 @@ async function seedPlatforms(strapi: Core.Strapi) {
       row: 2,
       order: 4,
       description:
-        'Stay connected to the markets on the go with a fast, secure, and intuitive mobile trading experience.',
+        'Stay connected to the markets on the go with the Finsai Trade mobile trading app fast, secure, and intuitive trading app experience.',
     },
   ];
 

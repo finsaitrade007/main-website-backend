@@ -1,0 +1,3 @@
+import { factories } from '@strapi/strapi';
+
+export default factories.createCoreService('api::social-trading-page.social-trading-page');

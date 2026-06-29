@@ -1,0 +1,20 @@
+{
+  "kind": "singleType",
+  "collectionName": "regulations_pages",
+  "info": {
+    "singularName": "regulations-page",
+    "pluralName": "regulations-pages",
+    "displayName": "Regulations Page",
+    "description": "Page title and SEO for the /regulations page."
+  },
+  "options": { "draftAndPublish": true },
+  "pluginOptions": {},
+  "attributes": {
+    "pageTitle": { "type": "string" },
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo"
+    }
+  }
+}

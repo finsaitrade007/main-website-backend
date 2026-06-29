@@ -588,6 +588,36 @@ export interface ApiAccountsPageAccountsPage extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiAmlPolicyPageAmlPolicyPage extends Struct.SingleTypeSchema {
+  collectionName: 'aml_policy_pages';
+  info: {
+    description: 'Page title and SEO for the /aml-policy page.';
+    displayName: 'AML Policy Page';
+    pluralName: 'aml-policy-pages';
+    singularName: 'aml-policy-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::aml-policy-page.aml-policy-page'
+    > &
+      Schema.Attribute.Private;
+    pageTitle: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiAwardAward extends Struct.CollectionTypeSchema {
   collectionName: 'awards';
   info: {
@@ -643,10 +673,6 @@ export interface ApiBlogsPageBlogsPage extends Struct.SingleTypeSchema {
       'api::blogs-page.blogs-page'
     > &
       Schema.Attribute.Private;
-    newsArticles: Schema.Attribute.Component<'shared.image-card', true>;
-    newsBadge: Schema.Attribute.String;
-    newsDescription: Schema.Attribute.Text;
-    newsTitle: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false>;
     updatedAt: Schema.Attribute.DateTime;
@@ -675,8 +701,6 @@ export interface ApiCareersPageCareersPage extends Struct.SingleTypeSchema {
     formTitle: Schema.Attribute.String;
     heroBadge: Schema.Attribute.String;
     heroDescription: Schema.Attribute.Text;
-    heroPrimaryCtaHref: Schema.Attribute.String;
-    heroPrimaryCtaLabel: Schema.Attribute.String;
     heroSecondaryCtaHref: Schema.Attribute.String;
     heroSecondaryCtaLabel: Schema.Attribute.String;
     heroTitle: Schema.Attribute.String;
@@ -694,6 +718,99 @@ export interface ApiCareersPageCareersPage extends Struct.SingleTypeSchema {
     workspaceBenefits: Schema.Attribute.Component<'shared.point', true>;
     workspaceDescription: Schema.Attribute.Text;
     workspaceTitle: Schema.Attribute.String;
+  };
+}
+
+export interface ApiClientAgreementPageClientAgreementPage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'client_agreement_pages';
+  info: {
+    description: 'Page title and SEO for the /client-agreement page.';
+    displayName: 'Client Agreement Page';
+    pluralName: 'client-agreement-pages';
+    singularName: 'client-agreement-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::client-agreement-page.client-agreement-page'
+    > &
+      Schema.Attribute.Private;
+    pageTitle: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiComplaintsManagementPageComplaintsManagementPage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'complaints_management_pages';
+  info: {
+    description: 'Page title and SEO for the /complaints-management page.';
+    displayName: 'Complaints Management Page';
+    pluralName: 'complaints-management-pages';
+    singularName: 'complaints-management-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::complaints-management-page.complaints-management-page'
+    > &
+      Schema.Attribute.Private;
+    pageTitle: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiConflictsOfInterestPolicyPageConflictsOfInterestPolicyPage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'conflicts_of_interest_policy_pages';
+  info: {
+    description: 'Page title and SEO for the /conflicts-of-interest-policy page.';
+    displayName: 'Conflicts of Interest Policy Page';
+    pluralName: 'conflicts-of-interest-policy-pages';
+    singularName: 'conflicts-of-interest-policy-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::conflicts-of-interest-policy-page.conflicts-of-interest-policy-page'
+    > &
+      Schema.Attribute.Private;
+    pageTitle: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
   };
 }
 
@@ -716,8 +833,6 @@ export interface ApiContactusPageContactusPage extends Struct.SingleTypeSchema {
     formTermsText: Schema.Attribute.Text;
     heroBadge: Schema.Attribute.String;
     heroDescription: Schema.Attribute.Text;
-    heroPrimaryCtaHref: Schema.Attribute.String;
-    heroPrimaryCtaLabel: Schema.Attribute.String;
     heroSecondaryCtaHref: Schema.Attribute.String;
     heroSecondaryCtaLabel: Schema.Attribute.String;
     heroTitle: Schema.Attribute.String;
@@ -777,10 +892,42 @@ export interface ApiFaqFaq extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiGlossaryPageGlossaryPage extends Struct.SingleTypeSchema {
+  collectionName: 'glossary_pages';
+  info: {
+    description: 'Editorial text and SEO for the /glossary page.';
+    displayName: 'Glossary Page';
+    pluralName: 'glossary-pages';
+    singularName: 'glossary-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    heroBadge: Schema.Attribute.String;
+    heroDescription: Schema.Attribute.Text;
+    heroTitle: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::glossary-page.glossary-page'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiHomepageHomepage extends Struct.SingleTypeSchema {
   collectionName: 'homepages';
   info: {
-    description: 'All editorial text shown on the homepage. Markets, platforms, steps, awards, testimonials, and journey cards live in separate collection types (text only \u2014 images are managed in the frontend).';
+    description: 'All editorial text shown on the homepage. Markets, platforms, steps, awards, and testimonials live in separate collection types (text only \u2014 images are managed in the frontend).';
     displayName: 'Homepage';
     pluralName: 'homepages';
     singularName: 'homepage';
@@ -819,9 +966,6 @@ export interface ApiHomepageHomepage extends Struct.SingleTypeSchema {
     heroSubtitle: Schema.Attribute.Text;
     heroTaglines: Schema.Attribute.Component<'shared.tagline', true>;
     heroTitle: Schema.Attribute.String & Schema.Attribute.Required;
-    journeyBadge: Schema.Attribute.String;
-    journeyDescription: Schema.Attribute.Text;
-    journeyTitle: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -841,44 +985,6 @@ export interface ApiHomepageHomepage extends Struct.SingleTypeSchema {
     stepsTitle: Schema.Attribute.String;
     testimonialsBadge: Schema.Attribute.String;
     testimonialsTitle: Schema.Attribute.String;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
-export interface ApiJourneyCardJourneyCard extends Struct.CollectionTypeSchema {
-  collectionName: 'journey_cards';
-  info: {
-    description: "Card in the 'Your Trading Journey Starts Here' section";
-    displayName: 'Journey Card';
-    pluralName: 'journey-cards';
-    singularName: 'journey-card';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    description: Schema.Attribute.Text & Schema.Attribute.Required;
-    label: Schema.Attribute.String & Schema.Attribute.Required;
-    linkHref: Schema.Attribute.String & Schema.Attribute.Required;
-    linkLabel: Schema.Attribute.String & Schema.Attribute.Required;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::journey-card.journey-card'
-    > &
-      Schema.Attribute.Private;
-    order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
-    publishedAt: Schema.Attribute.DateTime;
-    row: Schema.Attribute.Enumeration<['row1', 'row2']> &
-      Schema.Attribute.Required &
-      Schema.Attribute.DefaultTo<'row1'>;
-    size: Schema.Attribute.Enumeration<['small', 'large', 'equal']> &
-      Schema.Attribute.DefaultTo<'equal'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -940,8 +1046,6 @@ export interface ApiPartnershipsPagePartnershipsPage
     heroDescription: Schema.Attribute.Text;
     heroPrimaryCtaHref: Schema.Attribute.String;
     heroPrimaryCtaLabel: Schema.Attribute.String;
-    heroSecondaryCtaHref: Schema.Attribute.String;
-    heroSecondaryCtaLabel: Schema.Attribute.String;
     heroTitle: Schema.Attribute.String;
     howToBadge: Schema.Attribute.String;
     howToDescription: Schema.Attribute.Text;
@@ -1001,8 +1105,6 @@ export interface ApiPaymentsPagePaymentsPage extends Struct.SingleTypeSchema {
     heroDescription: Schema.Attribute.Text;
     heroPrimaryCtaHref: Schema.Attribute.String;
     heroPrimaryCtaLabel: Schema.Attribute.String;
-    heroSecondaryCtaHref: Schema.Attribute.String;
-    heroSecondaryCtaLabel: Schema.Attribute.String;
     heroTitle: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -1058,6 +1160,130 @@ export interface ApiPlatformPlatform extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiPrivacyPolicyPagePrivacyPolicyPage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'privacy_policy_pages';
+  info: {
+    description: 'Page title and SEO for the /privacy-policy page.';
+    displayName: 'Privacy Policy Page';
+    pluralName: 'privacy-policy-pages';
+    singularName: 'privacy-policy-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::privacy-policy-page.privacy-policy-page'
+    > &
+      Schema.Attribute.Private;
+    pageTitle: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiRefundPolicyPageRefundPolicyPage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'refund_policy_pages';
+  info: {
+    description: 'Page title and SEO for the /refund-policy page.';
+    displayName: 'Refund Policy Page';
+    pluralName: 'refund-policy-pages';
+    singularName: 'refund-policy-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::refund-policy-page.refund-policy-page'
+    > &
+      Schema.Attribute.Private;
+    pageTitle: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiRegulationsPageRegulationsPage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'regulations_pages';
+  info: {
+    description: 'Page title and SEO for the /regulations page.';
+    displayName: 'Regulations Page';
+    pluralName: 'regulations-pages';
+    singularName: 'regulations-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::regulations-page.regulations-page'
+    > &
+      Schema.Attribute.Private;
+    pageTitle: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiRiskDisclosurePageRiskDisclosurePage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'risk_disclosure_pages';
+  info: {
+    description: 'Page title and SEO for the /risk-disclosure page.';
+    displayName: 'Risk Disclosure Page';
+    pluralName: 'risk-disclosure-pages';
+    singularName: 'risk-disclosure-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::risk-disclosure-page.risk-disclosure-page'
+    > &
+      Schema.Attribute.Private;
+    pageTitle: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiServicesPageServicesPage extends Struct.SingleTypeSchema {
   collectionName: 'services_pages';
   info: {
@@ -1105,6 +1331,44 @@ export interface ApiServicesPageServicesPage extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiSocialTradingPageSocialTradingPage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'social_trading_pages';
+  info: {
+    description: 'Editorial text and SEO for the /social-trading page.';
+    displayName: 'Social Trading Page';
+    pluralName: 'social-trading-pages';
+    singularName: 'social-trading-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    heroBadge: Schema.Attribute.String;
+    heroDescription: Schema.Attribute.Text;
+    heroPrimaryCtaHref: Schema.Attribute.String;
+    heroPrimaryCtaLabel: Schema.Attribute.String;
+    heroSecondaryCtaHref: Schema.Attribute.String;
+    heroSecondaryCtaLabel: Schema.Attribute.String;
+    heroStats: Schema.Attribute.Component<'shared.stat', true>;
+    heroTitle: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::social-trading-page.social-trading-page'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiStepStep extends Struct.CollectionTypeSchema {
   collectionName: 'steps';
   info: {
@@ -1128,6 +1392,37 @@ export interface ApiStepStep extends Struct.CollectionTypeSchema {
     order: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     publishedAt: Schema.Attribute.DateTime;
     title: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiTermsConditionsPageTermsConditionsPage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'terms_conditions_pages';
+  info: {
+    description: 'Page title and SEO for the /terms-conditions page.';
+    displayName: 'Terms & Conditions Page';
+    pluralName: 'terms-conditions-pages';
+    singularName: 'terms-conditions-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::terms-conditions-page.terms-conditions-page'
+    > &
+      Schema.Attribute.Private;
+    pageTitle: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1165,6 +1460,37 @@ export interface ApiTestimonialTestimonial extends Struct.CollectionTypeSchema {
     publishedAt: Schema.Attribute.DateTime;
     quote: Schema.Attribute.Text & Schema.Attribute.Required;
     role: Schema.Attribute.String & Schema.Attribute.DefaultTo<'Client'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiUpfrontDisclosurePageUpfrontDisclosurePage
+  extends Struct.SingleTypeSchema {
+  collectionName: 'upfront_disclosure_pages';
+  info: {
+    description: 'Page title and SEO for the /upfront-disclosure page.';
+    displayName: 'Upfront Disclosure Page';
+    pluralName: 'upfront-disclosure-pages';
+    singularName: 'upfront-disclosure-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::upfront-disclosure-page.upfront-disclosure-page'
+    > &
+      Schema.Attribute.Private;
+    pageTitle: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1685,20 +2011,31 @@ declare module '@strapi/strapi' {
       'api::about-page.about-page': ApiAboutPageAboutPage;
       'api::account-tier.account-tier': ApiAccountTierAccountTier;
       'api::accounts-page.accounts-page': ApiAccountsPageAccountsPage;
+      'api::aml-policy-page.aml-policy-page': ApiAmlPolicyPageAmlPolicyPage;
       'api::award.award': ApiAwardAward;
       'api::blogs-page.blogs-page': ApiBlogsPageBlogsPage;
       'api::careers-page.careers-page': ApiCareersPageCareersPage;
+      'api::client-agreement-page.client-agreement-page': ApiClientAgreementPageClientAgreementPage;
+      'api::complaints-management-page.complaints-management-page': ApiComplaintsManagementPageComplaintsManagementPage;
+      'api::conflicts-of-interest-policy-page.conflicts-of-interest-policy-page': ApiConflictsOfInterestPolicyPageConflictsOfInterestPolicyPage;
       'api::contactus-page.contactus-page': ApiContactusPageContactusPage;
       'api::faq.faq': ApiFaqFaq;
+      'api::glossary-page.glossary-page': ApiGlossaryPageGlossaryPage;
       'api::homepage.homepage': ApiHomepageHomepage;
-      'api::journey-card.journey-card': ApiJourneyCardJourneyCard;
       'api::market.market': ApiMarketMarket;
       'api::partnerships-page.partnerships-page': ApiPartnershipsPagePartnershipsPage;
       'api::payments-page.payments-page': ApiPaymentsPagePaymentsPage;
       'api::platform.platform': ApiPlatformPlatform;
+      'api::privacy-policy-page.privacy-policy-page': ApiPrivacyPolicyPagePrivacyPolicyPage;
+      'api::refund-policy-page.refund-policy-page': ApiRefundPolicyPageRefundPolicyPage;
+      'api::regulations-page.regulations-page': ApiRegulationsPageRegulationsPage;
+      'api::risk-disclosure-page.risk-disclosure-page': ApiRiskDisclosurePageRiskDisclosurePage;
       'api::services-page.services-page': ApiServicesPageServicesPage;
+      'api::social-trading-page.social-trading-page': ApiSocialTradingPageSocialTradingPage;
       'api::step.step': ApiStepStep;
+      'api::terms-conditions-page.terms-conditions-page': ApiTermsConditionsPageTermsConditionsPage;
       'api::testimonial.testimonial': ApiTestimonialTestimonial;
+      'api::upfront-disclosure-page.upfront-disclosure-page': ApiUpfrontDisclosurePageUpfrontDisclosurePage;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

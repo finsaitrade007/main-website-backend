@@ -1,0 +1,20 @@
+{
+  "kind": "singleType",
+  "collectionName": "client_agreement_pages",
+  "info": {
+    "singularName": "client-agreement-page",
+    "pluralName": "client-agreement-pages",
+    "displayName": "Client Agreement Page",
+    "description": "Page title and SEO for the /client-agreement page."
+  },
+  "options": { "draftAndPublish": true },
+  "pluginOptions": {},
+  "attributes": {
+    "pageTitle": { "type": "string" },
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo"
+    }
+  }
+}

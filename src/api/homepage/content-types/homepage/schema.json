@@ -5,7 +5,7 @@
     "singularName": "homepage",
     "pluralName": "homepages",
     "displayName": "Homepage",
-    "description": "All editorial text shown on the homepage. Markets, platforms, steps, awards, testimonials, and journey cards live in separate collection types (text only — images are managed in the frontend)."
+    "description": "All editorial text shown on the homepage. Markets, platforms, steps, awards, and testimonials live in separate collection types (text only — images are managed in the frontend)."
   },
   "options": {
     "draftAndPublish": true
@@ -52,10 +52,6 @@
     "awardsBadge": { "type": "string" },
     "awardsTitle": { "type": "string" },
     "awardsDescription": { "type": "text" },
-
-    "journeyBadge": { "type": "string" },
-    "journeyTitle": { "type": "string" },
-    "journeyDescription": { "type": "text" },
 
     "testimonialsBadge": { "type": "string" },
     "testimonialsTitle": { "type": "string" },

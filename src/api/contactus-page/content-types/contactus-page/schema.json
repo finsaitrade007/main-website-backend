@@ -13,8 +13,6 @@
     "heroBadge": { "type": "string" },
     "heroTitle": { "type": "string" },
     "heroDescription": { "type": "text" },
-    "heroPrimaryCtaLabel": { "type": "string" },
-    "heroPrimaryCtaHref": { "type": "string" },
     "heroSecondaryCtaLabel": { "type": "string" },
     "heroSecondaryCtaHref": { "type": "string" },
 

@@ -11,7 +11,6 @@ const PUBLIC_READ: Record<string, ('find' | 'findOne')[]> = {
   step: ['find', 'findOne'],
   award: ['find', 'findOne'],
   testimonial: ['find', 'findOne'],
-  'journey-card': ['find', 'findOne'],
   // Page single types
   'about-page': ['find', 'findOne'],
   'careers-page': ['find', 'findOne'],
@@ -21,6 +20,18 @@ const PUBLIC_READ: Record<string, ('find' | 'findOne')[]> = {
   'partnerships-page': ['find', 'findOne'],
   'blogs-page': ['find', 'findOne'],
   'contactus-page': ['find', 'findOne'],
+  'social-trading-page': ['find', 'findOne'],
+  'glossary-page': ['find', 'findOne'],
+  'regulations-page': ['find', 'findOne'],
+  'privacy-policy-page': ['find', 'findOne'],
+  'terms-conditions-page': ['find', 'findOne'],
+  'risk-disclosure-page': ['find', 'findOne'],
+  'aml-policy-page': ['find', 'findOne'],
+  'refund-policy-page': ['find', 'findOne'],
+  'client-agreement-page': ['find', 'findOne'],
+  'upfront-disclosure-page': ['find', 'findOne'],
+  'complaints-management-page': ['find', 'findOne'],
+  'conflicts-of-interest-policy-page': ['find', 'findOne'],
 };
 
 // ─── SEO seed helper ─────────────────────────────────────────────────
@@ -49,6 +60,7 @@ type SeoSeed = {
 };
 
 const SITE_BASE = 'https://finsaitrade.com';
+const FINSAI_LICENSE_NO = 'GB25204899';
 
 function buildSeo(args: {
   title: string;
@@ -59,12 +71,20 @@ function buildSeo(args: {
 }): SeoSeed {
   const canonicalURL =
     args.path === '/' ? `${SITE_BASE}/` : `${SITE_BASE}${args.path}`;
+  const metaTitle =
+    args.title.length > 60 ? args.title.slice(0, 60) : args.title;
+  const metaDescription =
+    args.description.length > 160
+      ? args.description.slice(0, 160)
+      : args.description;
+  const socialDescription =
+    args.description.length > 200
+      ? args.description.slice(0, 200)
+      : args.description;
+
   return {
-    metaTitle: args.title.length > 60 ? args.title.slice(0, 60) : args.title,
-    metaDescription:
-      args.description.length > 160
-        ? args.description.slice(0, 160)
-        : args.description,
+    metaTitle,
+    metaDescription,
     keywords: args.keywords,
     metaRobots: 'index, follow',
     canonicalURL,
@@ -84,13 +104,13 @@ function buildSeo(args: {
     metaSocial: [
       {
         socialNetwork: 'Facebook',
-        title: args.title,
-        description: args.description,
+        title: metaTitle,
+        description: socialDescription,
       },
       {
         socialNetwork: 'Twitter',
-        title: args.title,
-        description: args.description,
+        title: metaTitle,
+        description: socialDescription,
       },
     ],
   };
@@ -125,7 +145,8 @@ async function setPublicReadPermissions(strapi: Core.Strapi) {
 
 // ─── Seed helpers ────────────────────────────────────────────────────
 
-async function syncSingleType(
+/** Seed a single-type only when it has no document yet. Never overwrites editor content. */
+async function seedSingleType(
   strapi: Core.Strapi,
   uid: string,
   data: Record<string, unknown>,
@@ -135,16 +156,11 @@ async function syncSingleType(
     documentId: string;
   } | null;
   if (existing) {
-    await strapi.documents(uid as never).update({
-      documentId: existing.documentId,
-      data,
-      status: 'published',
-    });
-    strapi.log.info(`[bootstrap] Synced ${label}`);
-  } else {
-    await strapi.documents(uid as never).create({ data, status: 'published' });
-    strapi.log.info(`[bootstrap] Seeded ${label}`);
+    strapi.log.info(`[bootstrap] ${label} already exists — skipping seed`);
+    return;
   }
+  await strapi.documents(uid as never).create({ data, status: 'published' });
+  strapi.log.info(`[bootstrap] Seeded ${label}`);
 }
 
 async function replaceCollection(
@@ -294,10 +310,10 @@ async function seedFaqs(strapi: Core.Strapi) {
 // ─── Homepage single-type ────────────────────────────────────────────
 
 async function seedHomepage(strapi: Core.Strapi) {
-  await syncSingleType(strapi, 'api::homepage.homepage', {
+  await seedSingleType(strapi, 'api::homepage.homepage', {
       heroTitle: 'Trade Global Markets on a Powerful Multi-Asset Trading Platform',
       heroSubtitle:
-        'Finsai Trade is a secure trading platform that gives modern traders access to forex, stocks, commodities, and indices through one advanced trading ecosystem.',
+        'Finsai Trade is a secure online trading platform that gives modern traders access to forex, stocks, commodities, and indices through one advanced trading ecosystem.',
       heroTaglines: [
         { label: 'Fast Execution' },
         { label: 'Advanced Trading Tools' },
@@ -311,7 +327,7 @@ async function seedHomepage(strapi: Core.Strapi) {
       featuresBadge: 'What Sets Us Apart\u00a0',
       featuresTitle: 'Why Top Traders Choose Finsai Trade',
       featuresDescription:
-        'Trade securely across 1,000+ assets on a globally regulated platform with transparent pricing and 24/7 expert support.',
+        ' Start trading online securely across 1,000+ assets on a globally regulated platform with transparent pricing and 24/7 expert support.',
       featureItems: [
         { iconKey: 'transparency', title: 'No Hidden Fees,\nTransparent Trades' },
         { iconKey: 'assets', title: '1000+\nAssets' },
@@ -345,11 +361,6 @@ async function seedHomepage(strapi: Core.Strapi) {
       awardsDescription:
         'Trade seamlessly on the go or from your desktop with our cutting-edge platforms.',
 
-      journeyBadge: 'Learn And Grow',
-      journeyTitle: 'Your Trading Journey Starts Here',
-      journeyDescription:
-        'Trade seamlessly on the go or from your desktop with our cutting-edge platforms.',
-
       testimonialsBadge: 'Testimonials',
       testimonialsTitle: 'What Our Traders Say',
 
@@ -367,9 +378,9 @@ async function seedHomepage(strapi: Core.Strapi) {
       ctaButton3Href: '/contactus',
 
       seo: buildSeo({
-        title: 'Finsai Trade | Multi-Asset Online Trading Platform',
+        title: 'Multi-Asset Online Trading Platform | Finsai Trade',
         description:
-          'Trade forex, stocks, cryptocurrencies, commodities, indices, and CFDs through a professional multi-asset trading platform powered by MetaTrader 5 (MT5).',
+          'Multi-asset online trading platform designed for forex trading, market analysis, copy trading, and advanced trading strategies.',
         path: '/',
         keywords:
           'finsai, finsai trade, online trading, forex, CFD, crypto trading, stocks, indices, MT5, MetaTrader 5, multi-asset broker',
@@ -523,32 +534,10 @@ async function seedTestimonials(strapi: Core.Strapi) {
   );
 }
 
-async function seedJourneyCards(strapi: Core.Strapi) {
-  const count = await strapi.documents('api::journey-card.journey-card').count({});
-  if (count > 0) return;
-
-  // Mirrors FALLBACK_CARDS in src/components/JourneySection.tsx.
-  const items = [
-    { label: 'Blogs',           description: 'Explore professional insights on trading strategies, psychology, platform guides, and market trends.',                        linkLabel: 'Read Latest Articles', linkHref: '/blogs',                                  row: 'row1' as const, size: 'small' as const, order: 1 },
-    { label: 'Finsai Academy',  description: 'Master trading with beginner-friendly lessons, advanced courses, and practical market education.',                            linkLabel: 'Start Learning Free',  linkHref: '/academy',                                row: 'row1' as const, size: 'large' as const, order: 2 },
-    { label: 'News & Analysis', description: 'Stay updated with real-time market news, economic events, and expert commentary.',                                            linkLabel: 'Explore Now',          linkHref: '/news',                                   row: 'row2' as const, size: 'equal' as const, order: 3 },
-    { label: 'Webinar',         description: 'Join live sessions with market experts covering strategies, platform tips, and real-time market analysis.',                   linkLabel: 'Browse Webinars',      linkHref: 'https://lms.finsaitrade.com/#webinars',   row: 'row2' as const, size: 'equal' as const, order: 4 },
-    { label: 'Glossary',        description: 'Master trading terms and concepts with our comprehensive glossary built to help you trade with clarity and confidence.',      linkLabel: 'Explore Glossary',     linkHref: '/glossary',                               row: 'row2' as const, size: 'equal' as const, order: 5 },
-  ];
-
-  for (const j of items) {
-    await strapi.documents('api::journey-card.journey-card').create({
-      data: j,
-      status: 'published',
-    });
-  }
-  strapi.log.info(`[bootstrap] Seeded ${items.length} journey cards`);
-}
-
 // ─── Page single types ───────────────────────────────────────────────
 
 async function seedAboutPage(strapi: Core.Strapi) {
-  await syncSingleType(strapi, 'api::about-page.about-page', {
+  await seedSingleType(strapi, 'api::about-page.about-page', {
       heroBadge: 'Who We Are',
       heroTitle: 'Our Mission, Our Markets, Our Edge',
       heroDescription:
@@ -625,24 +614,38 @@ async function seedAboutPage(strapi: Core.Strapi) {
 }
 
 async function seedCareersPage(strapi: Core.Strapi) {
-  await syncSingleType(strapi, 'api::careers-page.careers-page', {
+  await seedSingleType(strapi, 'api::careers-page.careers-page', {
+      // Mirrors CareersHeroSection FALLBACK
       heroBadge: 'Careers at Finsai Trade',
       heroTitle: 'Build the Future of\nMulti-Asset Trading',
       heroDescription:
         'Join a vibrant global team focused on fintech, trading technology, global markets, and customer growth.',
-      heroPrimaryCtaLabel: 'View Open Roles →',
-      heroPrimaryCtaHref: '#open-roles',
       heroSecondaryCtaLabel: 'Join Our Team →',
       heroSecondaryCtaHref: '#apply',
 
-      workspaceTitle: 'More than just a work space',
+      // Mirrors CareersWorkspaceFormSection FALLBACK
+      workspaceTitle: 'Why Work With Finsai Trade',
       workspaceDescription:
-        "Finsai Trade is engineered to deliver seamless execution, institutional-grade tools and reliable uptime — so you can stay in control wherever you trade. Whether you're a beginner or a pro, our platform helps you trade smarter and faster.",
+        'Join a workplace focused on growth, flexibility, ownership, and meaningful impact across global fintech and trading markets.',
       workspaceBenefits: [
-        { title: 'Collaborate with top talents', description: 'Deep dive into market dynamics with institutional tools.' },
-        { title: 'Innovate & Make an Impact',    description: 'Real-time quotes and lightning-fast execution speed.' },
-        { title: 'Growth & Development',         description: 'Advanced calculators and margin alerts to stay safe.' },
-        { title: 'Global & Inclusive Culture',   description: 'Backtesting engines to refine your trading edge.' },
+        {
+          title: 'Growth That Moves Fast',
+          description:
+            'Learn quickly through high-impact projects and cross-functional collaboration.',
+        },
+        {
+          title: 'Ownership & Autonomy',
+          description: 'Take initiative, share ideas, and drive meaningful outcomes.',
+        },
+        {
+          title: 'Flexible Team Culture',
+          description:
+            'Work in a transparent and collaborative environment built around flexibility.',
+        },
+        {
+          title: 'Real Global Impact',
+          description: 'Build products and experiences used by traders worldwide.',
+        },
       ],
 
       formTitle: 'Apply Now',
@@ -662,7 +665,7 @@ async function seedCareersPage(strapi: Core.Strapi) {
 }
 
 async function seedAccountsPage(strapi: Core.Strapi) {
-  await syncSingleType(strapi, 'api::accounts-page.accounts-page', {
+  await seedSingleType(strapi, 'api::accounts-page.accounts-page', {
       heroBadge: 'Multi-Asset Trading Accounts',
       heroTitle: 'Find the Right Account for Your Trading Style',
       heroDescription:
@@ -739,15 +742,13 @@ async function seedAccountsPage(strapi: Core.Strapi) {
 }
 
 async function seedPaymentsPage(strapi: Core.Strapi) {
-  await syncSingleType(strapi, 'api::payments-page.payments-page', {
+  await seedSingleType(strapi, 'api::payments-page.payments-page', {
       heroBadge: 'Payment Solutions',
       heroTitle: 'Fund Your Trading Account with Secure Payments',
       heroDescription:
         'Deposit and withdraw funds seamlessly using trusted, fast and secure options.',
       heroPrimaryCtaLabel: 'Deposit Funds',
       heroPrimaryCtaHref: 'https://fx.finsaitrade.com/auth/register',
-      heroSecondaryCtaLabel: 'View Methods',
-      heroSecondaryCtaHref: '#methods',
 
       trustText:
         'Every transaction at Finsai Trade is protected by industry-leading security standards.',
@@ -784,7 +785,7 @@ async function seedPaymentsPage(strapi: Core.Strapi) {
 }
 
 async function seedServicesPage(strapi: Core.Strapi) {
-  await syncSingleType(strapi, 'api::services-page.services-page', {
+  await seedSingleType(strapi, 'api::services-page.services-page', {
       heroBadge: 'Professional Trading, Simplified\u00a0',
       heroTitle: 'Powerful Trading Platforms for Every Trader\u00a0',
       heroDescription:
@@ -838,15 +839,13 @@ async function seedServicesPage(strapi: Core.Strapi) {
 }
 
 async function seedPartnershipsPage(strapi: Core.Strapi) {
-  await syncSingleType(strapi, 'api::partnerships-page.partnerships-page', {
+  await seedSingleType(strapi, 'api::partnerships-page.partnerships-page', {
       heroBadge: 'IB & Affiliate',
       heroTitle: 'Join Finsai Trade as an Introducing Broker',
       heroDescription:
         'Earn attractive commissions from every client trade with higher conversions and stronger client retention.',
       heroPrimaryCtaLabel: 'Become an IB',
       heroPrimaryCtaHref: 'https://portal.finsaitrade.com/partner/register',
-      heroSecondaryCtaLabel: 'View Calculator',
-      heroSecondaryCtaHref: '#calculator',
 
       whyBadge: 'Why Finsai IB',
       whyTitle: 'Why Top IBs Choose Finsai Trade',
@@ -915,7 +914,7 @@ async function seedPartnershipsPage(strapi: Core.Strapi) {
 }
 
 async function seedBlogsPage(strapi: Core.Strapi) {
-  await syncSingleType(strapi, 'api::blogs-page.blogs-page', {
+  await seedSingleType(strapi, 'api::blogs-page.blogs-page', {
       heroBadge: 'Trader Knowledge Hub',
       heroTitle: 'Market Insights & Education',
       heroDescription:
@@ -924,36 +923,6 @@ async function seedBlogsPage(strapi: Core.Strapi) {
       heroPrimaryCtaHref: '/blogs',
       heroSecondaryCtaLabel: 'Subscribe',
       heroSecondaryCtaHref: '#subscribe',
-
-      newsBadge: 'Market News & Analysis ',
-      newsTitle: 'Stay Ahead of Every Market Move',
-      newsDescription:
-        'Track market-moving events, technical setups, and macro trends shaping forex, crypto, commodities, and indices.',
-      // BlogsNewsSection prepends Strapi articles and fills the rest from a
-      // local fallback list. We seed 4 cards mirroring the FE fallback so
-      // the rendered output is identical.
-      newsArticles: [
-        {
-          title: 'News & Analysis',
-          description: 'Stay updated with real-time market news, economic events, and expert commentary.',
-          href: '/news',
-        },
-        {
-          title: 'Webinar',
-          description: 'Join live sessions with market experts covering strategies, platform tips, and real-time market analysis.',
-          href: 'https://lms.finsaitrade.com/#webinars',
-        },
-        {
-          title: 'News & Analysis',
-          description: 'Stay updated with real-time market news, economic events, and expert commentary.',
-          href: '/news',
-        },
-        {
-          title: 'Webinar',
-          description: 'Join live sessions with market experts covering strategies, platform tips, and real-time market analysis.',
-          href: 'https://lms.finsaitrade.com/#webinars',
-        },
-      ],
 
       seo: buildSeo({
         title: 'Trader Knowledge Hub — Blogs & Market News | Finsai Trade',
@@ -967,29 +936,38 @@ async function seedBlogsPage(strapi: Core.Strapi) {
 }
 
 async function seedContactusPage(strapi: Core.Strapi) {
-  await syncSingleType(strapi, 'api::contactus-page.contactus-page', {
+  await seedSingleType(strapi, 'api::contactus-page.contactus-page', {
+      // Mirrors ContactUsHeroSection FALLBACK
       heroBadge: 'SUPPORT AT FINSAI TRADE',
       heroTitle: 'We Are  Here to help\nyou',
       heroDescription:
         'Join a vibrant global team focused on fintech, trading technology, global markets, and customer growth.',
-      heroPrimaryCtaLabel: 'View Open Roles',
-      heroPrimaryCtaHref: '#open-roles',
       heroSecondaryCtaLabel: 'Reach Out to our Team',
       heroSecondaryCtaHref: '#contact-form',
 
+      // Mirrors ContactSupportFormSection defaults (contactus/page.tsx)
       supportTitle: 'Global Support Availability',
       supportDescription:
         'Join a workplace focused on growth, flexibility, ownership, and meaningful impact across global fintech and trading markets.',
       supportBenefits: [
-        { title: 'Quick Response',           description: 'We respond fast and value your time.' },
-        { title: 'Transparency',             description: 'Clear communication at every step.' },
-        { title: 'Dedicated Resolution',     description: 'We are committed to resolving your issues.' },
-        { title: 'Multi- Language Support',  description: '' },
+        {
+          title: 'Quick Response',
+          description: 'We respond fast and value your time.',
+        },
+        {
+          title: 'Transparency',
+          description: 'Clear communication at every step.',
+        },
+        {
+          title: 'Dedicated Resolution',
+          description: 'We are committed to resolving your issues.',
+        },
+        { title: 'Multi- Language Support', description: '' },
       ],
 
       formSubmitLabel: 'MESSAGE US',
       formTermsText:
-        'I have read and accepted the terms and conditions specified in the Privacy Policy and do here by consent to the collecting, processing and/or disclosing of the personal data provided by me to fulfil the above-said purposes.',
+        'I have read and accepted the terms and conditions specified in the Privacy Policy and currently consent to the collecting, processing and disclosing of the personal data provided by me to fulfil the above-said purposes.',
 
       seo: buildSeo({
         title: 'Contact Finsai Trade — Global Support Across Fintech',
@@ -1000,6 +978,185 @@ async function seedContactusPage(strapi: Core.Strapi) {
           'contact finsai, customer support, finsai help, partnership inquiry, broker support, contact us',
       }),
   }, 'Contact Us Page');
+}
+
+async function seedSocialTradingPage(strapi: Core.Strapi) {
+  await seedSingleType(strapi, 'api::social-trading-page.social-trading-page', {
+      heroBadge: 'Social Trading · Now Live',
+      heroTitle: 'Copy, Trade, or Earn\nwith Social Trading',
+      heroDescription:
+        'Follow experienced traders or become a strategy provider. Copy traders live, share your strategy, and earn rewards.',
+      heroPrimaryCtaLabel: 'Become a Follower',
+      heroPrimaryCtaHref:
+        'https://social.finsaitrade.com/portal/registration/subscription?redirectUrl=%2F',
+      heroSecondaryCtaLabel: 'Become a Provider',
+      heroSecondaryCtaHref:
+        'https://social.finsaitrade.com/portal/registration/provider?redirectUrl=%2F',
+      heroStats: [
+        { value: '10,000+', label: 'Active Investors' },
+        { value: '150+', label: 'Strategy Providers' },
+        { value: '$2.4M+', label: 'Volume Copied' },
+      ],
+      seo: buildSeo({
+        title: 'Social Trading — Copy Top Traders | Finsai Trade',
+        description:
+          'Follow experienced traders or become a strategy provider. Copy trades live, share your strategy, and earn rewards with Finsai Trade Social Trading.',
+        path: '/social-trading',
+        keywords:
+          'social trading, copy trading, strategy provider, finsai social, MT5 copy trading',
+      }),
+  }, 'Social Trading Page');
+}
+
+async function seedGlossaryPage(strapi: Core.Strapi) {
+  await seedSingleType(strapi, 'api::glossary-page.glossary-page', {
+      heroBadge: 'Trading Dictionary',
+      heroTitle: 'Trading Terms,\nExplained Clearly',
+      heroDescription:
+        'Your A-Z guide to every term in trading, forex, CFDs, indices, commodities, and crypto - written for traders who want clarity, not jargon.',
+      seo: buildSeo({
+        title: 'Trading Glossary - A-Z Guide to Trading Terms | Finsai Trade',
+        description:
+          'Clear, jargon-free definitions for every trading term - forex, CFDs, indices, commodities, crypto, MT5, leverage, spreads, and more. Search or browse A-Z.',
+        path: '/glossary',
+        keywords:
+          'trading glossary, forex terms, CFD definitions, trading dictionary, finsai glossary',
+      }),
+  }, 'Glossary Page');
+}
+
+async function seedRegulationsPage(strapi: Core.Strapi) {
+  await seedSingleType(strapi, 'api::regulations-page.regulations-page', {
+      pageTitle: 'Regulations & Compliance — FINSAI TRADE LTD',
+      seo: buildSeo({
+        title: 'Finsai Trade Regulation & Compliance | Mauritius FSC Licensed',
+        description: `Finsai Trade is regulated by the Financial Services Commission Mauritius (License ${FINSAI_LICENSE_NO}). Learn more about our legal framework and fund protection.`,
+        path: '/regulations',
+        keywords:
+          'finsai regulation, FSC Mauritius, licensed broker, compliance, fund protection',
+      }),
+  }, 'Regulations Page');
+}
+
+type LegalPageSeed = {
+  uid: string;
+  label: string;
+  pageTitle: string;
+  title: string;
+  description: string;
+  path: string;
+  keywords: string;
+};
+
+async function seedLegalPage(strapi: Core.Strapi, seed: LegalPageSeed) {
+  await seedSingleType(strapi, seed.uid, {
+    pageTitle: seed.pageTitle,
+    seo: buildSeo({
+      title: seed.title,
+      description: seed.description,
+      path: seed.path,
+      keywords: seed.keywords,
+    }),
+  }, seed.label);
+}
+
+async function seedLegalPages(strapi: Core.Strapi) {
+  const pages: LegalPageSeed[] = [
+    {
+      uid: 'api::privacy-policy-page.privacy-policy-page',
+      label: 'Privacy Policy Page',
+      pageTitle: 'Privacy Policy',
+      title: 'Privacy Policy',
+      description:
+        'Finsai Trade Privacy Policy describing how we collect, use, store and share your personal information.',
+      path: '/privacy-policy',
+      keywords: 'privacy policy, finsai privacy, data protection, personal information',
+    },
+    {
+      uid: 'api::terms-conditions-page.terms-conditions-page',
+      label: 'Terms & Conditions Page',
+      pageTitle: 'Terms & Conditions',
+      title: 'Terms & Conditions',
+      description:
+        'Finsai Trade Terms & Conditions covering Welcome Bonus eligibility, usage, expiry and Trading Competition rules.',
+      path: '/terms-conditions',
+      keywords: 'terms and conditions, finsai terms, trading competition rules, welcome bonus',
+    },
+    {
+      uid: 'api::risk-disclosure-page.risk-disclosure-page',
+      label: 'Risk Disclosure Page',
+      pageTitle: 'Risk Disclosure and Warnings Notice',
+      title: 'Risk Disclosure and Warnings Notice',
+      description:
+        'Finsai Trade Risk Disclosure and Warnings Notice describing the risks associated with trading CFDs, foreign exchange, cryptocurrencies and other financial instruments.',
+      path: '/risk-disclosure',
+      keywords: 'risk disclosure, trading risks, CFD risks, forex warnings, finsai risk notice',
+    },
+    {
+      uid: 'api::aml-policy-page.aml-policy-page',
+      label: 'AML Policy Page',
+      pageTitle: 'Anti-Money Laundering Policy',
+      title: 'Anti-Money Laundering Policy',
+      description:
+        'Finsai Trade Anti-Money Laundering Policy describing our client due diligence, AML compliance program, training and reporting obligations.',
+      path: '/aml-policy',
+      keywords: 'AML policy, anti money laundering, KYC, client due diligence, finsai compliance',
+    },
+    {
+      uid: 'api::refund-policy-page.refund-policy-page',
+      label: 'Refund Policy Page',
+      pageTitle: 'Refund Policy',
+      title: 'Refund Policy',
+      description:
+        'Finsai Trade Refund Policy describing deposit, withdrawal, chargeback and cancellation procedures and the safeguarding of client funds.',
+      path: '/refund-policy',
+      keywords: 'refund policy, withdrawal policy, chargeback, client funds, finsai deposits',
+    },
+    {
+      uid: 'api::client-agreement-page.client-agreement-page',
+      label: 'Client Agreement Page',
+      pageTitle: 'Client Agreement',
+      title: 'Client Agreement',
+      description:
+        'Finsai Trade Client Agreement: the binding terms and conditions governing the use of our trading platform, services and the relationship between the Company and the Client.',
+      path: '/client-agreement',
+      keywords: 'client agreement, trading terms, finsai contract, platform terms',
+    },
+    {
+      uid: 'api::upfront-disclosure-page.upfront-disclosure-page',
+      label: 'Upfront Disclosure Page',
+      pageTitle: 'Mauritius Upfront Disclosure Document',
+      title: 'Upfront Disclosure',
+      description:
+        'Mauritius Upfront Disclosure Document for Finsai Trade Ltd, including legal status, key individuals, complaints handling and authorized financial products.',
+      path: '/upfront-disclosure',
+      keywords: 'upfront disclosure, Mauritius FSC, finsai disclosure, regulatory document',
+    },
+    {
+      uid: 'api::complaints-management-page.complaints-management-page',
+      label: 'Complaints Management Page',
+      pageTitle: 'Complaints Management',
+      title: 'Complaints Management',
+      description:
+        'Finsai Trade Complaints Management Framework: how to submit a complaint, internal review, escalation timelines and reporting to authorities.',
+      path: '/complaints-management',
+      keywords: 'complaints management, finsai complaints, dispute resolution, client complaints',
+    },
+    {
+      uid: 'api::conflicts-of-interest-policy-page.conflicts-of-interest-policy-page',
+      label: 'Conflicts of Interest Policy Page',
+      pageTitle: 'Conflicts of Interest Policy',
+      title: 'Conflicts of Interest Policy',
+      description:
+        'Finsai Trade Conflicts of Interest Policy outlining identification, management and mitigation of conflicts of interest.',
+      path: '/conflicts-of-interest-policy',
+      keywords: 'conflicts of interest, finsai policy, compliance, broker conduct',
+    },
+  ];
+
+  for (const page of pages) {
+    await seedLegalPage(strapi, page);
+  }
 }
 
 // ─── Lifecycle ───────────────────────────────────────────────────────
@@ -1017,7 +1174,6 @@ export default {
     await seedSteps(strapi);
     await seedAwards(strapi);
     await seedTestimonials(strapi);
-    await seedJourneyCards(strapi);
     await seedAboutPage(strapi);
     await seedCareersPage(strapi);
     await seedAccountsPage(strapi);
@@ -1026,8 +1182,12 @@ export default {
     await seedPartnershipsPage(strapi);
     await seedBlogsPage(strapi);
     await seedContactusPage(strapi);
+    await seedSocialTradingPage(strapi);
+    await seedGlossaryPage(strapi);
+    await seedRegulationsPage(strapi);
+    await seedLegalPages(strapi);
     strapi.log.info(
-      '[bootstrap] Single-type pages and SEO synced with frontend fallbacks',
+      '[bootstrap] Single-type seeds checked (existing editor content preserved)',
     );
   },
 };

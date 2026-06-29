@@ -1,0 +1,20 @@
+{
+  "kind": "singleType",
+  "collectionName": "terms_conditions_pages",
+  "info": {
+    "singularName": "terms-conditions-page",
+    "pluralName": "terms-conditions-pages",
+    "displayName": "Terms & Conditions Page",
+    "description": "Page title and SEO for the /terms-conditions page."
+  },
+  "options": { "draftAndPublish": true },
+  "pluginOptions": {},
+  "attributes": {
+    "pageTitle": { "type": "string" },
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo"
+    }
+  }
+}

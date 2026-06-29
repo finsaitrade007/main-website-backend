@@ -1,11 +1,11 @@
 {
   "kind": "singleType",
-  "collectionName": "blogs_pages",
+  "collectionName": "social_trading_pages",
   "info": {
-    "singularName": "blogs-page",
-    "pluralName": "blogs-pages",
-    "displayName": "Blogs Page",
-    "description": "Editorial text for the /blogs page."
+    "singularName": "social-trading-page",
+    "pluralName": "social-trading-pages",
+    "displayName": "Social Trading Page",
+    "description": "Editorial text and SEO for the /social-trading page."
   },
   "options": { "draftAndPublish": true },
   "pluginOptions": {},
@@ -17,7 +17,11 @@
     "heroPrimaryCtaHref": { "type": "string" },
     "heroSecondaryCtaLabel": { "type": "string" },
     "heroSecondaryCtaHref": { "type": "string" },
-
+    "heroStats": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.stat"
+    },
     "seo": {
       "type": "component",
       "repeatable": false,

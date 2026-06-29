@@ -1,0 +1,22 @@
+{
+  "kind": "singleType",
+  "collectionName": "glossary_pages",
+  "info": {
+    "singularName": "glossary-page",
+    "pluralName": "glossary-pages",
+    "displayName": "Glossary Page",
+    "description": "Editorial text and SEO for the /glossary page."
+  },
+  "options": { "draftAndPublish": true },
+  "pluginOptions": {},
+  "attributes": {
+    "heroBadge": { "type": "string" },
+    "heroTitle": { "type": "string" },
+    "heroDescription": { "type": "text" },
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo"
+    }
+  }
+}

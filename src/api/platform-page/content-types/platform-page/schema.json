@@ -1,11 +1,11 @@
 {
   "kind": "singleType",
-  "collectionName": "services_pages",
+  "collectionName": "platform_pages",
   "info": {
-    "singularName": "services-page",
-    "pluralName": "services-pages",
-    "displayName": "Services Page",
-    "description": "Editorial text for the /services page."
+    "singularName": "platform-page",
+    "pluralName": "platform-pages",
+    "displayName": "Platform Page",
+    "description": "Editorial text for the /platform page."
   },
   "options": { "draftAndPublish": true },
   "pluginOptions": {},

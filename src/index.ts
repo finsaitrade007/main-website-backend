@@ -16,7 +16,7 @@ const PUBLIC_READ: Record<string, ('find' | 'findOne')[]> = {
   'careers-page': ['find', 'findOne'],
   'accounts-page': ['find', 'findOne'],
   'payments-page': ['find', 'findOne'],
-  'services-page': ['find', 'findOne'],
+  'platform-page': ['find', 'findOne'],
   'partnerships-page': ['find', 'findOne'],
   'blogs-page': ['find', 'findOne'],
   'contactus-page': ['find', 'findOne'],
@@ -34,11 +34,6 @@ const PUBLIC_READ: Record<string, ('find' | 'findOne')[]> = {
   'conflicts-of-interest-policy-page': ['find', 'findOne'],
 };
 
-// ─── SEO seed helper ─────────────────────────────────────────────────
-//
-// Standard, Strapi-SEO-plugin compatible shape so editors can manage every
-// piece of per-page metadata (title, description, keywords, canonical,
-// robots, structured data, social cards) from the admin UI.
 
 type SeoSeed = {
   metaTitle: string;
@@ -47,10 +42,6 @@ type SeoSeed = {
   metaRobots?: string;
   canonicalURL?: string;
   metaViewport?: string;
-  // Strapi types `JSON` columns as a recursive `JSONValue` union — using
-  // `any` here keeps the seed inputs ergonomic without forcing every
-  // structuredData payload to satisfy that recursive type.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   structuredData?: any;
   metaSocial?: {
     socialNetwork: 'Facebook' | 'Twitter' | 'LinkedIn';
@@ -544,8 +535,8 @@ async function seedAboutPage(strapi: Core.Strapi) {
         'Helping traders access multiple asset classes while benefiting from educational resources, loyalty rewards, and partnership opportunities.\u00a0',
       heroPrimaryCtaLabel: 'Open Live Account',
       heroPrimaryCtaHref: 'https://fx.finsaitrade.com/auth/register',
-      heroSecondaryCtaLabel: 'Explore Our Services',
-      heroSecondaryCtaHref: '/services',
+      heroSecondaryCtaLabel: 'Explore Our Platform',
+      heroSecondaryCtaHref: '/platform',
 
       recognitionTitlePrefix: 'Recognized for Elite Trading ',
       recognitionTitleAccent: 'Excellence',
@@ -784,8 +775,8 @@ async function seedPaymentsPage(strapi: Core.Strapi) {
   }, 'Payments Page');
 }
 
-async function seedServicesPage(strapi: Core.Strapi) {
-  await seedSingleType(strapi, 'api::services-page.services-page', {
+async function seedPlatformPage(strapi: Core.Strapi) {
+  await seedSingleType(strapi, 'api::platform-page.platform-page', {
       heroBadge: 'Professional Trading, Simplified\u00a0',
       heroTitle: 'Powerful Trading Platforms for Every Trader\u00a0',
       heroDescription:
@@ -828,14 +819,14 @@ async function seedServicesPage(strapi: Core.Strapi) {
       ],
 
       seo: buildSeo({
-        title: 'Trading Services | Finsai Trade — MT5, Social & Mobile',
+        title: 'Trading Platforms | Finsai Trade — MT5, Social & Mobile',
         description:
           'Three trading environments built for every level. Trade with MT5, copy top performers via social trading, or stay connected with our upcoming mobile app.',
-        path: '/services',
+        path: '/platform',
         keywords:
-          'finsai services, MT5 platform, social trading, copy trading, trading app, multi-asset broker',
+          'finsai platform, MT5 platform, social trading, copy trading, trading app, multi-asset broker',
       }),
-  }, 'Services Page');
+  }, 'Platform Page');
 }
 
 async function seedPartnershipsPage(strapi: Core.Strapi) {
@@ -1159,8 +1150,6 @@ async function seedLegalPages(strapi: Core.Strapi) {
   }
 }
 
-// ─── Lifecycle ───────────────────────────────────────────────────────
-
 export default {
   register(/* { strapi }: { strapi: Core.Strapi } */) {},
 
@@ -1178,7 +1167,7 @@ export default {
     await seedCareersPage(strapi);
     await seedAccountsPage(strapi);
     await seedPaymentsPage(strapi);
-    await seedServicesPage(strapi);
+    await seedPlatformPage(strapi);
     await seedPartnershipsPage(strapi);
     await seedBlogsPage(strapi);
     await seedContactusPage(strapi);

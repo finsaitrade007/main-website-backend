@@ -643,7 +643,7 @@ export interface ApiAwardAward extends Struct.CollectionTypeSchema {
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
   };
-} 
+}
 
 export interface ApiBlogsPageBlogsPage extends Struct.SingleTypeSchema {
   collectionName: 'blogs_pages';

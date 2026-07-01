@@ -16,18 +16,9 @@
     "heroPrimaryCtaLabel": { "type": "string" },
     "heroPrimaryCtaHref": { "type": "string" },
 
-    "trustText": { "type": "text" },
-
-    "methodsBadge": { "type": "string" },
     "methodsTitle": { "type": "string" },
     "methodsDescription": { "type": "text" },
-    "methods": {
-      "type": "component",
-      "repeatable": true,
-      "component": "shared.payment-method"
-    },
 
-    "ctaBadge": { "type": "string" },
     "ctaTitle": { "type": "string" },
     "ctaDescription": { "type": "text" },
     "ctaPrimaryLabel": { "type": "string" },

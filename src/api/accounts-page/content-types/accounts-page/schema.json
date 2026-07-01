@@ -21,7 +21,6 @@
     "compareTitle": { "type": "string" },
     "compareDescription": { "type": "text" },
 
-    "whyBadge": { "type": "string" },
     "whyTitle": { "type": "string" },
     "whyDescription": { "type": "text" },
     "whyFeatures": {
@@ -30,18 +29,14 @@
       "component": "shared.icon-feature"
     },
 
-    "onboardingBadge": { "type": "string" },
     "onboardingTitle": { "type": "string" },
-    "onboardingDescription": { "type": "text" },
-
-    "benefitsBadge": { "type": "string" },
-    "benefitsTitle": { "type": "string" },
-    "benefitsDescription": { "type": "text" },
-    "benefitsCards": {
+    "onboardingSteps": {
       "type": "component",
       "repeatable": true,
-      "component": "shared.benefit-card"
+      "component": "shared.icon-feature"
     },
+    "onboardingCtaLabel": { "type": "string" },
+    "onboardingCtaHref": { "type": "string" },
 
     "seo": {
       "type": "component",

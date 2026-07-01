@@ -459,18 +459,14 @@ export interface ApiAboutPageAboutPage extends Struct.SingleTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    ctaBadge: Schema.Attribute.String;
     ctaDescription: Schema.Attribute.Text;
     ctaPrimaryHref: Schema.Attribute.String;
     ctaPrimaryLabel: Schema.Attribute.String;
-    ctaSecondaryHref: Schema.Attribute.String;
-    ctaSecondaryLabel: Schema.Attribute.String;
     ctaTitle: Schema.Attribute.String;
     growthBadge: Schema.Attribute.String;
     growthCtaHref: Schema.Attribute.String;
     growthCtaLabel: Schema.Attribute.String;
-    growthDescription1: Schema.Attribute.Text;
-    growthDescription2: Schema.Attribute.Text;
+    growthFeatures: Schema.Attribute.Component<'shared.point', true>;
     growthStats: Schema.Attribute.Component<'shared.stat', true>;
     growthTitle: Schema.Attribute.String;
     heroBadge: Schema.Attribute.String;
@@ -490,8 +486,6 @@ export interface ApiAboutPageAboutPage extends Struct.SingleTypeSchema {
     recognitionDescription: Schema.Attribute.Text;
     recognitionStatPrimaryLabel: Schema.Attribute.String;
     recognitionStatPrimaryValue: Schema.Attribute.String;
-    recognitionStatSecondaryLabel: Schema.Attribute.String;
-    recognitionStatSecondaryValue: Schema.Attribute.String;
     recognitionTitleAccent: Schema.Attribute.String;
     recognitionTitlePrefix: Schema.Attribute.String;
     seo: Schema.Attribute.Component<'shared.seo', false>;
@@ -551,10 +545,6 @@ export interface ApiAccountsPageAccountsPage extends Struct.SingleTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    benefitsBadge: Schema.Attribute.String;
-    benefitsCards: Schema.Attribute.Component<'shared.benefit-card', true>;
-    benefitsDescription: Schema.Attribute.Text;
-    benefitsTitle: Schema.Attribute.String;
     compareDescription: Schema.Attribute.Text;
     compareTitle: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
@@ -573,15 +563,15 @@ export interface ApiAccountsPageAccountsPage extends Struct.SingleTypeSchema {
       'api::accounts-page.accounts-page'
     > &
       Schema.Attribute.Private;
-    onboardingBadge: Schema.Attribute.String;
-    onboardingDescription: Schema.Attribute.Text;
+    onboardingCtaHref: Schema.Attribute.String;
+    onboardingCtaLabel: Schema.Attribute.String;
+    onboardingSteps: Schema.Attribute.Component<'shared.icon-feature', true>;
     onboardingTitle: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    whyBadge: Schema.Attribute.String;
     whyDescription: Schema.Attribute.Text;
     whyFeatures: Schema.Attribute.Component<'shared.icon-feature', true>;
     whyTitle: Schema.Attribute.String;
@@ -664,8 +654,6 @@ export interface ApiBlogsPageBlogsPage extends Struct.SingleTypeSchema {
     heroDescription: Schema.Attribute.Text;
     heroPrimaryCtaHref: Schema.Attribute.String;
     heroPrimaryCtaLabel: Schema.Attribute.String;
-    heroSecondaryCtaHref: Schema.Attribute.String;
-    heroSecondaryCtaLabel: Schema.Attribute.String;
     heroTitle: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -879,7 +867,7 @@ export interface ApiFaqFaq extends Struct.CollectionTypeSchema {
       [
         'homepage',
         'accounts',
-        'services',
+        'platform',
         'payments',
         'partnerships',
         'social-trading',
@@ -1042,6 +1030,16 @@ export interface ApiPartnershipsPagePartnershipsPage
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    ctaBadge: Schema.Attribute.String;
+    ctaButton1Href: Schema.Attribute.String;
+    ctaButton1Label: Schema.Attribute.String;
+    ctaButton2Href: Schema.Attribute.String;
+    ctaButton2Label: Schema.Attribute.String;
+    ctaButton3Href: Schema.Attribute.String;
+    ctaButton3Label: Schema.Attribute.String;
+    ctaDescription: Schema.Attribute.Text;
+    ctaFooterText: Schema.Attribute.Text;
+    ctaTitle: Schema.Attribute.String;
     heroBadge: Schema.Attribute.String;
     heroDescription: Schema.Attribute.Text;
     heroPrimaryCtaHref: Schema.Attribute.String;
@@ -1057,10 +1055,6 @@ export interface ApiPartnershipsPagePartnershipsPage
       'api::partnerships-page.partnerships-page'
     > &
       Schema.Attribute.Private;
-    marketingBadge: Schema.Attribute.String;
-    marketingDescription: Schema.Attribute.Text;
-    marketingItems: Schema.Attribute.Component<'shared.icon-feature', true>;
-    marketingTitle: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false>;
     stats: Schema.Attribute.Component<'shared.stat', true>;
@@ -1096,7 +1090,6 @@ export interface ApiPaymentsPagePaymentsPage extends Struct.SingleTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    ctaBadge: Schema.Attribute.String;
     ctaDescription: Schema.Attribute.Text;
     ctaPrimaryHref: Schema.Attribute.String;
     ctaPrimaryLabel: Schema.Attribute.String;
@@ -1112,13 +1105,10 @@ export interface ApiPaymentsPagePaymentsPage extends Struct.SingleTypeSchema {
       'api::payments-page.payments-page'
     > &
       Schema.Attribute.Private;
-    methods: Schema.Attribute.Component<'shared.payment-method', true>;
-    methodsBadge: Schema.Attribute.String;
     methodsDescription: Schema.Attribute.Text;
     methodsTitle: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false>;
-    trustText: Schema.Attribute.Text;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1140,16 +1130,10 @@ export interface ApiPlatformPagePlatformPage extends Struct.SingleTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    features: Schema.Attribute.Component<'shared.icon-feature', true>;
-    featuresBadge: Schema.Attribute.String;
-    featuresDescription: Schema.Attribute.Text;
-    featuresTitle: Schema.Attribute.String;
     heroBadge: Schema.Attribute.String;
     heroDescription: Schema.Attribute.Text;
     heroPrimaryCtaHref: Schema.Attribute.String;
     heroPrimaryCtaLabel: Schema.Attribute.String;
-    heroSecondaryCtaHref: Schema.Attribute.String;
-    heroSecondaryCtaLabel: Schema.Attribute.String;
     heroTitle: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -1157,15 +1141,12 @@ export interface ApiPlatformPagePlatformPage extends Struct.SingleTypeSchema {
       'api::platform-page.platform-page'
     > &
       Schema.Attribute.Private;
+    platforms: Schema.Attribute.Component<'platform.platform-block', true>;
     platformsBadge: Schema.Attribute.String;
     platformsDescription: Schema.Attribute.Text;
     platformsTitle: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     seo: Schema.Attribute.Component<'shared.seo', false>;
-    suiteBadge: Schema.Attribute.String;
-    suiteDescription: Schema.Attribute.Text;
-    suiteItems: Schema.Attribute.Component<'shared.icon-feature', true>;
-    suiteTitle: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

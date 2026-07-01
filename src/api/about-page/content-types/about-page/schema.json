@@ -23,8 +23,6 @@
     "recognitionDescription": { "type": "text" },
     "recognitionStatPrimaryValue": { "type": "string" },
     "recognitionStatPrimaryLabel": { "type": "string" },
-    "recognitionStatSecondaryValue": { "type": "string" },
-    "recognitionStatSecondaryLabel": { "type": "string" },
 
     "builtBadge": { "type": "string" },
     "builtTitle": { "type": "string" },
@@ -37,8 +35,11 @@
 
     "growthBadge": { "type": "string" },
     "growthTitle": { "type": "string" },
-    "growthDescription1": { "type": "text" },
-    "growthDescription2": { "type": "text" },
+    "growthFeatures": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.point"
+    },
     "growthCtaLabel": { "type": "string" },
     "growthCtaHref": { "type": "string" },
     "growthStats": {
@@ -47,13 +48,10 @@
       "component": "shared.stat"
     },
 
-    "ctaBadge": { "type": "string" },
     "ctaTitle": { "type": "string" },
     "ctaDescription": { "type": "text" },
     "ctaPrimaryLabel": { "type": "string" },
     "ctaPrimaryHref": { "type": "string" },
-    "ctaSecondaryLabel": { "type": "string" },
-    "ctaSecondaryHref": { "type": "string" },
 
     "seo": {
       "type": "component",

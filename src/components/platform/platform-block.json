@@ -1,0 +1,38 @@
+{
+  "collectionName": "components_platform_platform_blocks",
+  "info": {
+    "displayName": "Platform block",
+    "description": "MT5 / Social Trading / App section on the Platform page.",
+    "icon": "layout"
+  },
+  "options": {},
+  "attributes": {
+    "slug": {
+      "type": "string",
+      "required": true
+    },
+    "title": { "type": "string", "required": true },
+    "subtitle": { "type": "string", "required": true },
+    "description": { "type": "text", "required": true },
+    "features": {
+      "type": "component",
+      "repeatable": true,
+      "component": "platform.feature-line"
+    },
+    "imagePath": {
+      "type": "string",
+      "required": true
+    },
+    "imageAlt": { "type": "string", "required": true },
+    "ctaLabel": { "type": "string" },
+    "ctaHref": { "type": "string" },
+    "showAppStores": {
+      "type": "boolean",
+      "default": false
+    },
+    "reverse": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "collectionName": "components_platform_feature_lines",
+  "info": {
+    "displayName": "Feature line",
+    "description": "Single bullet point in a platform block.",
+    "icon": "bulletList"
+  },
+  "options": {},
+  "attributes": {
+    "text": { "type": "string", "required": true }
+  }
+}

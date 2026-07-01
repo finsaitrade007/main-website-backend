@@ -15,29 +15,14 @@
     "heroDescription": { "type": "text" },
     "heroPrimaryCtaLabel": { "type": "string" },
     "heroPrimaryCtaHref": { "type": "string" },
-    "heroSecondaryCtaLabel": { "type": "string" },
-    "heroSecondaryCtaHref": { "type": "string" },
-
-    "featuresBadge": { "type": "string" },
-    "featuresTitle": { "type": "string" },
-    "featuresDescription": { "type": "text" },
-    "features": {
-      "type": "component",
-      "repeatable": true,
-      "component": "shared.icon-feature"
-    },
 
     "platformsBadge": { "type": "string" },
     "platformsTitle": { "type": "string" },
     "platformsDescription": { "type": "text" },
-
-    "suiteBadge": { "type": "string" },
-    "suiteTitle": { "type": "string" },
-    "suiteDescription": { "type": "text" },
-    "suiteItems": {
+    "platforms": {
       "type": "component",
       "repeatable": true,
-      "component": "shared.icon-feature"
+      "component": "platform.platform-block"
     },
 
     "seo": {

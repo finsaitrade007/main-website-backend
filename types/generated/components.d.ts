@@ -1,5 +1,39 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface PlatformFeatureLine extends Struct.ComponentSchema {
+  collectionName: 'components_platform_feature_lines';
+  info: {
+    description: 'Single bullet point in a platform block.';
+    displayName: 'Feature line';
+    icon: 'bulletList';
+  };
+  attributes: {
+    text: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface PlatformPlatformBlock extends Struct.ComponentSchema {
+  collectionName: 'components_platform_platform_blocks';
+  info: {
+    description: 'MT5 / Social Trading / App section on the Platform page.';
+    displayName: 'Platform block';
+    icon: 'layout';
+  };
+  attributes: {
+    ctaHref: Schema.Attribute.String;
+    ctaLabel: Schema.Attribute.String;
+    description: Schema.Attribute.Text & Schema.Attribute.Required;
+    features: Schema.Attribute.Component<'platform.feature-line', true>;
+    imageAlt: Schema.Attribute.String & Schema.Attribute.Required;
+    imagePath: Schema.Attribute.String & Schema.Attribute.Required;
+    reverse: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    showAppStores: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    slug: Schema.Attribute.String & Schema.Attribute.Required;
+    subtitle: Schema.Attribute.String & Schema.Attribute.Required;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface SharedBenefitCard extends Struct.ComponentSchema {
   collectionName: 'components_shared_benefit_cards';
   info: {
@@ -211,6 +245,8 @@ export interface SharedTagline extends Struct.ComponentSchema {
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'platform.feature-line': PlatformFeatureLine;
+      'platform.platform-block': PlatformPlatformBlock;
       'shared.benefit-card': SharedBenefitCard;
       'shared.bullet-point': SharedBulletPoint;
       'shared.cta-button': SharedCtaButton;

@@ -15,8 +15,6 @@
     "heroDescription": { "type": "text" },
     "heroPrimaryCtaLabel": { "type": "string" },
     "heroPrimaryCtaHref": { "type": "string" },
-    "heroSecondaryCtaLabel": { "type": "string" },
-    "heroSecondaryCtaHref": { "type": "string" },
 
     "seo": {
       "type": "component",

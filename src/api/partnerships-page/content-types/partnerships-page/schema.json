@@ -51,14 +51,16 @@
       "component": "shared.icon-feature"
     },
 
-    "marketingBadge": { "type": "string" },
-    "marketingTitle": { "type": "string" },
-    "marketingDescription": { "type": "text" },
-    "marketingItems": {
-      "type": "component",
-      "repeatable": true,
-      "component": "shared.icon-feature"
-    },
+    "ctaBadge": { "type": "string" },
+    "ctaTitle": { "type": "string" },
+    "ctaDescription": { "type": "text" },
+    "ctaFooterText": { "type": "text" },
+    "ctaButton1Label": { "type": "string" },
+    "ctaButton1Href": { "type": "string" },
+    "ctaButton2Label": { "type": "string" },
+    "ctaButton2Href": { "type": "string" },
+    "ctaButton3Label": { "type": "string" },
+    "ctaButton3Href": { "type": "string" },
 
     "seo": {
       "type": "component",

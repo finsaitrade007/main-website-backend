@@ -241,7 +241,29 @@ async function seedAccountTiers(strapi: Core.Strapi) {
   strapi.log.info(`[bootstrap] Seeded ${desired.length} account tiers (compare-table dataset)`);
 }
 
+async function migrateFaqServicesSection(strapi: Core.Strapi) {
+  const legacy = (await strapi.documents('api::faq.faq').findMany({
+    filters: { section: { $eq: 'services' as never } },
+  })) as Array<{ documentId: string }>;
+
+  for (const row of legacy) {
+    await strapi.documents('api::faq.faq').update({
+      documentId: row.documentId,
+      data: { section: 'platform' } as Record<string, unknown>,
+      status: 'published',
+    });
+  }
+
+  if (legacy.length > 0) {
+    strapi.log.info(
+      `[bootstrap] Migrated ${legacy.length} FAQs from services → platform`,
+    );
+  }
+}
+
 async function seedFaqs(strapi: Core.Strapi) {
+  await migrateFaqServicesSection(strapi);
+
   // Mirrors src/lib/faq-fallbacks.ts — one row per page section.
   const faqs: Array<{
     section: string;
@@ -260,11 +282,11 @@ async function seedFaqs(strapi: Core.Strapi) {
     { section: 'accounts', order: 2, question: 'Are there any deposit or withdrawal fees?', answer: 'Finsai Trade does not charge internal deposit or withdrawal fees. Third-party payment providers may apply transaction charges.' },
     { section: 'accounts', order: 3, question: 'What documents are required for account verification?', answer: "You'll need a valid government-issued ID and proof of address, such as a utility bill or bank statement." },
     { section: 'accounts', order: 4, question: "What's the difference between Smart Pro and Smart ECN?", answer: 'Smart ECN is designed for advanced traders, offering Raw spreads, enhanced execution conditions, VPS access, and support for advanced trading tools.' },
-    // services
-    { section: 'services', order: 1, question: 'Which trading platform is best for beginners?', answer: "If you're new to trading, the Finsai Trade App and Social Trading platform are great starting points. You can practice with demo accounts, copy experienced traders, and access user-friendly tools designed for beginners." },
-    { section: 'services', order: 2, question: 'What makes MetaTrader 5 (MT5) different from other platforms?', answer: "MT5 is one of the world's most advanced trading platforms, offering professional-grade charting, automated trading through Expert Advisors (EAs), multi-timeframe analysis, and advanced strategy testing tools." },
-    { section: 'services', order: 3, question: 'How does Social Trading work?', answer: 'Social Trading allows you to automatically copy trades from experienced traders in real time. You can review performance metrics, manage risk settings, and follow strategies that match your trading goals.' },
-    { section: 'services', order: 4, question: 'Can experienced traders earn through the platform?', answer: 'Absolutely. With Social Trading, experienced traders can become strategy providers, build followers, and earn rewards based on their trading performance and community growth.' },
+    // platform
+    { section: 'platform', order: 1, question: 'Which trading platform is best for beginners?', answer: "If you're new to trading, the Finsai Trade App and Social Trading platform are great starting points. You can practice with demo accounts, copy experienced traders, and access user-friendly tools designed for beginners." },
+    { section: 'platform', order: 2, question: 'What makes MetaTrader 5 (MT5) different from other platforms?', answer: "MT5 is one of the world's most advanced trading platforms, offering professional-grade charting, automated trading through Expert Advisors (EAs), multi-timeframe analysis, and advanced strategy testing tools." },
+    { section: 'platform', order: 3, question: 'How does Social Trading work?', answer: 'Social Trading allows you to automatically copy trades from experienced traders in real time. You can review performance metrics, manage risk settings, and follow strategies that match your trading goals.' },
+    { section: 'platform', order: 4, question: 'Can experienced traders earn through the platform?', answer: 'Absolutely. With Social Trading, experienced traders can become strategy providers, build followers, and earn rewards based on their trading performance and community growth.' },
     // payments
     { section: 'payments', order: 1, question: 'What is the minimum deposit amount?', answer: 'The minimum deposit amount may vary depending on your account type and selected payment method. You can review the exact requirements before completing your deposit.' },
     { section: 'payments', order: 2, question: 'Are there any deposit or withdrawal fees?', answer: 'No. Finsai Trade charges no fees and only provides transparent funding.' },
@@ -544,8 +566,6 @@ async function seedAboutPage(strapi: Core.Strapi) {
         ' Trusted by a growing community of traders for reliable execution, modern trading tools, and scalable partnership opportunities.\u00a0',
       recognitionStatPrimaryValue: '50k+',
       recognitionStatPrimaryLabel: 'Registered Users',
-      recognitionStatSecondaryValue: '3M+',
-      recognitionStatSecondaryLabel: 'Monthly Worldwide',
 
       builtBadge: 'Our Story',
       builtTitle: 'Built to Make Global Trading Simpler and More Accessible',
@@ -571,10 +591,12 @@ async function seedAboutPage(strapi: Core.Strapi) {
 
       growthBadge: 'Our Principal',
       growthTitle: 'Your Trading Journey,\nStructured for Success.',
-      growthDescription1:
-        'By providing an integrated ecosystem that combines simplicity, innovation, and security, we aim to empower people to take charge of their financial future.',
-      growthDescription2:
-        'Our goal is to create a financial environment where people can trade, invest, and bank with confidence by bridging the gap between conventional finance and technological breakthroughs.',
+      growthFeatures: [
+        { title: 'Transparent Trading', description: 'Clear pricing and straightforward trading conditions.' },
+        { title: 'Trader-First Experience', description: 'Built to make trading simple, smooth, and accessible.' },
+        { title: 'Reliable Technology', description: 'Fast execution with dependable platform performance.' },
+        { title: 'Learn & Grow', description: 'Educational resources to help traders improve continuously.' },
+      ],
       growthCtaLabel: 'Contact Us',
       growthCtaHref: '/contactus',
       growthStats: [
@@ -584,14 +606,11 @@ async function seedAboutPage(strapi: Core.Strapi) {
         { value: '15+',     label: 'Industry Recognitions' },
       ],
 
-      ctaBadge: 'Get Started',
       ctaTitle: 'Ready to Trade Smarter?',
       ctaDescription:
         'Join a platform built for active traders with multi-asset access, educational support, trading rewards, and scalable partner opportunities.',
       ctaPrimaryLabel: 'Get Started Today',
       ctaPrimaryHref: 'https://fx.finsaitrade.com/auth/register',
-      ctaSecondaryLabel: 'Try Demo',
-      ctaSecondaryHref: '/demo',
 
       seo: buildSeo({
         title: 'About Finsai Trade — Multi-Asset Broker & Trading Ecosystem',
@@ -670,7 +689,6 @@ async function seedAccountsPage(strapi: Core.Strapi) {
       compareDescription:
         'Choose the trading conditions that match your goals, strategy, and experience level.',
 
-      whyBadge: 'Why Trade Finsai',
       whyTitle: 'Everything You Need to Trade with Confidence',
       whyDescription:
         'Choose an account designed for your trading style with competitive pricing, fast execution, and flexible trading conditions.',
@@ -683,43 +701,15 @@ async function seedAccountsPage(strapi: Core.Strapi) {
         { title: 'Dedicated multilingual\n support',           description: '', iconKey: 'globe' },
       ],
 
-      onboardingBadge: 'Get Started',
-      // FE component now only reads `onboardingTitle` ("Open Your Trading
-      // Account" is the FE fallback).
       onboardingTitle: 'Open Your Trading Account',
-      onboardingDescription:
-        'From signup to first trade in minutes — KYC is fast, deposits are instant, and our team is on hand 24/7.',
-
-      benefitsBadge: 'Account Benefits',
-      benefitsTitle: 'Pick the Account That Pays You Back',
-      benefitsDescription:
-        'Every Finsai tier ships with its own combination of bonus credit, support tier and platform perks.',
-      benefitsCards: [
-        {
-          title: 'Deposit & Withdrawal',
-          description: 'Smooth, Secure, and fast Transactions',
-          iconKey: 'wallet',
-          footer: 'Note:',
-          bullets: [
-            { key: 'Deposit Method',         value: 'Crypto, E-wallets' },
-            { key: 'Withdrawal Processing',  value: 'Within 24 business hours' },
-            { key: 'Security Method',        value: 'Crypto, E-wallets' },
-            { key: 'No Hidden Charges',      value: 'Transparent fee structure' },
-          ],
-        },
-        {
-          title: 'Smart Elite - Request Only  VIP Access',
-          description: 'No downloads. Just log in and trade.',
-          iconKey: 'vip',
-          footer: 'Request Access',
-          bullets: [
-            { key: 'Deposit Method',         value: 'Crypto, E-wallets' },
-            { key: 'Withdrawal Processing',  value: 'Within 24 business hours' },
-            { key: 'Security Method',        value: 'Crypto, E-wallets' },
-            { key: 'No Hidden Charges',      value: 'Transparent fee structure' },
-          ],
-        },
+      onboardingSteps: [
+        { title: 'Sign Up', description: 'Create your trading account in minutes.', iconKey: 'signup' },
+        { title: 'Verify', description: 'Complete secure KYC verification.', iconKey: 'verify' },
+        { title: 'Funds', description: 'Deposit using your preferred payment method.', iconKey: 'fund' },
+        { title: 'Start Trading', description: 'Access markets instantly on MT5.', iconKey: 'trade' },
       ],
+      onboardingCtaLabel: 'Open Live Account',
+      onboardingCtaHref: 'https://fx.finsaitrade.com/auth/register',
 
       seo: buildSeo({
         title: 'Trading Accounts | Finsai Trade — Smart Choice, Pro & ECN',
@@ -741,23 +731,10 @@ async function seedPaymentsPage(strapi: Core.Strapi) {
       heroPrimaryCtaLabel: 'Deposit Funds',
       heroPrimaryCtaHref: 'https://fx.finsaitrade.com/auth/register',
 
-      trustText:
-        'Every transaction at Finsai Trade is protected by industry-leading security standards.',
-
-      methodsBadge: 'Supported Methods',
       methodsTitle: 'Deposits & Withdrawals You Can Trust .',
       methodsDescription:
         'Deposits hit your account in seconds. Withdrawals are processed quickly, so your funds stay safe, accessible, and always within reach.',
-      // The FE PaymentsMethodsSection is now fully hardcoded, but the schema
-      // still exposes `methods` — keep a representative seed so the Strapi
-      // admin UI isn't empty.
-      methods: [
-        { name: 'Payment Stack',        description: 'Choose from convenient funding and withdrawal options designed for global traders.', fee: '0%', processingTime: 'Instant' },
-        { name: 'Fast Processing',      description: 'Fund your account instantly and access withdrawals without unnecessary delays.',     fee: '0%', processingTime: 'Instant' },
-        { name: 'Secure Transactions',  description: 'Advanced security systems help protect every deposit and payout.',                   fee: '0%', processingTime: '100% secure' },
-      ],
 
-      ctaBadge: 'Ready to fund?',
       ctaTitle: ' Move Funds Faster. Trade Without Delays.',
       ctaDescription:
         'Add funds through trusted payment methods and stay focused on opportunities across forex, crypto, indices, and more.',
@@ -776,57 +753,111 @@ async function seedPaymentsPage(strapi: Core.Strapi) {
 }
 
 async function seedPlatformPage(strapi: Core.Strapi) {
-  await seedSingleType(strapi, 'api::platform-page.platform-page', {
-      heroBadge: 'Professional Trading, Simplified\u00a0',
-      heroTitle: 'Powerful Trading Platforms for Every Trader\u00a0',
-      heroDescription:
-        'Discover three powerful trading environments built for ambitious beginners, active traders, and professional market participants.',
-      heroPrimaryCtaLabel: 'Start Trading →',
-      heroPrimaryCtaHref: 'https://fx.finsaitrade.com/auth/register',
-      heroSecondaryCtaLabel: 'Try Demo',
-      heroSecondaryCtaHref: '/demo',
+  const data: Record<string, unknown> = {
+    heroBadge: 'Professional Trading, Simplified\u00a0',
+    heroTitle: 'Powerful Trading Platforms for Every Trader\u00a0',
+    heroDescription:
+      'Discover three powerful trading environments built for ambitious beginners, active traders, and professional market participants.',
+    heroPrimaryCtaLabel: 'Start Trading →',
+    heroPrimaryCtaHref: 'https://fx.finsaitrade.com/auth/register',
 
-      featuresBadge: 'Features of Finsai Trade',
-      featuresTitle: 'Built to Perform. Designed for You',
-      featuresDescription:
-        "Finsai Trade platforms are engineered to deliver seamless execution, institutional-level tools, and reliable uptime so you stay in control, wherever you trade. Whether you're a beginner or a pro, our platforms help you trade smarter and faster.",
-      features: [
-        { title: 'Lightning \n Fast Execution',     description: 'Microsecond order routing on every trade.',           iconKey: 'flash' },
-        { title: 'Bank-Grade \n Security',          description: 'Funds segregated and protected by best-in-class encryption.', iconKey: 'shield' },
-        { title: 'Multi-Device \n Compatibility',   description: 'Trade across desktop, web, and mobile seamlessly.',  iconKey: 'devices' },
-        { title: 'Access Globally \n(India & UAE)', description: 'Regional coverage with localized payment rails.',    iconKey: 'globe' },
-        { title: 'Advanced Charts \n& Tools',       description: '80+ indicators and pro charting on every screen.',   iconKey: 'chart' },
-        { title: '24/7 Expert \n Support',          description: 'Live human support, 365 days a year.',               iconKey: 'support' },
-      ],
-
-      // FE platforms section is now three hardcoded stacked blocks (MT5,
-      // Social Trading, App). Header copy isn't rendered, but we keep
-      // sensible defaults for the Strapi admin UI.
-      platformsBadge: 'Choose Your Platform',
-      platformsTitle: 'Three Premium Platforms. Unlimited Trading Potential.',
-      platformsDescription:
-        'From advanced algorithmic trading to social copy trading, discover the ultimate platform for your trading style.',
-
-      suiteBadge: 'Service Suite',
-      suiteTitle: 'One platform suite\nEvery Trading Style',
-      suiteDescription:
-        "Finsai Trade platforms are engineered to deliver seamless execution, institutional-level tools, and reliable uptime — so you stay in control, wherever you trade. Whether you're a beginner or a pro, our platforms help you trade smarter and faster.",
-      suiteItems: [
-        { title: 'Beginner Mode',         description: 'Guided trades, tutorials & Simplified Workflows', iconKey: 'beginner' },
-        { title: 'Pro Tools',             description: 'Guided trades, tutorials & Simplified Workflows', iconKey: 'pro' },
-        { title: 'Seamless Switching',    description: 'Guided trades, tutorials & Simplified Workflows', iconKey: 'switch' },
-        { title: 'Multi Lingual Support', description: 'Guided trades, tutorials & Simplified Workflows', iconKey: 'language' },
-      ],
-
-      seo: buildSeo({
-        title: 'Trading Platforms | Finsai Trade — MT5, Social & Mobile',
+    platformsBadge: 'Choose Your Platform',
+    platformsTitle: 'Three Premium Platforms.\nUnlimited Trading Potential.',
+    platformsDescription:
+      'From advanced algorithmic trading to social copy trading, discover the ultimate platform for your trading style.',
+    platforms: [
+      {
+        slug: 'mt5',
+        title: 'MT5',
+        subtitle: "The World's Most Powerful Trading Platform",
         description:
-          'Three trading environments built for every level. Trade with MT5, copy top performers via social trading, or stay connected with our upcoming mobile app.',
-        path: '/platform',
-        keywords:
-          'finsai platform, MT5 platform, social trading, copy trading, trading app, multi-asset broker',
-      }),
-  }, 'Platform Page');
+          'Experience MetaTrader 5 - the globally trusted trading platform known for lightning-fast execution, elite analysis tools, and unmatched flexibility.',
+        features: [
+          { text: '44+ advanced charting tools' },
+          { text: '38 built-in indicators' },
+          { text: '2,000+ custom indicators' },
+          { text: 'Analyze markets across 21 timeframes' },
+          { text: 'Build and automate strategies with Expert Advisors (EAs)' },
+          { text: 'Advanced  Back-testing tools' },
+        ],
+        imagePath: '/service/mt5-platform.jpg',
+        imageAlt: 'MetaTrader 5 platform',
+        ctaLabel: 'Learn More About MT5',
+        ctaHref: 'https://fx.finsaitrade.com/auth/register',
+        showAppStores: false,
+        reverse: false,
+      },
+      {
+        slug: 'social',
+        title: 'Social Trading',
+        subtitle: 'Copy, Trade, or Earn with Social Trading',
+        description:
+          'Follow experienced traders or become a strategy provider. Copy expert trades live, or share your strategy and earn rewards.',
+        features: [
+          { text: 'Auto-Copy Execution' },
+          { text: 'Strategy Monetization' },
+          { text: 'Integrated Risk Controls' },
+          { text: 'Verified Performance Metrics' },
+        ],
+        imagePath: '/service/social-trading.jpg',
+        imageAlt: 'Social trading network',
+        ctaLabel: 'Learn More About Social Trading',
+        ctaHref: '/social-trading',
+        showAppStores: false,
+        reverse: true,
+      },
+      {
+        slug: 'app',
+        title: 'App (Coming Soon)',
+        subtitle: 'Powerful Mobile Trading On The Go',
+        description:
+          'The Finsai Trade App puts fast, seamless multi-asset trading directly in your hands - anytime, anywhere.',
+        features: [
+          { text: '1,000+ Instruments, One Tap' },
+          { text: 'Live News & Market Insights' },
+          { text: 'Risk-Free Demo Trading' },
+          { text: 'Copy Trading & Expert Signals' },
+          { text: 'Multi-Currency, All-in-One' },
+        ],
+        imagePath: '/service/app-soon.png',
+        imageAlt: 'Finsai Trade mobile app',
+        showAppStores: true,
+        reverse: false,
+      },
+    ],
+
+    seo: buildSeo({
+      title: 'Trading Platforms | Finsai Trade — MT5, Social & Mobile',
+      description:
+        'Three trading environments built for every level. Trade with MT5, copy top performers via social trading, or stay connected with our upcoming mobile app.',
+      path: '/platform',
+      keywords:
+        'finsai platform, MT5 platform, social trading, copy trading, trading app, multi-asset broker',
+    }),
+  };
+
+  const uid = 'api::platform-page.platform-page';
+  const existing = (await strapi.documents(uid as never).findFirst({
+    populate: ['platforms'],
+  })) as { documentId: string; platforms?: unknown[] } | null;
+
+  if (!existing) {
+    await strapi.documents(uid as never).create({ data, status: 'published' });
+    strapi.log.info('[bootstrap] Seeded Platform Page');
+    return;
+  }
+
+  if (!existing.platforms?.length) {
+    await strapi.documents(uid as never).update({
+      documentId: existing.documentId,
+      data,
+      status: 'published',
+    });
+    strapi.log.info('[bootstrap] Migrated Platform Page to new schema');
+    return;
+  }
+
+  strapi.log.info('[bootstrap] Platform Page already exists — skipping seed');
 }
 
 async function seedPartnershipsPage(strapi: Core.Strapi) {
@@ -881,17 +912,18 @@ async function seedPartnershipsPage(strapi: Core.Strapi) {
         { title: 'Earn More',     description: 'Get rewarded from every eligible client trade.',        iconKey: 'money' },
       ],
 
-      // FE has no marketing section anymore, but the schema still exposes
-      // these fields — keep representative defaults.
-      marketingBadge: 'Marketing Toolkit',
-      marketingTitle: 'Everything You Need to Convert',
-      marketingDescription:
-        'High-converting marketing assets ready to go, no design team required.',
-      marketingItems: [
-        { title: 'Banners',        description: 'Display-ready banners in 50+ sizes.',           iconKey: 'flash' },
-        { title: 'Landing Pages',  description: 'High-converting localized landers.',            iconKey: 'chart' },
-        { title: 'Video Assets',   description: 'Short-form explainers and tutorials.',          iconKey: 'bot' },
-      ],
+      ctaBadge: 'Grow As An IB',
+      ctaTitle: 'Start Earning as an Introducing Broker',
+      ctaDescription:
+        'Build a thriving partner business with smarter tools, seamless onboarding, and growth-focused\nrewards.',
+      ctaFooterText:
+        'Trading Forex and CFDs involves significant risk and may not be suitable for all investors. Please\nensure you fully understand the risks involved.',
+      ctaButton1Label: 'Become an IB Partner',
+      ctaButton1Href: 'https://portal.finsaitrade.com/partner/register',
+      ctaButton2Label: 'Talk to Us',
+      ctaButton2Href: '/contactus',
+      ctaButton3Label: 'Start a Demo Account',
+      ctaButton3Href: 'https://fx.finsaitrade.com/auth/register',
 
       seo: buildSeo({
         title: 'IB & Affiliate Partnerships | Finsai Trade',
@@ -912,8 +944,6 @@ async function seedBlogsPage(strapi: Core.Strapi) {
         'Sharp market insights, real trading education, and analysis you can actually act on.',
       heroPrimaryCtaLabel: 'Explore Insights',
       heroPrimaryCtaHref: '/blogs',
-      heroSecondaryCtaLabel: 'Subscribe',
-      heroSecondaryCtaHref: '#subscribe',
 
       seo: buildSeo({
         title: 'Trader Knowledge Hub — Blogs & Market News | Finsai Trade',

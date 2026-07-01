@@ -17,7 +17,7 @@
       "enum": [
         "homepage",
         "accounts",
-        "services",
+        "platform",
         "payments",
         "partnerships",
         "social-trading"

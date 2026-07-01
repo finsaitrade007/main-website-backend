@@ -1,7 +1,7 @@
 const VALID_SECTIONS = new Set([
   'homepage',
   'accounts',
-  'services',
+  'platform',
   'payments',
   'partnerships',
   'social-trading',
